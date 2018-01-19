@@ -203,7 +203,7 @@ public class PlayerDeathHandler {
 
 	@SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
 	public static void onPlayerDrops(PlayerDropsEvent event) {
-		final World world = event.getEntityPlayer().world;
+		final World world = event.getEntityPlayer().getEntityWorld();
 		if(world.isRemote) {
 			return;
 		}

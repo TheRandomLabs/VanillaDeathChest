@@ -200,23 +200,12 @@ public class PlayerDeathHandler {
 
 	@SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
 	public static void onPlayerDrops(PlayerDropsEvent event) {
-		final World world = event.getEntityPlayer().getEntityWorld();
-		if(world.isRemote) {
-			return;
-		}
-
 		final EntityPlayer player = event.getEntityPlayer();
-
-		if(player instanceof FakePlayer) {
-			return;
-		}
-
-		if(event.isCanceled()) {
-			return;
-		}
-
+		final World world = event.getEntityPlayer().getEntityWorld();
 		final List<EntityItem> drops = event.getDrops();
-		if(drops.isEmpty()) {
+
+		if(world.isRemote ||event.isCanceled() || player instanceof FakePlayer ||
+				drops.isEmpty()) {
 			return;
 		}
 

@@ -83,31 +83,11 @@ public class PlayerDeathHandler {
 		return searchOrder;
 	}
 
-	private static class GravePlacementChecker {
-		private GravePlacementChecker() {}
-
-		public static boolean canPlace(World world, EntityPlayer player, BlockPos pos) {
-			if(!world.isBlockLoaded(pos) || !world.isBlockModifiable(player, pos)) {
-				return false;
-			}
-
-			return checkBlock(world, pos, world.getBlockState(pos));
-		}
-
-		public static boolean checkBlock(World world, BlockPos pos, IBlockState state) {
-			return checkBlock2(world, pos, state) && checkBlock2(world, pos.east(), state);
-		}
-
-		private static boolean checkBlock2(World world, BlockPos pos, IBlockState state) {
-			final Block block = state.getBlock();
-			return (block.isAir(state, world, pos) || block.isReplaceable(world, pos));
-		}
-	}
-
 	private static class GraveCallable implements Runnable {
 		private final GameProfile stiffId;
 		private final BlockPos playerPos;
 		private final List<EntityItem> loot;
+		private final List<ItemStack> lootStacks;
 		private final WeakReference<World> world;
 		private final WeakReference<EntityPlayer> exPlayer;
 
@@ -119,11 +99,21 @@ public class PlayerDeathHandler {
 			this.exPlayer = new WeakReference<>(exPlayer);
 			this.stiffId = exPlayer.getGameProfile();
 			this.loot = ImmutableList.copyOf(loot);
+
+			this.lootStacks = new ArrayList<>();
+			for(EntityItem entityItem : loot) {
+				final ItemStack stack = entityItem.getItem();
+				if(!stack.isEmpty()) {
+					lootStacks.add(stack);
+				}
+			}
 		}
 
 		private boolean tryPlaceGrave(World world, final BlockPos gravePos) {
 			world.setBlockState(gravePos, Blocks.CHEST.getDefaultState());
-			world.setBlockState(gravePos.east(), Blocks.CHEST.getDefaultState());
+			if(lootStacks.size() > 27) {
+				world.setBlockState(gravePos.east(), Blocks.CHEST.getDefaultState());
+			}
 
 			final TileEntity tile = world.getTileEntity(gravePos);
 			if(tile == null || !(tile instanceof TileEntityChest)) {
@@ -138,24 +128,13 @@ public class PlayerDeathHandler {
 					stiffId.getId(), stiffId.getName(), gravePos, playerPos);
 
 			int j = 0;
-			for(ItemStack item : getLoot()) {
+			for(ItemStack item : lootStacks) {
 				if(!item.isEmpty()) {
 					chest.setInventorySlotContents(j++, item);
 				}
 			}
 
 			return true;
-		}
-
-		protected List<ItemStack> getLoot() {
-			final List<ItemStack> loot = new ArrayList<>();
-			for(EntityItem entityItem : this.loot) {
-				final ItemStack stack = entityItem.getItem();
-				if(!stack.isEmpty()) {
-					loot.add(stack);
-				}
-			}
-			return loot;
 		}
 
 		private boolean trySpawnGrave(EntityPlayer player, World world) {
@@ -172,12 +151,32 @@ public class PlayerDeathHandler {
 
 			for(BlockPos c : getSearchOrder(searchSize)) {
 				final BlockPos tryPos = searchPos.add(c);
-				if(GravePlacementChecker.canPlace(world, player, tryPos)) {
+				if(canPlace(world, player, tryPos)) {
 					return tryPos;
 				}
 			}
 
 			return null;
+		}
+
+		private boolean canPlace(World world, EntityPlayer player, BlockPos pos) {
+			if(!world.isBlockLoaded(pos) || !world.isBlockModifiable(player, pos)) {
+				return false;
+			}
+
+			return checkBlock(world, pos, world.getBlockState(pos));
+		}
+
+		private boolean checkBlock(World world, BlockPos pos, IBlockState state) {
+			if(lootStacks.size() > 27) {
+				return checkBlock2(world, pos, state) && checkBlock2(world, pos.east(), state);
+			}
+			return checkBlock2(world, pos, state);
+		}
+
+		private static boolean checkBlock2(World world, BlockPos pos, IBlockState state) {
+			final Block block = state.getBlock();
+			return block.isAir(state, world, pos) || block.isReplaceable(world, pos);
 		}
 
 		@Override
@@ -229,7 +228,7 @@ public class PlayerDeathHandler {
 		}
 
 		final GameRules gameRules = world.getGameRules();
-		if(gameRules.getBoolean("keepInventory") || gameRules.getBoolean("dontSpawnDeathChests")) {
+		if(gameRules.getBoolean("keepInventory") || !gameRules.getBoolean("spawnDeathChests")) {
 			Log.debug("Death chests disabled by gamerule (player '%s')", player);
 			return;
 		}
@@ -237,7 +236,7 @@ public class PlayerDeathHandler {
 		Log.debug("Scheduling death chest placement for player '%s':'%s' with %d item(s) stored",
 				player, player.getGameProfile(), drops.size());
 
-		DelayedActionTickHandler.addTickCallback(world, new GraveCallable(world, player, drops));
+		MiscEventHandler.addTickCallback(world, new GraveCallable(world, player, drops));
 
 		event.setCanceled(true);
 	}

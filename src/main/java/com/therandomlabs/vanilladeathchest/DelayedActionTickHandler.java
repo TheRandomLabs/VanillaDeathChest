@@ -18,10 +18,10 @@ public class DelayedActionTickHandler {
 	private static Map<Integer, Queue<Runnable>> callbacks = Maps.newHashMap();
 
 	private static Queue<Runnable> getWorldQueue(int worldId) {
-		synchronized (callbacks) {
+		synchronized(callbacks) {
 			Queue<Runnable> result = callbacks.get(worldId);
 
-			if (result == null) {
+			if(result == null) {
 				result = Queues.newConcurrentLinkedQueue();
 				callbacks.put(worldId, result);
 			}
@@ -36,13 +36,13 @@ public class DelayedActionTickHandler {
 	}
 
 	@SubscribeEvent
-	public static void onWorldTick(WorldTickEvent evt) {
-		if (evt.side == Side.SERVER && evt.phase == Phase.END) {
-			int worldId = evt.world.provider.getDimension();
-			Queue<Runnable> callbacks = getWorldQueue(worldId);
+	public static void onWorldTick(WorldTickEvent event) {
+		if(event.side == Side.SERVER && event.phase == Phase.END) {
+			final int worldId = event.world.provider.getDimension();
+			final Queue<Runnable> callbacks = getWorldQueue(worldId);
 
 			Runnable callback;
-			while ((callback = callbacks.poll()) != null) {
+			while((callback = callbacks.poll()) != null) {
 				callback.run();
 			}
 		}

@@ -110,7 +110,7 @@ public class PlayerDeathHandler {
 			}
 		}
 
-		private boolean tryPlaceGrave(World world, final BlockPos gravePos) {
+		private boolean tryPlaceGrave(World world, BlockPos gravePos) {
 			world.setBlockState(gravePos, Blocks.CHEST.getDefaultState());
 			if(lootStacks.size() > 27) {
 				world.setBlockState(gravePos.east(), Blocks.CHEST.getDefaultState());
@@ -118,15 +118,13 @@ public class PlayerDeathHandler {
 
 			final TileEntity tile = world.getTileEntity(gravePos);
 			if(tile == null || !(tile instanceof TileEntityChest)) {
-				LOGGER.warn("Failed to place death chest @ %s: invalid tile entity: %s(%s)",
-						gravePos, tile, tile != null? tile.getClass() : "?");
+				LOGGER.warn("Failed to place death chest at (%s) due to invalid tile entity");
 				return false;
 			}
 
 			final TileEntityChest chest = (TileEntityChest) tile;
 
-			LOGGER.info("Death chest for (%s, %s) was spawned at (%s) (player died at (%s))",
-					stiffId.getId(), stiffId.getName(), gravePos, playerPos);
+			LOGGER.info("Death chest for %s was spawned at (%s)", stiffId.getName(), gravePos);
 
 			int j = 0;
 			for(ItemStack item : lootStacks) {
@@ -139,9 +137,7 @@ public class PlayerDeathHandler {
 		}
 
 		private boolean trySpawnGrave(EntityPlayer player, World world) {
-			final BlockPos location = findLocation(world, player);
-			LOGGER.debug("Death chest for %s will be spawned at (%s)", stiffId, location);
-			return tryPlaceGrave(world, location);
+			return tryPlaceGrave(world, findLocation(world, player));
 		}
 
 		private BlockPos findLocation(World world, EntityPlayer player) {
@@ -212,31 +208,22 @@ public class PlayerDeathHandler {
 		final EntityPlayer player = event.getEntityPlayer();
 
 		if(player instanceof FakePlayer) {
-			LOGGER.debug("'%s' (%s) is a fake player, death chest will not be spawned", player,
-					player.getClass());
 			return;
 		}
 
 		if(event.isCanceled()) {
-			LOGGER.warn("Event for player '%s' cancelled, death chest will not be spawned",
-					player);
 			return;
 		}
 
 		final List<EntityItem> drops = event.getDrops();
 		if(drops.isEmpty()) {
-			LOGGER.debug("No drops from player '%s', death chest will not be spawned'", player);
 			return;
 		}
 
 		final GameRules gameRules = world.getGameRules();
 		if(gameRules.getBoolean("keepInventory") || !gameRules.getBoolean("spawnDeathChests")) {
-			LOGGER.debug("Death chests disabled by gamerule (player '%s')", player);
 			return;
 		}
-
-		LOGGER.debug("Scheduling death chest placement for player '%s':'%s' with %d item(s) " +
-				"stored", player, player.getGameProfile(), drops.size());
 
 		MiscEventHandler.addTickCallback(world, new GraveCallable(world, player, drops));
 

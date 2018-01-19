@@ -125,8 +125,7 @@ public class PlayerDeathHandler {
 
 			final TileEntityChest chest = (TileEntityChest) tile;
 
-			LOGGER.info("Death chest for " + stiffId.getName() + " was spawned at [" + gravePos +
-					"]");
+			LOGGER.info("Death chest for " + stiffId.getName() + " spawned at [" + gravePos + "]");
 
 			int j = 0;
 			for(ItemStack item : lootStacks) {

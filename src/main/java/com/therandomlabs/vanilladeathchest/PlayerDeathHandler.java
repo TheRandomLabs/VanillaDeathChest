@@ -118,13 +118,15 @@ public class PlayerDeathHandler {
 
 			final TileEntity tile = world.getTileEntity(gravePos);
 			if(tile == null || !(tile instanceof TileEntityChest)) {
-				LOGGER.warn("Failed to place death chest at (%s) due to invalid tile entity");
+				LOGGER.warn("Failed to place death chest at [" + gravePos + "] due to invalid " +
+						"tile entity");
 				return false;
 			}
 
 			final TileEntityChest chest = (TileEntityChest) tile;
 
-			LOGGER.info("Death chest for %s was spawned at (%s)", stiffId.getName(), gravePos);
+			LOGGER.info("Death chest for " + stiffId.getName() + " was spawned at [" + gravePos +
+					"]");
 
 			int j = 0;
 			for(ItemStack item : lootStacks) {
@@ -180,13 +182,11 @@ public class PlayerDeathHandler {
 		public void run() {
 			final EntityPlayer player = exPlayer.get();
 			if(player == null) {
-				LOGGER.warn("Lost player while placing player %s death chest", stiffId);
 				return;
 			}
 
 			final World world = this.world.get();
 			if(world == null) {
-				LOGGER.warn("Lost world while placing player %s death chest", stiffId);
 				return;
 			}
 

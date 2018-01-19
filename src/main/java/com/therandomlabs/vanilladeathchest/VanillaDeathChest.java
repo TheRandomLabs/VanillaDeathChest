@@ -1,5 +1,7 @@
 package com.therandomlabs.vanilladeathchest;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod(modid = VanillaDeathChest.MODID, version = VanillaDeathChest.VERSION,
@@ -14,4 +16,6 @@ public final class VanillaDeathChest {
 	public static final String UPDATE_JSON =
 			"https://raw.githubusercontent.com/TheRandomLabs/VanillaDeathChest/misc/versions.json";
 	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
+
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 }

@@ -6,10 +6,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
-import jline.internal.Log;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -74,6 +74,7 @@ public class PlayerDeathHandler {
 		}
 	}
 
+	static final Logger LOGGER = VanillaDeathChest.LOGGER;
 	private static SearchOrder searchOrder;
 
 	static Iterable<BlockPos> getSearchOrder(int size) {
@@ -117,14 +118,14 @@ public class PlayerDeathHandler {
 
 			final TileEntity tile = world.getTileEntity(gravePos);
 			if(tile == null || !(tile instanceof TileEntityChest)) {
-				Log.warn("Failed to place death chest @ %s: invalid tile entity: %s(%s)",
+				LOGGER.warn("Failed to place death chest @ %s: invalid tile entity: %s(%s)",
 						gravePos, tile, tile != null? tile.getClass() : "?");
 				return false;
 			}
 
 			final TileEntityChest chest = (TileEntityChest) tile;
 
-			Log.info("Death chest for (%s, %s) was spawned at (%s) (player died at (%s))",
+			LOGGER.info("Death chest for (%s, %s) was spawned at (%s) (player died at (%s))",
 					stiffId.getId(), stiffId.getName(), gravePos, playerPos);
 
 			int j = 0;
@@ -139,7 +140,7 @@ public class PlayerDeathHandler {
 
 		private boolean trySpawnGrave(EntityPlayer player, World world) {
 			final BlockPos location = findLocation(world, player);
-			Log.debug("Death chest for %s will be spawned at (%s)", stiffId, location);
+			LOGGER.debug("Death chest for %s will be spawned at (%s)", stiffId, location);
 			return tryPlaceGrave(world, location);
 		}
 
@@ -183,13 +184,13 @@ public class PlayerDeathHandler {
 		public void run() {
 			final EntityPlayer player = exPlayer.get();
 			if(player == null) {
-				Log.warn("Lost player while placing player %s death chest", stiffId);
+				LOGGER.warn("Lost player while placing player %s death chest", stiffId);
 				return;
 			}
 
 			final World world = this.world.get();
 			if(world == null) {
-				Log.warn("Lost world while placing player %s death chest", stiffId);
+				LOGGER.warn("Lost world while placing player %s death chest", stiffId);
 				return;
 			}
 
@@ -211,30 +212,31 @@ public class PlayerDeathHandler {
 		final EntityPlayer player = event.getEntityPlayer();
 
 		if(player instanceof FakePlayer) {
-			Log.debug("'%s' (%s) is a fake player, death chest will not be spawned", player,
+			LOGGER.debug("'%s' (%s) is a fake player, death chest will not be spawned", player,
 					player.getClass());
 			return;
 		}
 
 		if(event.isCanceled()) {
-			Log.warn("Event for player '%s' cancelled, death chest will not be spawned", player);
+			LOGGER.warn("Event for player '%s' cancelled, death chest will not be spawned",
+					player);
 			return;
 		}
 
 		final List<EntityItem> drops = event.getDrops();
 		if(drops.isEmpty()) {
-			Log.debug("No drops from player '%s', death chest will not be spawned'", player);
+			LOGGER.debug("No drops from player '%s', death chest will not be spawned'", player);
 			return;
 		}
 
 		final GameRules gameRules = world.getGameRules();
 		if(gameRules.getBoolean("keepInventory") || !gameRules.getBoolean("spawnDeathChests")) {
-			Log.debug("Death chests disabled by gamerule (player '%s')", player);
+			LOGGER.debug("Death chests disabled by gamerule (player '%s')", player);
 			return;
 		}
 
-		Log.debug("Scheduling death chest placement for player '%s':'%s' with %d item(s) stored",
-				player, player.getGameProfile(), drops.size());
+		LOGGER.debug("Scheduling death chest placement for player '%s':'%s' with %d item(s) " +
+				"stored", player, player.getGameProfile(), drops.size());
 
 		MiscEventHandler.addTickCallback(world, new GraveCallable(world, player, drops));
 

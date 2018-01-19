@@ -230,7 +230,7 @@ public class PlayerDeathHandler {
 
 		final GameRules gameRules = world.getGameRules();
 		if(gameRules.getBoolean("keepInventory") || gameRules.getBoolean("dontSpawnDeathChests")) {
-			Log.debug("Graves disabled by gamerule (player '%s')", player);
+			Log.debug("Death chests disabled by gamerule (player '%s')", player);
 			return;
 		}
 

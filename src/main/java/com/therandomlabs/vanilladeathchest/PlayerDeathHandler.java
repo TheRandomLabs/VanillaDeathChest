@@ -15,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.math.BlockPos;
@@ -84,68 +83,77 @@ public class PlayerDeathHandler {
 		return searchOrder;
 	}
 
-	private static class GraveCallable implements Runnable {
+	private static class DeathChestCallable implements Runnable {
 		private final GameProfile stiffId;
 		private final BlockPos playerPos;
 		private final List<EntityItem> loot;
-		private final List<ItemStack> lootStacks;
 		private final WeakReference<World> world;
 		private final WeakReference<EntityPlayer> exPlayer;
+		private final boolean useDouble;
 
-		public GraveCallable(World world, EntityPlayer exPlayer, List<EntityItem> loot) {
-			this.playerPos = exPlayer.getPosition();
+		public DeathChestCallable(World world, EntityPlayer exPlayer, List<EntityItem> loot) {
+			playerPos = exPlayer.getPosition();
 
 			this.world = new WeakReference<>(world);
 
 			this.exPlayer = new WeakReference<>(exPlayer);
-			this.stiffId = exPlayer.getGameProfile();
-			this.loot = ImmutableList.copyOf(loot);
+			stiffId = exPlayer.getGameProfile();
 
-			this.lootStacks = new ArrayList<>();
+			this.loot = new ArrayList<>();
 			for(EntityItem entityItem : loot) {
-				final ItemStack stack = entityItem.getItem();
-				if(!stack.isEmpty()) {
-					lootStacks.add(stack);
+				if(!entityItem.getItem().isEmpty()) {
+					this.loot.add(entityItem);
 				}
 			}
+			useDouble = loot.size() > 27;
 		}
 
-		private boolean tryPlaceGrave(World world, BlockPos gravePos) {
-			world.setBlockState(gravePos, Blocks.CHEST.getDefaultState());
-			if(lootStacks.size() > 27) {
-				world.setBlockState(gravePos.east(), Blocks.CHEST.getDefaultState());
+		private boolean tryPlaceDeathChest(World world, BlockPos pos) {
+			world.setBlockState(pos, Blocks.CHEST.getDefaultState());
+			if(useDouble) {
+				world.setBlockState(pos.east(), Blocks.CHEST.getDefaultState());
 			}
 
-			final TileEntity tile = world.getTileEntity(gravePos);
-			if(tile == null || !(tile instanceof TileEntityChest)) {
-				LOGGER.warn("Failed to place death chest at [" + gravePos + "] due to invalid " +
+			final TileEntity tile = world.getTileEntity(pos);
+			final TileEntity tile2 = useDouble ? world.getTileEntity(pos.east()) : null;
+			if((tile == null || !(tile instanceof TileEntityChest)) ||
+					useDouble && (tile2 == null || !(tile instanceof TileEntityChest))) {
+				LOGGER.warn("Failed to place death chest at [" + pos + "] due to invalid " +
 						"tile entity");
 				return false;
 			}
 
 			final TileEntityChest chest = (TileEntityChest) tile;
 
-			LOGGER.info("Death chest for " + stiffId.getName() + " spawned at [" + gravePos + "]");
+			LOGGER.info("Death chest for " + stiffId.getName() + " spawned at [" + pos + "]");
 
-			int j = 0;
-			for(ItemStack item : lootStacks) {
-				if(!item.isEmpty()) {
-					chest.setInventorySlotContents(j++, item);
+			final int end = useDouble ? 27 : loot.size();
+			for(int j = 0; j < end && !loot.isEmpty(); j++) {
+				chest.setInventorySlotContents(j, loot.get(0).getItem());
+				loot.remove(0);
+			}
+
+			if(useDouble) {
+				final TileEntityChest chest2 = (TileEntityChest) tile2;
+
+				for(int j = 0; j < 27 && !loot.isEmpty(); j++) {
+					chest2.setInventorySlotContents(j, loot.get(0).getItem());
+					loot.remove(0);
 				}
 			}
 
 			return true;
 		}
 
-		private boolean trySpawnGrave(EntityPlayer player, World world) {
-			return tryPlaceGrave(world, findLocation(world, player));
+		private boolean trySpawnDeathChest(EntityPlayer player, World world) {
+			return tryPlaceDeathChest(world, findLocation(world, player));
 		}
 
 		private BlockPos findLocation(World world, EntityPlayer player) {
 			final int limitedPosY = Math.min(Math.max(playerPos.getY(), 1), 256);
 			final BlockPos searchPos =
 					new BlockPos(playerPos.getX(), limitedPosY, playerPos.getZ());
-			final int searchSize = 5;
+			final int searchSize = 7;
 
 			for(BlockPos c : getSearchOrder(searchSize)) {
 				final BlockPos tryPos = searchPos.add(c);
@@ -166,7 +174,7 @@ public class PlayerDeathHandler {
 		}
 
 		private boolean checkBlock(World world, BlockPos pos, IBlockState state) {
-			if(lootStacks.size() > 27) {
+			if(useDouble) {
 				return checkBlock2(world, pos, state) && checkBlock2(world, pos.east(), state);
 			}
 			return checkBlock2(world, pos, state);
@@ -174,7 +182,15 @@ public class PlayerDeathHandler {
 
 		private static boolean checkBlock2(World world, BlockPos pos, IBlockState state) {
 			final Block block = state.getBlock();
-			return block.isAir(state, world, pos) || block.isReplaceable(world, pos);
+			if(block.isAir(state, world, pos) || block.isReplaceable(world, pos)) {
+				return notChest(world, pos.north()) && notChest(world, pos.east()) &&
+						notChest(world, pos.south()) && notChest(world, pos.west());
+			}
+			return false;
+		}
+
+		private static boolean notChest(World world, BlockPos pos) {
+			return world.getBlockState(pos).getBlock() != Blocks.CHEST;
 		}
 
 		@Override
@@ -189,10 +205,11 @@ public class PlayerDeathHandler {
 				return;
 			}
 
-			if(!trySpawnGrave(player, world)) {
-				for(EntityItem drop : loot) {
-					world.spawnEntity(drop);
-				}
+			trySpawnDeathChest(player, world);
+
+			//Drop any remaining loot
+			for(EntityItem drop : loot) {
+				world.spawnEntity(drop);
 			}
 		}
 	}
@@ -212,7 +229,7 @@ public class PlayerDeathHandler {
 			return;
 		}
 
-		MiscEventHandler.addTickCallback(world, new GraveCallable(world, player, drops));
+		MiscEventHandler.addTickCallback(world, new DeathChestCallable(world, player, drops));
 
 		event.setCanceled(true);
 	}

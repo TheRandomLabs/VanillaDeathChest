@@ -52,7 +52,7 @@ public class MiscEventHandler {
 	public static void onCreateSpawn(WorldEvent.CreateSpawnPosition event) {
 		final World world = event.getWorld();
 		if(!world.isRemote && world.provider.getDimensionType() == DimensionType.OVERWORLD) {
-			world.getGameRules().setOrCreateGameRule("spawnDeathChests", "true");
+			world.getGameRules().setOrCreateGameRule("dontSpawnDeathChests", "false");
 		}
 	}
 }

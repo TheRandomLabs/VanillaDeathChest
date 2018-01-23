@@ -225,7 +225,7 @@ public class PlayerDeathHandler {
 		}
 
 		final GameRules gameRules = world.getGameRules();
-		if(gameRules.getBoolean("keepInventory") || !gameRules.getBoolean("spawnDeathChests")) {
+		if(gameRules.getBoolean("keepInventory") || gameRules.getBoolean("dontSpawnDeathChests")) {
 			return;
 		}
 

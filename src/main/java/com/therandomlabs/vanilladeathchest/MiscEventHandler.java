@@ -17,6 +17,10 @@ import net.minecraftforge.fml.relauncher.Side;
 public class MiscEventHandler {
 	private static Map<Integer, Queue<Runnable>> callbacks = Maps.newHashMap();
 
+	private static Queue<Runnable> getWorldQueue(World world) {
+		return getWorldQueue(world.provider.getDimension());
+	}
+
 	private static Queue<Runnable> getWorldQueue(int worldId) {
 		synchronized(callbacks) {
 			Queue<Runnable> result = callbacks.get(worldId);
@@ -31,15 +35,13 @@ public class MiscEventHandler {
 	}
 
 	public static void addTickCallback(World world, Runnable callback) {
-		int worldId = world.provider.getDimension();
-		getWorldQueue(worldId).add(callback);
+		getWorldQueue(world).add(callback);
 	}
 
 	@SubscribeEvent
 	public static void onWorldTick(WorldTickEvent event) {
 		if(event.side == Side.SERVER && event.phase == Phase.END) {
-			final int worldId = event.world.provider.getDimension();
-			final Queue<Runnable> callbacks = getWorldQueue(worldId);
+			final Queue<Runnable> callbacks = getWorldQueue(event.world);
 
 			Runnable callback;
 			while((callback = callbacks.poll()) != null) {

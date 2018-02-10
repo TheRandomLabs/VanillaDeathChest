@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @EventBusSubscriber(modid = VanillaDeathChest.MODID)
 public class MiscEventHandler {
-	private static Map<Integer, Queue<Runnable>> callbacks = Maps.newHashMap();
+	private static final Map<Integer, Queue<Runnable>> callbacks = Maps.newHashMap();
 
 	private static Queue<Runnable> getWorldQueue(World world) {
 		return getWorldQueue(world.provider.getDimension());

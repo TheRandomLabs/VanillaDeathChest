@@ -17,7 +17,7 @@
 		"1.12.2-1.0.2.0": "Changed the gamerule to \"dontSpawnDeathChests\", which is false by default.",
 		"1.12.2-1.0.1.0": "Fixed several issues.",
 		"1.12.2-1.0.0.0": "Initial release."
-	}
+	},
 	"promos": {
 		"1.12.2-latest": "1.12.2-1.0.3.0",
 		"1.12.2-recommended": "1.12.2-1.0.3.0",

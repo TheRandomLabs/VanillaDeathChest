@@ -124,6 +124,7 @@ public class PlayerDeathHandler {
 			}
 
 			final TileEntityChest chest = (TileEntityChest) tile;
+			MiscEventHandler.addChest(chest.getPos());
 
 			LOGGER.info("Death chest for " + stiffId.getName() + " spawned at [" + pos + "]");
 
@@ -135,6 +136,7 @@ public class PlayerDeathHandler {
 
 			if(useDouble) {
 				final TileEntityChest chest2 = (TileEntityChest) tile2;
+				MiscEventHandler.addChest(chest2.getPos());
 
 				for(int j = 0; j < 27 && !loot.isEmpty(); j++) {
 					chest2.setInventorySlotContents(j, loot.get(0).getItem());

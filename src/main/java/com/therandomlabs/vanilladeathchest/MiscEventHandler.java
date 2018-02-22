@@ -1,11 +1,18 @@
 package com.therandomlabs.vanilladeathchest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -16,6 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 @EventBusSubscriber(modid = VanillaDeathChest.MODID)
 public class MiscEventHandler {
 	private static final Map<Integer, Queue<Runnable>> callbacks = Maps.newHashMap();
+	private static final List<BlockPos> chests = new ArrayList<>();
 
 	private static Queue<Runnable> getWorldQueue(World world) {
 		return getWorldQueue(world.provider.getDimension());
@@ -55,6 +63,27 @@ public class MiscEventHandler {
 		final World world = event.getWorld();
 		if(!world.isRemote && world.provider.getDimensionType() == DimensionType.OVERWORLD) {
 			world.getGameRules().setOrCreateGameRule("dontSpawnDeathChests", "false");
+		}
+	}
+
+	@SubscribeEvent
+	public static void onBlockDrop(BlockEvent.HarvestDropsEvent event) {
+		if(chests.contains(event.getPos())) {
+			for(ItemStack stack : event.getDrops()) {
+				if(stack.getItem() == Item.getItemFromBlock(Blocks.CHEST) &&
+						stack.getCount() == 1 && stack.getMetadata() == 0) {
+					event.getDrops().remove(stack);
+					break;
+				}
+			}
+
+			chests.remove(event.getPos());
+		}
+	}
+
+	static void addChest(BlockPos pos) {
+		if(!VanillaDeathChest.dropDeathChest) {
+			chests.add(pos);
 		}
 	}
 }

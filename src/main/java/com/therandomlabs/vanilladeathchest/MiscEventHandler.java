@@ -18,7 +18,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 @EventBusSubscriber(modid = VanillaDeathChest.MODID)
 public class MiscEventHandler {
@@ -48,7 +47,7 @@ public class MiscEventHandler {
 
 	@SubscribeEvent
 	public static void onWorldTick(WorldTickEvent event) {
-		if(event.side == Side.SERVER && event.phase == Phase.END) {
+		if(!event.world.isRemote && event.phase == Phase.END) {
 			final Queue<Runnable> callbacks = getWorldQueue(event.world);
 
 			Runnable callback;
@@ -68,7 +67,8 @@ public class MiscEventHandler {
 
 	@SubscribeEvent
 	public static void onBlockDrop(BlockEvent.HarvestDropsEvent event) {
-		if(chests.contains(event.getPos())) {
+		if(!event.getWorld().isRemote && !VanillaDeathChest.dropDeathChest &&
+				isDeathChest(event.getWorld(), event.getPos())) {
 			for(ItemStack stack : event.getDrops()) {
 				if(stack.getItem() == Item.getItemFromBlock(Blocks.CHEST) &&
 						stack.getCount() == 1 && stack.getMetadata() == 0) {
@@ -81,9 +81,13 @@ public class MiscEventHandler {
 		}
 	}
 
-	static void addChest(BlockPos pos) {
-		if(!VanillaDeathChest.dropDeathChest) {
-			chests.add(pos);
-		}
+	public static void addChest(World world, BlockPos pos) {
+		final VDCSavedData data = VDCSavedData.get(world);
+		data.getDeathChests().add(pos);
+		data.markDirty();
+	}
+
+	public static boolean isDeathChest(World world, BlockPos pos) {
+		return VDCSavedData.get(world).getDeathChests().contains(pos);
 	}
 }

@@ -83,18 +83,18 @@ public class PlayerDeathHandler {
 		return searchOrder;
 	}
 
-	private static class DeathChestCallable implements Runnable {
+	private static class DeathChestCallable extends TickCallbackHandler.Callable {
 		private final GameProfile stiffId;
 		private final BlockPos playerPos;
 		private final List<EntityItem> loot;
-		private final WeakReference<World> world;
+
 		private final WeakReference<EntityPlayer> exPlayer;
 		private final boolean useDouble;
 
 		public DeathChestCallable(World world, EntityPlayer exPlayer, List<EntityItem> loot) {
-			playerPos = exPlayer.getPosition();
+			super(world);
 
-			this.world = new WeakReference<>(world);
+			playerPos = exPlayer.getPosition();
 
 			this.exPlayer = new WeakReference<>(exPlayer);
 			stiffId = exPlayer.getGameProfile();
@@ -152,9 +152,13 @@ public class PlayerDeathHandler {
 		}
 
 		private BlockPos findLocation(World world, EntityPlayer player) {
-			final int limitedPosY = Math.min(Math.max(playerPos.getY(), 1), 256);
+			int y = playerPos.getY();
+			if(world.isOutsideBuildHeight(playerPos)) {
+				y = Math.min(Math.max(y, 1), 256);
+			}
+
 			final BlockPos searchPos =
-					new BlockPos(playerPos.getX(), limitedPosY, playerPos.getZ());
+					new BlockPos(playerPos.getX(), y, playerPos.getZ());
 			final int searchSize = 7;
 
 			for(BlockPos c : getSearchOrder(searchSize)) {
@@ -168,26 +172,26 @@ public class PlayerDeathHandler {
 		}
 
 		private boolean canPlace(World world, EntityPlayer player, BlockPos pos) {
+			if(useDouble) {
+				return canPlace2(world, player, pos) && canPlace2(world, player, pos.east());
+			}
+
+			return canPlace2(world, player, pos);
+		}
+
+		private static boolean canPlace2(World world, EntityPlayer player, BlockPos pos) {
 			if(!world.isBlockLoaded(pos) || !world.isBlockModifiable(player, pos)) {
 				return false;
 			}
 
-			return checkBlock(world, pos, world.getBlockState(pos));
-		}
-
-		private boolean checkBlock(World world, BlockPos pos, IBlockState state) {
-			if(useDouble) {
-				return checkBlock2(world, pos, state) && checkBlock2(world, pos.east(), state);
-			}
-			return checkBlock2(world, pos, state);
-		}
-
-		private static boolean checkBlock2(World world, BlockPos pos, IBlockState state) {
+			final IBlockState state = world.getBlockState(pos);
 			final Block block = state.getBlock();
+
 			if(block.isAir(state, world, pos) || block.isReplaceable(world, pos)) {
 				return notChest(world, pos.north()) && notChest(world, pos.east()) &&
 						notChest(world, pos.south()) && notChest(world, pos.west());
 			}
+
 			return false;
 		}
 
@@ -216,7 +220,7 @@ public class PlayerDeathHandler {
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOW)
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onPlayerDrops(PlayerDropsEvent event) {
 		final EntityPlayer player = event.getEntityPlayer();
 		final World world = event.getEntityPlayer().getEntityWorld();
@@ -231,7 +235,7 @@ public class PlayerDeathHandler {
 			return;
 		}
 
-		MiscEventHandler.addTickCallback(world, new DeathChestCallable(world, player, drops));
+		TickCallbackHandler.addCallback(new DeathChestCallable(world, player, drops));
 
 		event.setCanceled(true);
 	}

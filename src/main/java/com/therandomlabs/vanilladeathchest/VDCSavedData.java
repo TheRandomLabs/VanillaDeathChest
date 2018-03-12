@@ -1,7 +1,5 @@
 package com.therandomlabs.vanilladeathchest;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -11,6 +9,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VDCSavedData extends WorldSavedData {
 	public static final String DATA_NAME = VanillaDeathChest.MODID + "_data";
@@ -31,10 +32,6 @@ public class VDCSavedData extends WorldSavedData {
 		nbt.getTagList("DeathChests", Constants.NBT.TAG_COMPOUND).forEach(this::addDeathChest);
 	}
 
-	private void addDeathChest(NBTBase tag) {
-		deathChests.add(NBTUtil.getPosFromTag((NBTTagCompound) tag));
-	}
-
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		final NBTTagList tagList = new NBTTagList();
@@ -45,6 +42,10 @@ public class VDCSavedData extends WorldSavedData {
 
 		nbt.setTag("DeathChests", tagList);
 		return nbt;
+	}
+
+	private void addDeathChest(NBTBase tag) {
+		deathChests.add(NBTUtil.getPosFromTag((NBTTagCompound) tag));
 	}
 
 	public List<BlockPos> getDeathChests() {

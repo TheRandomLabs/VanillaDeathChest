@@ -1,11 +1,11 @@
 package com.therandomlabs.vanilladeathchest;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = VanillaDeathChest.MODID, version = VanillaDeathChest.VERSION,
 		acceptedMinecraftVersions = "[1.12,1.13)",
@@ -22,16 +22,18 @@ public final class VanillaDeathChest {
 
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
-	private static Configuration config;
-
 	public static boolean dropDeathChest;
+	public static boolean sendChatMessage;
 
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {
-		config = new Configuration(event.getSuggestedConfigurationFile());
-		dropDeathChest = config.getBoolean("dropDeathChest", "general", false,
-				"Whether the death chest should be dropped when it is open. Enable this if you " +
-				"like chest dupe bugs.");
+		final Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		dropDeathChest = config.getBoolean("dropDeathChest", "general", false, "Whether the " +
+				"death chest should be dropped when it is open. Enable this if you like chest " +
+				"dupe bugs.");
+		sendChatMessage = config.getBoolean("sendChatMessage", "general", true, "Whether the " +
+				"position of the death chest should be sent in chat to the player who " +
+				"died.");
 		config.save();
 	}
 }

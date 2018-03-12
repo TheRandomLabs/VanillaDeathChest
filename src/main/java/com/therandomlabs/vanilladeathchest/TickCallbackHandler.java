@@ -1,11 +1,5 @@
 package com.therandomlabs.vanilladeathchest;
 
-import java.lang.ref.WeakReference;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import net.minecraft.world.World;
@@ -14,6 +8,9 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+
+import java.lang.ref.WeakReference;
+import java.util.*;
 
 @EventBusSubscriber(modid = VanillaDeathChest.MODID)
 public class TickCallbackHandler {
@@ -26,6 +23,10 @@ public class TickCallbackHandler {
 		protected Callable(World world) {
 			this.world = new WeakReference<>(world);
 		}
+	}
+
+	public static void addCallback(Callable callback) {
+		getWorldQueue(callback.world.get()).add(callback);
 	}
 
 	private static Queue<Callable> getWorldQueue(World world) {
@@ -45,20 +46,14 @@ public class TickCallbackHandler {
 		}
 	}
 
-	public static void addCallback(Callable callback) {
-		getWorldQueue(callback.world.get()).add(callback);
-	}
-
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onWorldTick(WorldTickEvent event) {
 		if(!event.world.isRemote && event.phase == Phase.END) {
 			final Queue<Callable> callbacks = getWorldQueue(event.world);
-			final Iterator<Callable> it = callbacks.iterator();
 			final Set<Callable> toRemove = new HashSet<>();
 
-			Callable callback;
-			while(it.hasNext()) {
-				callback = it.next();
+			//Delay by a tick so VDC doesn't replace any blocks placed on death by other mods
+			for(Callable callback : callbacks) {
 				if(!callback.ready) {
 					callback.ready = true;
 				} else {

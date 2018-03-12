@@ -2,11 +2,9 @@ package com.therandomlabs.vanilladeathchest;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
@@ -14,10 +12,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
@@ -25,6 +27,7 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber(modid = VanillaDeathChest.MODID)
 public class PlayerDeathHandler {
@@ -62,7 +65,7 @@ public class PlayerDeathHandler {
 				}
 			}
 
-			Collections.sort(coords, SEARCH_COMPARATOR);
+			coords.sort(SEARCH_COMPARATOR);
 
 			this.coords = ImmutableList.copyOf(coords);
 		}
@@ -84,20 +87,18 @@ public class PlayerDeathHandler {
 	}
 
 	private static class DeathChestCallable extends TickCallbackHandler.Callable {
-		private final GameProfile stiffId;
-		private final BlockPos playerPos;
+		private final WeakReference<EntityPlayer> player;
+		private final GameProfile profile;
+		private final BlockPos position;
 		private final List<EntityItem> loot;
-
-		private final WeakReference<EntityPlayer> exPlayer;
 		private final boolean useDouble;
 
-		public DeathChestCallable(World world, EntityPlayer exPlayer, List<EntityItem> loot) {
+		public DeathChestCallable(World world, EntityPlayer player, List<EntityItem> loot) {
 			super(world);
 
-			playerPos = exPlayer.getPosition();
-
-			this.exPlayer = new WeakReference<>(exPlayer);
-			stiffId = exPlayer.getGameProfile();
+			this.player = new WeakReference<>(player);
+			profile = player.getGameProfile();
+			position = player.getPosition();
 
 			this.loot = new ArrayList<>();
 			for(EntityItem entityItem : loot) {
@@ -105,6 +106,7 @@ public class PlayerDeathHandler {
 					this.loot.add(entityItem);
 				}
 			}
+
 			useDouble = loot.size() > 27;
 		}
 
@@ -116,8 +118,8 @@ public class PlayerDeathHandler {
 
 			final TileEntity tile = world.getTileEntity(pos);
 			final TileEntity tile2 = useDouble ? world.getTileEntity(pos.east()) : null;
-			if((tile == null || !(tile instanceof TileEntityChest)) ||
-					useDouble && (tile2 == null || !(tile instanceof TileEntityChest))) {
+			if(!(tile instanceof TileEntityChest) ||
+					(useDouble && !(tile instanceof TileEntityChest))) {
 				LOGGER.warn("Failed to place death chest at [" + pos + "] due to invalid " +
 						"tile entity");
 				return false;
@@ -126,7 +128,13 @@ public class PlayerDeathHandler {
 			final TileEntityChest chest = (TileEntityChest) tile;
 			MiscEventHandler.addChest(world, chest.getPos());
 
-			LOGGER.info("Death chest for " + stiffId.getName() + " spawned at [" + pos + "]");
+			LOGGER.info("Death chest for " + profile.getName() + " spawned at [" + pos + "]");
+
+			final EntityPlayerMP playerMP =
+					world.getMinecraftServer().getPlayerList().getPlayerByUUID(profile.getId());
+			final ITextComponent text = new TextComponentTranslation(
+					"vanillaDeathChest.chestSpawnedAt", pos.getX(), pos.getY(), pos.getZ());
+			playerMP.sendMessage(new TextComponentString(text.getFormattedText()));
 
 			final int end = useDouble ? 27 : loot.size();
 			for(int j = 0; j < end && !loot.isEmpty(); j++) {
@@ -152,13 +160,12 @@ public class PlayerDeathHandler {
 		}
 
 		private BlockPos findLocation(World world, EntityPlayer player) {
-			int y = playerPos.getY();
-			if(world.isOutsideBuildHeight(playerPos)) {
+			int y = position.getY();
+			if(world.isOutsideBuildHeight(position)) {
 				y = Math.min(Math.max(y, 1), 256);
 			}
 
-			final BlockPos searchPos =
-					new BlockPos(playerPos.getX(), y, playerPos.getZ());
+			final BlockPos searchPos = new BlockPos(position.getX(), y, position.getZ());
 			final int searchSize = 7;
 
 			for(BlockPos c : getSearchOrder(searchSize)) {
@@ -201,7 +208,7 @@ public class PlayerDeathHandler {
 
 		@Override
 		public void run() {
-			final EntityPlayer player = exPlayer.get();
+			final EntityPlayer player = this.player.get();
 			if(player == null) {
 				return;
 			}

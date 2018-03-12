@@ -1,7 +1,5 @@
 package com.therandomlabs.vanilladeathchest;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,8 +13,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @EventBusSubscriber(modid = VanillaDeathChest.MODID)
 public class MiscEventHandler {
-	private static final List<BlockPos> chests = new ArrayList<>();
-
 	@SubscribeEvent
 	public static void onCreateSpawn(WorldEvent.CreateSpawnPosition event) {
 		final World world = event.getWorld();
@@ -36,8 +32,6 @@ public class MiscEventHandler {
 					break;
 				}
 			}
-
-			chests.remove(event.getPos());
 		}
 	}
 

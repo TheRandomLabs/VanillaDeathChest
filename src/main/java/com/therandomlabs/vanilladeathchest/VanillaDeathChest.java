@@ -29,7 +29,7 @@ public final class VanillaDeathChest {
 	public static void preInit(FMLPreInitializationEvent event) {
 		final Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		dropDeathChest = config.getBoolean("dropDeathChest", "general", false, "Whether the " +
-				"death chest should be dropped when it is open. Enable this if you like chest " +
+				"death chest should be dropped when it is broken. Enable this if you like chest " +
 				"dupe bugs.");
 		sendChatMessage = config.getBoolean("sendChatMessage", "general", true, "Whether the " +
 				"position of the death chest should be sent in chat to the player who " +

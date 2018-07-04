@@ -1,1 +1,9 @@
-vanillaDeathChest.chestSpawnedAt=Death chest spawned at [%d, %d, %d]
+vanilladeathchest.config.general=General
+vanilladeathchest.config.general.tooltip=General options.
+vanilladeathchest.config.general.dropDeathChests=Drop death chests
+vanilladeathchest.config.general.locationSearchRadius=Location search radius
+vanilladeathchest.config.general.chatMessage=Chat message
+vanilladeathchest.config.general.spawnDeathChestsGamerule=spawnDeathChests gamerule
+
+commands.vdcreloadclient.usage=/vdcreloadclient
+commands.vdcreloadclient.success=VanillaDeathChest client-sided configuration reloaded!

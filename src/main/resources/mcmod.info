@@ -7,8 +7,8 @@
 		"mcversion": "${mcversion}",
 		"url": "https://minecraft.curseforge.com/projects/vanilladeathchest",
 		"updateUrl": "https://raw.githubusercontent.com/TheRandomLabs/VanillaDeathChest/misc/versions.json",
-		"authorList": ["TheRandomLabs", "OpenMods"],
-		"credits": "",
+		"authorList": ["TheRandomLabs"],
+		"credits": "The OpenMods team",
 		"logoFile": "assets/vanilladeathchest/textures/logo.png",
 		"screenshots": [],
 		"dependencies": []

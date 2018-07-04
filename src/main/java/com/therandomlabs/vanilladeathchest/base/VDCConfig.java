@@ -19,28 +19,28 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 @Config(modid = VanillaDeathChest.MODID, name = VanillaDeathChest.MODID, category = "")
 public class VDCConfig {
 	public static class General {
-		@Config.LangKey("vanilladeathchest.config.general.dropDeathChests")
-		@Config.Comment("Whether death chests should be dropped when broken. " +
-				"Enable for infinite chests.")
-		public boolean dropDeathChests;
-
-		@Config.LangKey("vanilladeathchest.config.general.useDoubleChests")
-		@Config.Comment("Whether to use double chests.")
-		public boolean useDoubleChests = true;
-
-		@Config.LangKey("vanilladeathchest.config.general.locationSearchRadius")
-		@Config.Comment("The death chest location search radius.")
-		public int locationSearchRadius = 8;
-
 		@Config.LangKey("vanilladeathchest.config.general.chatMessage")
 		@Config.Comment("The message that should be sent to a player when they die and a " +
 				"death chest is placed. %d refers to the X, Y and Z coordinates. Set this to an " +
 				"empty string to disable this message.")
 		public String chatMessage = "Death chest spawned at [%d, %d, %d]";
 
-		@Config.LangKey("vaniladeathchest.config.general.spawnDeathChestsGamerule")
+		@Config.LangKey("vanilladeathchest.config.general.dropDeathChests")
+		@Config.Comment("Whether death chests should be dropped when broken. " +
+				"Enable for infinite chests.")
+		public boolean dropDeathChests;
+
+		@Config.LangKey("vanilladeathchest.config.general.locationSearchRadius")
+		@Config.Comment("The death chest location search radius.")
+		public int locationSearchRadius = 8;
+
+		@Config.LangKey("vanilladeathchest.config.general.spawnDeathChestsGamerule")
 		@Config.Comment("Whether to enable the spawnDeathChests gamerule.")
 		public boolean spawnDeathChestsGamerule = true;
+
+		@Config.LangKey("vanilladeathchest.config.general.useDoubleChests")
+		@Config.Comment("Whether to use double chests.")
+		public boolean useDoubleChests = true;
 	}
 
 	@Config.LangKey("vanilladeathchest.config.general")

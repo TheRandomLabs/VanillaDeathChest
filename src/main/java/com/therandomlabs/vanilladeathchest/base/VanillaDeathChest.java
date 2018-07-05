@@ -23,8 +23,6 @@ public final class VanillaDeathChest {
 			"https://raw.githubusercontent.com/TheRandomLabs/VanillaDeathChest/misc/versions.json";
 	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
 
-	public static final String GAMERULE_NAME = "spawnDeathChests";
-
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	@SidedProxy(clientSide = "com.therandomlabs.vanilladeathchest.base.ClientProxy",
@@ -33,11 +31,13 @@ public final class VanillaDeathChest {
 
 	@Mod.EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {
-		VDCConfig.reload();
+		proxy.preInit(event);
 	}
 
 	@Mod.EventHandler
 	public static void serverStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new CommandVDCReload(Side.SERVER));
+		if(VDCConfig.misc.vdcreload) {
+			event.registerServerCommand(new CommandVDCReload(Side.SERVER));
+		}
 	}
 }

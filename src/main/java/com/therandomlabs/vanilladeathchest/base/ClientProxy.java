@@ -9,6 +9,9 @@ public final class ClientProxy extends CommonProxy {
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
 		super.preInit(event);
-		ClientCommandHandler.instance.registerCommand(new CommandVDCReload(Side.CLIENT));
+
+		if(VDCConfig.misc.vdcreloadclient) {
+			ClientCommandHandler.instance.registerCommand(new CommandVDCReload(Side.CLIENT));
+		}
 	}
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
 import com.therandomlabs.vanilladeathchest.base.VDCConfig;
@@ -71,7 +73,7 @@ public final class DeathChestHandler {
 				}
 			}
 
-			useDoubleChest = VDCConfig.general.useDoubleChests && drops.size() > 27;
+			useDoubleChest = VDCConfig.spawning.useDoubleChests && drops.size() > 27;
 		}
 
 		@Override
@@ -104,17 +106,20 @@ public final class DeathChestHandler {
 				return;
 			}
 
-			addChest(world, pos);
+			final UUID playerID = player.getUniqueID();
+			final long creationTime = world.getTotalWorldTime();
 
 			if(useDoubleChest) {
-				addChest(world, east);
+				addDeathChest(world, playerID, creationTime, pos, east);
+			} else {
+				addDeathChest(world, playerID, creationTime, pos);
 			}
 
 			LOGGER.info("Death chest for " + profile.getName() + " spawned at [" + pos + "]");
 
-			player.sendMessage(new TextComponentString(
-					String.format(VDCConfig.general.chatMessage, pos.getX(), pos.getY(), pos.getZ())
-			));
+			player.sendMessage(new TextComponentString(String.format(
+					VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
+			)));
 
 			TileEntityChest chest = (TileEntityChest) tile;
 
@@ -146,7 +151,7 @@ public final class DeathChestHandler {
 
 			final BlockPos searchPos = new BlockPos(pos.getX(), y, pos.getZ());
 
-			for(BlockPos c : getSearchOrder(VDCConfig.general.locationSearchRadius)) {
+			for(BlockPos c : getSearchOrder(VDCConfig.spawning.locationSearchRadius)) {
 				final BlockPos potentialPos = searchPos.add(c);
 
 				if(canPlace(world, player, potentialPos)) {
@@ -187,7 +192,12 @@ public final class DeathChestHandler {
 		final IBlockState state = world.getBlockState(pos);
 		final Block block = state.getBlock();
 
-		if(block.isAir(state, world, pos) || block.isReplaceable(world, pos)) {
+		final BlockPos pos2 = pos.up();
+		final IBlockState state2 = world.getBlockState(pos2);
+		final Block block2 = state2.getBlock();
+
+		if((block.isAir(state, world, pos) || block.isReplaceable(world, pos)) &&
+				(block2.isAir(state2, world, pos2) || block2.isReplaceable(world, pos2))) {
 			return isNotChest(world, pos.north()) && isNotChest(world, pos.east()) &&
 					isNotChest(world, pos.south()) && isNotChest(world, pos.west());
 		}
@@ -195,14 +205,38 @@ public final class DeathChestHandler {
 		return false;
 	}
 
-	public static void addChest(World world, BlockPos pos) {
+	public static void addDeathChest(World world, UUID playerID, long creationTime,
+			BlockPos... positions) {
 		final VDCSavedData data = VDCSavedData.get(world);
-		data.getDeathChests().add(pos);
+		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
+		final DeathChest deathChest = new DeathChest(playerID, creationTime);
+
+		for(BlockPos pos : positions) {
+			deathChests.put(pos, deathChest);
+		}
+
 		data.markDirty();
 	}
 
-	public static boolean isDeathChest(World world, BlockPos pos) {
-		return VDCSavedData.get(world).getDeathChests().contains(pos);
+	public static DeathChest getDeathChest(World world, BlockPos pos) {
+		if(world.getBlockState(pos).getBlock() != Blocks.CHEST) {
+			return null;
+		}
+
+		final Map<BlockPos, DeathChest> deathChests = VDCSavedData.get(world).getDeathChests();
+		DeathChest deathChest = deathChests.get(pos);
+
+		if(deathChest == null) {
+			return null;
+		}
+
+		return deathChest;
+	}
+
+	public static void removeDeathChest(World world, BlockPos pos) {
+		final Map<BlockPos, DeathChest> deathChests = VDCSavedData.get(world).getDeathChests();
+		deathChests.remove(pos);
+		deathChests.remove(pos.east());
 	}
 
 	private static int sumCoordinates(BlockPos pos) {

@@ -1,8 +1,9 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/vanilladeathchest",
 	"1.12.2": {
+		"1.12.2-1.3.0.0": "Added more configuration options.\nFixed death chest save data.\nImplemented death chest protection.",
 		"1.12.2-1.2.0.0": "Rewrote everything. Everything is now configurable.\nAdded a configuration GUI.",
-		"1.12.2-1.1.1.1": "Fix typo.",
+		"1.12.2-1.1.1.1": "Fixed typo.",
 		"1.12.2-1.1.1.0": "Death chest coordinates are now sent in chat to the player who died.",
 		"1.12.2-1.1.0.0": "Fixed Cubic Chunks and Wearable Backpacks compatibility.",
 		"1.12.2-1.0.3.0": "The death chest no longer drops by default. This can be changed in the config.",
@@ -11,8 +12,9 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12.1": {
+		"1.12.2-1.3.0.0": "Added more configuration options.\nFixed death chest save data.\nImplemented death chest protection.",
 		"1.12.2-1.2.0.0": "Rewrote everything. Everything is now configurable.\nAdded a configuration GUI.",
-		"1.12.2-1.1.1.1": "Fix typo.",
+		"1.12.2-1.1.1.1": "Fixed typo.",
 		"1.12.2-1.1.1.0": "Death chest coordinates are now sent in chat to the player who died.",
 		"1.12.2-1.1.0.0": "Fixed Cubic Chunks and Wearable Backpacks compatibility.",
 		"1.12.2-1.0.3.0": "The death chest no longer drops by default. This can be changed in the config.",
@@ -21,8 +23,9 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12": {
+		"1.12.2-1.3.0.0": "Added more configuration options.\nFixed death chest save data.\nImplemented death chest protection.",
 		"1.12.2-1.2.0.0": "Rewrote everything. Everything is now configurable.\nAdded a configuration GUI.",
-		"1.12.2-1.1.1.1": "Fix typo.",
+		"1.12.2-1.1.1.1": "Fixed typo.",
 		"1.12.2-1.1.1.0": "Death chest coordinates are now sent in chat to the player who died.",
 		"1.12.2-1.1.0.0": "Fixed Cubic Chunks and Wearable Backpacks compatibility.",
 		"1.12.2-1.0.3.0": "The death chest no longer drops by default. This can be changed in the config.",
@@ -31,11 +34,11 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"promos": {
-		"1.12.2-latest": "1.12.2-1.2.0.0",
-		"1.12.2-recommended": "1.12.2-1.2.0.0",
-		"1.12.1-latest": "1.12.2-1.2.0.0",
-		"1.12.1-recommended": "1.12.2-1.2.0.0",
-		"1.12-latest": "1.12.2-1.2.0.0",
-		"1.12-recommended": "1.12.2-1.2.0.0"
+		"1.12.2-latest": "1.12.2-1.3.0.0",
+		"1.12.2-recommended": "1.12.2-1.3.0.0",
+		"1.12.1-latest": "1.12.2-1.3.0.0",
+		"1.12.1-recommended": "1.12.2-1.3.0.0",
+		"1.12-latest": "1.12.2-1.3.0.0",
+		"1.12-recommended": "1.12.2-1.3.0.0"
 	}
 }

@@ -2,7 +2,6 @@ package com.therandomlabs.vanilladeathchest;
 
 import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.base.VDCConfig;
-import net.minecraft.command.server.CommandSetBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.management.UserListOpsEntry;
 

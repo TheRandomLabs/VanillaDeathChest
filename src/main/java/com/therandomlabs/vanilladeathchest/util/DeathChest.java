@@ -1,7 +1,7 @@
-package com.therandomlabs.vanilladeathchest;
+package com.therandomlabs.vanilladeathchest.util;
 
 import java.util.UUID;
-import com.therandomlabs.vanilladeathchest.base.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.management.UserListOpsEntry;
 

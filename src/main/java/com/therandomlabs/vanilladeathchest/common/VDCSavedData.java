@@ -1,9 +1,10 @@
-package com.therandomlabs.vanilladeathchest;
+package com.therandomlabs.vanilladeathchest.common;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import com.therandomlabs.vanilladeathchest.base.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.util.DeathChest;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

@@ -1,6 +1,6 @@
-package com.therandomlabs.vanilladeathchest.base;
+package com.therandomlabs.vanilladeathchest;
 
-import com.therandomlabs.vanilladeathchest.CommandVDCReload;
+import com.therandomlabs.vanilladeathchest.common.CommandVDCReload;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -25,8 +25,8 @@ public final class VanillaDeathChest {
 
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
-	@SidedProxy(clientSide = "com.therandomlabs.vanilladeathchest.base.ClientProxy",
-			serverSide = "com.therandomlabs.vanilladeathchest.base.CommonProxy")
+	@SidedProxy(clientSide = "com.therandomlabs.vanilladeathchest.ClientProxy",
+			serverSide = "com.therandomlabs.vanilladeathchest.CommonProxy")
 	public static CommonProxy proxy;
 
 	@Mod.EventHandler

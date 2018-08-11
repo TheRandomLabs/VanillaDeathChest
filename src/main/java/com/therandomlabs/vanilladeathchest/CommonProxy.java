@@ -1,4 +1,4 @@
-package com.therandomlabs.vanilladeathchest.base;
+package com.therandomlabs.vanilladeathchest;
 
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 

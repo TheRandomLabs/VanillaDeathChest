@@ -1,4 +1,4 @@
-package com.therandomlabs.vanilladeathchest;
+package com.therandomlabs.vanilladeathchest.util;
 
 import java.lang.ref.WeakReference;
 import net.minecraft.entity.player.EntityPlayer;

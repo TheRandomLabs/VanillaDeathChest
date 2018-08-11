@@ -1,6 +1,6 @@
-package com.therandomlabs.vanilladeathchest;
+package com.therandomlabs.vanilladeathchest.common;
 
-import com.therandomlabs.vanilladeathchest.base.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

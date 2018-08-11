@@ -1,4 +1,4 @@
-package com.therandomlabs.vanilladeathchest;
+package com.therandomlabs.vanilladeathchest.common;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.UUID;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
-import com.therandomlabs.vanilladeathchest.base.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.util.Callback;
+import com.therandomlabs.vanilladeathchest.util.DeathChest;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -19,7 +21,7 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import static com.therandomlabs.vanilladeathchest.base.VanillaDeathChest.LOGGER;
+import static com.therandomlabs.vanilladeathchest.VanillaDeathChest.LOGGER;
 
 public final class DeathChestHandler {
 	public static final Comparator<BlockPos> SEARCH_COMPARATOR = (pos1, pos2) -> {

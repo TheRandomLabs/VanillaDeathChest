@@ -1,4 +1,4 @@
-package com.therandomlabs.vanilladeathchest;
+package com.therandomlabs.vanilladeathchest.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import com.google.common.collect.Queues;
-import com.therandomlabs.vanilladeathchest.base.VDCConfig;
-import com.therandomlabs.vanilladeathchest.base.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.util.Callback;
+import com.therandomlabs.vanilladeathchest.util.DeathChest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

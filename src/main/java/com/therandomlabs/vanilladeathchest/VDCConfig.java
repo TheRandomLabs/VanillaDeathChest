@@ -1,4 +1,4 @@
-package com.therandomlabs.vanilladeathchest.base;
+package com.therandomlabs.vanilladeathchest;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

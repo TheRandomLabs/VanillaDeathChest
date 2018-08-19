@@ -1,0 +1,4 @@
+public field axo a Ljava/util/TreeMap
+public field net/minecraft/world/GameRules field_196232_a Ljava/util/TreeMap # DEFINITIONS
+public field aob f Ljava/util/List
+public field net/minecraft/entity/player/InventoryPlayer allInventories Ljava/util/List

@@ -1,0 +1,10 @@
+{
+	"id": "vanilladeathchest",
+	"name": "VanillaDeathChest",
+	"authors": [
+		"TheRandomLabs"
+	],
+	"listeners": [
+		"com.therandomlabs.vanilladeathchest.VanillaDeathChest"
+	]
+}

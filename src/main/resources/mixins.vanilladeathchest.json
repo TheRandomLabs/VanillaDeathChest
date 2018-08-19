@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"minVersion": "0.7.7",
+	"compatibilityLevel": "JAVA_8",
+	"target": "@env(DEFAULT)",
+	"package": "com.therandomlabs.vanilladeathchest.mixin",
+	"refmap": "mixins.vanilladeathchest.refmap.json",
+	"mixins": [
+		"MixinInventoryPlayer",
+		"MixinPlayerInteractionManager"
+	],
+	"client": []
+}

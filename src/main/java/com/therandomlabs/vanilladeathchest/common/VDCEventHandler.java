@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
@@ -34,7 +35,7 @@ public class VDCEventHandler {
 	@GameRegistry.ObjectHolder("minecraft:chest")
 	public static final Item CHEST = null;
 
-	private static final Map<Integer, Queue<Callback>> CALLBACKS = new HashMap<>();
+	private static final Map<DimensionType, Queue<Callback>> CALLBACKS = new HashMap<>();
 
 	@SubscribeEvent
 	public static void onWorldLoad(WorldEvent.Load event) {
@@ -112,12 +113,12 @@ public class VDCEventHandler {
 
 	private static Queue<Callback> getCallbacks(World world) {
 		synchronized(CALLBACKS) {
-			final int id = world.provider.getDimension();
-			Queue<Callback> callbacks = CALLBACKS.get(id);
+			final DimensionType type = world.provider.getDimensionType();
+			Queue<Callback> callbacks = CALLBACKS.get(type);
 
 			if(callbacks == null) {
 				callbacks = Queues.newConcurrentLinkedQueue();
-				CALLBACKS.put(id, callbacks);
+				CALLBACKS.put(type, callbacks);
 			}
 
 			return callbacks;

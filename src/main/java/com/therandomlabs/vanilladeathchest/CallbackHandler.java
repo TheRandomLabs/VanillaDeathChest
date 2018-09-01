@@ -19,6 +19,8 @@ public final class CallbackHandler implements ServerTickable {
 		for(World world : server.worlds) {
 			CallbackHandler.worldTick(world);
 		}
+
+		DeathChestHandler.JUST_REMOVED.clear();
 	}
 
 	public static void worldTick(World world) {

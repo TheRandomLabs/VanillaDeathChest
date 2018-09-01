@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.UUID;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
@@ -95,10 +97,17 @@ public final class DeathChestHandler {
 			final BlockPos pos = findLocation(world, player);
 			final BlockPos east = pos.east();
 
-			world.setBlockState(pos, Blocks.CHEST.getDefaultState());
-
 			if(useDoubleChest) {
-				world.setBlockState(east, Blocks.CHEST.getDefaultState());
+				world.setBlockState(pos, Blocks.CHEST.getDefaultState().withProperty(
+						BlockChest.TYPE,
+						ChestType.LEFT
+				));
+				world.setBlockState(east, Blocks.CHEST.getDefaultState().withProperty(
+						BlockChest.TYPE,
+						ChestType.RIGHT
+				));
+			} else {
+				world.setBlockState(pos, Blocks.CHEST.getDefaultState());
 			}
 
 			final TileEntity tile = world.getTileEntity(pos);
@@ -177,6 +186,8 @@ public final class DeathChestHandler {
 		}
 	}
 
+	public static final List<BlockPos> JUST_REMOVED = new ArrayList<>();
+
 	private static SearchOrder searchOrder;
 
 	private DeathChestHandler() {}
@@ -246,8 +257,12 @@ public final class DeathChestHandler {
 
 	public static void removeDeathChest(World world, BlockPos pos) {
 		final Map<BlockPos, DeathChest> deathChests = VDCSavedData.get(world).getDeathChests();
+
 		deathChests.remove(pos);
 		deathChests.remove(pos.east());
+
+		JUST_REMOVED.add(pos);
+		JUST_REMOVED.add(pos.east());
 	}
 
 	public static void onPlayerDeath(World world, EntityPlayer player, List<EntityItem> drops) {

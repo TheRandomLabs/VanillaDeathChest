@@ -28,7 +28,7 @@ public class MixinPlayerInteractionManager {
 		}
 	}
 
-	@Inject(method = "tryHarvestBlock", at = @At("HEAD"))
+	@Inject(method = "tryHarvestBlock", at = @At("HEAD"), cancellable = true)
 	private void tryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> ci) {
 		final PlayerInteractionManager manager = (PlayerInteractionManager) (Object) this;
 

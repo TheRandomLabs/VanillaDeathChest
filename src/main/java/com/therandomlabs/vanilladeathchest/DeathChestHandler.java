@@ -135,7 +135,7 @@ public final class DeathChestHandler {
 					VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
 			)));
 
-			TileEntityChest chest = (TileEntityChest) tile;
+			TileEntityChest chest = (TileEntityChest) (useDoubleChest ? tile2 : tile);
 
 			for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 				chest.setInventorySlotContents(i, drops.get(0).getItem());
@@ -143,7 +143,7 @@ public final class DeathChestHandler {
 			}
 
 			if(useDoubleChest) {
-				chest = (TileEntityChest) tile2;
+				chest = (TileEntityChest) tile;
 
 				for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 					chest.setInventorySlotContents(i, drops.get(0).getItem());

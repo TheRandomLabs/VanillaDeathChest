@@ -1,4 +1,4 @@
-package com.therandomlabs.vanilladeathchest.util;
+package com.therandomlabs.vanilladeathchest;
 
 import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.VDCConfig;

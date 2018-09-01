@@ -6,6 +6,7 @@
 	"package": "com.therandomlabs.vanilladeathchest.mixin",
 	"refmap": "mixins.vanilladeathchest.refmap.json",
 	"mixins": [
+		"MixinBlock",
 		"MixinInventoryPlayer",
 		"MixinPlayerInteractionManager"
 	],

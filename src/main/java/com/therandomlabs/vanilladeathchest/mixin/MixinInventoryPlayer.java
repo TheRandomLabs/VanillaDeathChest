@@ -3,19 +3,23 @@ package com.therandomlabs.vanilladeathchest.mixin;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import com.therandomlabs.vanilladeathchest.DeathChestHandler;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.ReportedException;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(InventoryPlayer.class)
-public abstract class MixinInventoryPlayer {
-	public static final Field ALL_INVENTORIES =
+public class MixinInventoryPlayer {
+	private static final Field ALL_INVENTORIES =
 			VanillaDeathChest.findField(InventoryPlayer.class, "allInventories", "f");
 
 	@SuppressWarnings("unchecked")
@@ -38,39 +42,33 @@ public abstract class MixinInventoryPlayer {
 				final ItemStack stack = stacks.get(i);
 
 				if(!stack.isEmpty()) {
-					final EntityItem item = inventory.player.dropItem(stack, true, false);
-
-					world.removeEntity(item);
-					item.isDead = false;
-
+					final EntityItem item = dropItem(world, inventory.player, stack);
 					drops.add(item);
-
 					stacks.set(i, ItemStack.EMPTY);
 				}
 			}
 		}
 
 		if(!drops.isEmpty()) {
-			VanillaDeathChest.onDeath(inventory.player, drops);
+			DeathChestHandler.onPlayerDeath(world, inventory.player, drops);
 		}
 	}
 
-	/*
-	public static void onBlockDrop(BlockEvent.HarvestDropsEvent event) {
-		final World world = event.getWorld();
+	private static EntityItem dropItem(World world, EntityPlayer player, ItemStack stack) {
+		final double y = player.posY - 0.30000001192092896 + player.getEyeHeight();
+		final EntityItem item = new EntityItem(world, player.posX, y, player.posZ, stack);
 
-		if(world.isRemote || DeathChestHandler.getDeathChest(world, event.getPos()) == null ||
-				VDCConfig.misc.dropDeathChests) {
-			return;
-		}
+		item.setPickupDelay(40);
 
-		final List<ItemStack> drops = event.getDrops();
+		final Random rng = player.getRNG();
 
-		for(ItemStack stack : drops) {
-			if(stack.getItem() == CHEST && stack.getCount() == 1 && stack.getMetadata() == 0) {
-				drops.remove(stack);
-				break;
-			}
-		}
-	}*/
+		final float value1 = rng.nextFloat() * 0.5F;
+		final float value2 = rng.nextFloat() * 6.2831855F;
+
+		item.motionX = -MathHelper.sin(value2) * value1;
+		item.motionY = 0.20000000298023224;
+		item.motionZ = MathHelper.cos(value2) * value1;
+
+		return item;
+	}
 }

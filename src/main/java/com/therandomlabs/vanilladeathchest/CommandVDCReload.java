@@ -1,4 +1,4 @@
-package com.therandomlabs.vanilladeathchest.common;
+package com.therandomlabs.vanilladeathchest;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -10,8 +10,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 public class CommandVDCReload {
 	public static void register(CommandDispatcher<CommandSource> dispatcher) {
-		dispatcher.register(Commands.literalArgument("vdcreload").
-				requires(source -> source.func_197034_c(4)).
+		dispatcher.register(Commands.literal("vdcreload").
+				requires(source -> source.hasPermissionLevel(4)).
 				executes(context -> execute(context.getSource())));
 	}
 

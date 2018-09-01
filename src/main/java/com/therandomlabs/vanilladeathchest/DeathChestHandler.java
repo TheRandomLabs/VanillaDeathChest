@@ -1,16 +1,14 @@
-package com.therandomlabs.vanilladeathchest.common;
+package com.therandomlabs.vanilladeathchest;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
-import com.therandomlabs.vanilladeathchest.VDCConfig;
-import com.therandomlabs.vanilladeathchest.util.Callback;
-import com.therandomlabs.vanilladeathchest.util.DeathChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +21,9 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import static com.therandomlabs.vanilladeathchest.VanillaDeathChest.LOGGER;
 
 public final class DeathChestHandler {
@@ -198,7 +198,7 @@ public final class DeathChestHandler {
 		final IBlockState state2 = world.getBlockState(pos.up());
 
 		final BlockItemUseContext context = new BlockItemUseContext(new ItemUseContext(
-				null,
+				player,
 				ItemStack.EMPTY,
 				pos,
 				EnumFacing.DOWN,
@@ -248,6 +248,39 @@ public final class DeathChestHandler {
 		final Map<BlockPos, DeathChest> deathChests = VDCSavedData.get(world).getDeathChests();
 		deathChests.remove(pos);
 		deathChests.remove(pos.east());
+	}
+
+	public static void onPlayerDeath(World world, EntityPlayer player, List<EntityItem> drops) {
+		final GameRules gameRules = world.getGameRules();
+
+		if(gameRules.getBoolean("keepInventory")) {
+			return;
+		}
+
+		if(!(VDCConfig.misc.gameruleName.isEmpty() ||
+				gameRules.getBoolean(VDCConfig.misc.gameruleName))) {
+			return;
+		}
+
+		final Queue<Callback> callbacks = CallbackHandler.getCallbacks(world);
+		callbacks.add(new DeathChestHandler.DCCallback(world, player, drops));
+	}
+
+	public static boolean onBlockInteract(World world, EntityPlayer player, BlockPos pos,
+			CallbackInfoReturnable<?> info) {
+		final DeathChest deathChest = DeathChestHandler.getDeathChest(world, pos);
+
+		if(deathChest == null) {
+			return false;
+		}
+
+		if(deathChest.canInteract(player)) {
+			return true;
+		}
+
+		info.cancel();
+
+		return false;
 	}
 
 	private static int sumCoordinates(BlockPos pos) {

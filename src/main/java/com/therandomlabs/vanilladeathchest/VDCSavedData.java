@@ -1,10 +1,8 @@
-package com.therandomlabs.vanilladeathchest.common;
+package com.therandomlabs.vanilladeathchest;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import com.therandomlabs.vanilladeathchest.util.DeathChest;
 import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -75,7 +73,7 @@ public class VDCSavedData extends WorldSavedData {
 
 	public static VDCSavedData get(World world) {
 		final WorldSavedDataStorage storage = world.getMapStorage();
-		VDCSavedData instance = storage.getOrCreate(VDCSavedData::new, VanillaDeathChest.MODID);
+		VDCSavedData instance = storage.getOrLoadData(VDCSavedData::new, VanillaDeathChest.MODID);
 
 		if(instance == null) {
 			instance = new VDCSavedData();

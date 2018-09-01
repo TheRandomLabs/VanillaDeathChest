@@ -5,6 +5,7 @@
 		"TheRandomLabs"
 	],
 	"listeners": [
+		"com.therandomlabs.vanilladeathchest.CallbackHandler",
 		"com.therandomlabs.vanilladeathchest.VanillaDeathChest"
 	]
 }

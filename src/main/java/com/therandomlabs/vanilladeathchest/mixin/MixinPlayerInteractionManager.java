@@ -1,10 +1,10 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
-import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import com.therandomlabs.vanilladeathchest.common.DeathChestHandler;
+import com.therandomlabs.vanilladeathchest.DeathChestHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerInteractionManager;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -12,31 +12,32 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerInteractionManager.class)
-public abstract class MixinPlayerInteractionManager {
-	@Inject(method = "processRightClickBlock", at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/entity/player/EntityPlayer;getHeldItemMainhand()" +
-					"Lnet/minecraft/item/ItemStack",
-			shift = At.Shift.BY,
-			by = -1
-	))
-	public void onRightClickBlock(CallbackInfo info, EntityPlayer player, World world,
+@SuppressWarnings("unused")
+@Mixin(value = PlayerInteractionManager.class)
+public class MixinPlayerInteractionManager {
+	@Inject(method = "processRightClickBlock", at = @At("HEAD"), cancellable = true)
+	private void processRightClickBlock(EntityPlayer player, World world,
 			ItemStack stack, EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY,
-			float hitZ) {
-		VanillaDeathChest.onBlockInteract(info, player, world, pos);
+			float hitZ, CallbackInfoReturnable<EnumActionResult> ci) {
+		DeathChestHandler.onBlockInteract(world, player, pos, ci);
+
+		if(ci.isCancelled()) {
+			ci.setReturnValue(EnumActionResult.PASS);
+		}
 	}
 
-	@Inject(method = "tryHarvestBlock", at = @At(
-			value = "HEAD"
-	))
-	public void onHarvestBlock(CallbackInfo info, BlockPos pos) {
+	@Inject(method = "tryHarvestBlock", at = @At("HEAD"))
+	private void tryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> ci) {
 		final PlayerInteractionManager manager = (PlayerInteractionManager) (Object) this;
 
-		if(VanillaDeathChest.onBlockInteract(info, manager.player, manager.world, pos)) {
+		if(DeathChestHandler.onBlockInteract(manager.world, manager.player, pos, ci)) {
 			DeathChestHandler.removeDeathChest(manager.world, pos);
+		}
+
+		if(ci.isCancelled()) {
+			ci.setReturnValue(false);
 		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.listener.DeathChestRemoveListener;
 import com.therandomlabs.vanilladeathchest.api.listener.GetBlockDropListener;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
 import net.minecraft.server.MinecraftServer;
@@ -30,7 +31,7 @@ public class DeathChestDropHandler implements
 
 	@Override
 	public IItemProvider getBlockDrop(IBlockState state, World world, BlockPos pos, int fortune) {
-		return justRemoved.contains(pos) ? Items.AIR : DEFAULT;
+		return !VDCConfig.misc.dropDeathChests && justRemoved.contains(pos) ? Items.AIR : DEFAULT;
 	}
 
 	@Override

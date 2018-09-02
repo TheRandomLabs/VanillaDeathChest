@@ -5,6 +5,7 @@ import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.api.listener.BlockHarvestListener;
 import com.therandomlabs.vanilladeathchest.api.listener.RightClickBlockListener;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -20,8 +21,8 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 		if(result == EnumActionResult.SUCCESS) {
 			final DeathChest chest = DeathChestManager.removeDeathChest(world, pos);
 
-			if(chest.isDoubleChest()) {
-				world.destroyBlock(pos.east(), true);
+			if(chest.isDoubleChest() && chest.getPos().equals(pos)) {
+				((EntityPlayerMP) player).interactionManager.tryHarvestBlock(pos.east());
 			}
 		}
 

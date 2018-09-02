@@ -18,7 +18,11 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 		final EnumActionResult result = onBlockInteract(world, player, pos);
 
 		if(result == EnumActionResult.SUCCESS) {
-			DeathChestManager.removeDeathChest(world, pos);
+			final DeathChest chest = DeathChestManager.removeDeathChest(world, pos);
+
+			if(chest.isDoubleChest()) {
+				world.destroyBlock(pos.east(), true);
+			}
 		}
 
 		return result;

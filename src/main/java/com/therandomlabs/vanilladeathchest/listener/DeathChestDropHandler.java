@@ -2,7 +2,6 @@ package com.therandomlabs.vanilladeathchest.listener;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.listener.DeathChestRemoveListener;
 import com.therandomlabs.vanilladeathchest.api.listener.GetBlockDropListener;
@@ -19,8 +18,10 @@ public class DeathChestDropHandler implements
 	private static final List<BlockPos> justRemoved = new ArrayList<>();
 
 	@Override
-	public void onDeathChestRemove(DeathChest chest, BlockPos west, @Nullable BlockPos east) {
-		justRemoved.add(west);
+	public void onDeathChestRemove(DeathChest chest, BlockPos west, BlockPos east) {
+		if(west != null) {
+			justRemoved.add(west);
+		}
 
 		if(east != null) {
 			justRemoved.add(east);

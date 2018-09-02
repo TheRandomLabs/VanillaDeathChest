@@ -19,7 +19,7 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 	@Override
 	public EnumActionResult onBlockHarvest(World world, EntityPlayerMP player, BlockPos pos) {
 		if(harvesting == pos) {
-			return EnumActionResult.PASS;
+			return EnumActionResult.SUCCESS;
 		}
 
 		final EnumActionResult result = onBlockInteract(world, player, pos);

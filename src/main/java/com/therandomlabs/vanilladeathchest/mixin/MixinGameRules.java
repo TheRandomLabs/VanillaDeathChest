@@ -18,7 +18,7 @@ public class MixinGameRules {
 	private static TreeMap<String, GameRules.ValueDefinition> DEFINITIONS;
 
 	@Inject(method = "<clinit>", at = @At("TAIL"))
-	public void init(CallbackInfo callback) {
+	private static void init(CallbackInfo callback) {
 		for(GameRuleDefinitionModifier listener :
 				RiftLoader.instance.getListeners(GameRuleDefinitionModifier.class)) {
 			listener.modify(DEFINITIONS);

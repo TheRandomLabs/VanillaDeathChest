@@ -15,14 +15,14 @@ import net.minecraft.world.World;
 
 public class DeathChestInteractionHandler implements BlockHarvestListener, RightClickBlockListener {
 	@Override
-	public EnumActionResult onBlockHarvest(World world, EntityPlayer player, BlockPos pos) {
+	public EnumActionResult onBlockHarvest(World world, EntityPlayerMP player, BlockPos pos) {
 		final EnumActionResult result = onBlockInteract(world, player, pos);
 
 		if(result == EnumActionResult.SUCCESS) {
 			final DeathChest chest = DeathChestManager.removeDeathChest(world, pos);
 
 			if(chest.isDoubleChest() && chest.getPos().equals(pos)) {
-				((EntityPlayerMP) player).interactionManager.tryHarvestBlock(pos.east());
+				player.interactionManager.tryHarvestBlock(pos.east());
 			}
 		}
 
@@ -30,7 +30,7 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 	}
 
 	@Override
-	public EnumActionResult onRightClickBlock(World world, EntityPlayer player, ItemStack stack,
+	public EnumActionResult onRightClickBlock(World world, EntityPlayerMP player, ItemStack stack,
 			EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		return onBlockInteract(world, player, pos);
 	}

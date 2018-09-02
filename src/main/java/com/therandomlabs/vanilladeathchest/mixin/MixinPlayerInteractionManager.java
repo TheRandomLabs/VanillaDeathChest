@@ -32,8 +32,17 @@ public class MixinPlayerInteractionManager {
 			float hitZ, CallbackInfoReturnable<EnumActionResult> callback) {
 		for(RightClickBlockListener listener :
 				RiftLoader.instance.getListeners(RightClickBlockListener.class)) {
-			final EnumActionResult result = listener.onRightClickBlock(world, player, stack, hand,
-					pos, facing, hitX, hitY, hitZ);
+			final EnumActionResult result = listener.onRightClickBlock(
+					world,
+					(EntityPlayerMP) player,
+					stack,
+					hand,
+					pos,
+					facing,
+					hitX,
+					hitY,
+					hitZ
+			);
 
 			if(result == EnumActionResult.PASS) {
 				callback.setReturnValue(EnumActionResult.PASS);

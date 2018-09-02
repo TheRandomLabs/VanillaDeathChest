@@ -1,4 +1,4 @@
-package com.therandomlabs.vanilladeathchest.common;
+package com.therandomlabs.vanilladeathchest.command;
 
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import net.minecraft.command.CommandBase;

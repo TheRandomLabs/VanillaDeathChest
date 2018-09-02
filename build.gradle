@@ -20,10 +20,6 @@ archivesBaseName = "vanilladeathchest"
 
 sourceCompatibility = targetCompatibility = "1.8"
 
-compileJava {
-	sourceCompatibility = targetCompatibility = "1.8"
-}
-
 minecraft {
 	version = "1.12.2-latest"
 	runDir = "run"

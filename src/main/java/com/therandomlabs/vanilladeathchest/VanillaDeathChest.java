@@ -1,6 +1,6 @@
 package com.therandomlabs.vanilladeathchest;
 
-import com.therandomlabs.vanilladeathchest.common.CommandVDCReload;
+import com.therandomlabs.vanilladeathchest.command.CommandVDCReload;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

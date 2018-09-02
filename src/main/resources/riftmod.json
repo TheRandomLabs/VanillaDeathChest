@@ -5,7 +5,11 @@
 		"TheRandomLabs"
 	],
 	"listeners": [
-		"com.therandomlabs.vanilladeathchest.CallbackHandler",
-		"com.therandomlabs.vanilladeathchest.VanillaDeathChest"
+		"com.therandomlabs.vanilladeathchest.VanillaDeathChest",
+		"com.therandomlabs.vanilladeathchest.listener.DeathChestDropHandler",
+		"com.therandomlabs.vanilladeathchest.listener.DeathChestInteractionHandler",
+		"com.therandomlabs.vanilladeathchest.listener.DeathChestPlaceHandler",
+		"com.therandomlabs.vanilladeathchest.listener.VDCCommandRegistrar",
+		"com.therandomlabs.vanilladeathchest.listener.VDCGameRuleAdder"
 	]
 }

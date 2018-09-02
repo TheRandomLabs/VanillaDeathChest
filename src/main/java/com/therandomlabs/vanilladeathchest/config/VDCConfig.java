@@ -1,4 +1,4 @@
-package com.therandomlabs.vanilladeathchest;
+package com.therandomlabs.vanilladeathchest.config;
 
 public class VDCConfig {
 	public static class Config {

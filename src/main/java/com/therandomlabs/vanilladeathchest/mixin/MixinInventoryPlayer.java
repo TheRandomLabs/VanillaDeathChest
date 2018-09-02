@@ -1,40 +1,35 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import com.therandomlabs.vanilladeathchest.DeathChestHandler;
-import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.ReportedException;
+import com.therandomlabs.vanilladeathchest.api.listener.PlayerDropAllItemsListener;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import org.dimdev.riftloader.RiftLoader;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(InventoryPlayer.class)
 public class MixinInventoryPlayer {
-	private static final Field ALL_INVENTORIES =
-			VanillaDeathChest.findField(InventoryPlayer.class, "allInventories", "f");
+	@Shadow
+	@Final
+	private List<NonNullList<ItemStack>> allInventories;
 
-	@SuppressWarnings("unchecked")
+	@Shadow
+	private EntityPlayer player;
+
 	@Overwrite
 	public void dropAllItems() {
-		final List<List<ItemStack>> allInventories;
-
-		try {
-			allInventories = (List<List<ItemStack>>) ALL_INVENTORIES.get(this);
-		} catch(Exception ex) {
-			throw new ReportedException(new CrashReport("Failed to get allInventories", ex));
-		}
-
-		final InventoryPlayer inventory = (InventoryPlayer) (Object) this;
-		final World world = inventory.player.getEntityWorld();
+		final World world = player.getEntityWorld();
 		final List<EntityItem> drops = new ArrayList<>();
 
 		for(List<ItemStack> stacks : allInventories) {
@@ -42,15 +37,26 @@ public class MixinInventoryPlayer {
 				final ItemStack stack = stacks.get(i);
 
 				if(!stack.isEmpty()) {
-					final EntityItem item = dropItem(world, inventory.player, stack);
+					final EntityItem item = dropItem(world, player, stack);
 					drops.add(item);
 					stacks.set(i, ItemStack.EMPTY);
 				}
 			}
 		}
 
+		for(PlayerDropAllItemsListener listener :
+				RiftLoader.instance.getListeners(PlayerDropAllItemsListener.class)) {
+			final EnumActionResult result = listener.onPlayerDropAllItems(world, player, drops);
+
+			if(result == EnumActionResult.PASS) {
+				return;
+			}
+		}
+
 		if(!drops.isEmpty()) {
-			DeathChestHandler.onPlayerDeath(world, inventory.player, drops);
+			for(EntityItem drop : drops) {
+				world.spawnEntity(drop);
+			}
 		}
 	}
 

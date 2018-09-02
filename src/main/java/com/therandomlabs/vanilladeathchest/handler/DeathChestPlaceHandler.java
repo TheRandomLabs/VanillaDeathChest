@@ -9,6 +9,7 @@ import com.google.common.collect.Queues;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.GameRules;
@@ -25,6 +26,12 @@ public final class DeathChestPlaceHandler {
 
 	@SubscribeEvent
 	public static void onPlayerDrops(PlayerDropsEvent event) {
+		final List<EntityItem> drops = event.getDrops();
+
+		if(drops.isEmpty()) {
+			return;
+		}
+
 		final EntityPlayer player = event.getEntityPlayer();
 
 		if(player instanceof FakePlayer) {
@@ -32,11 +39,6 @@ public final class DeathChestPlaceHandler {
 		}
 
 		final World world = player.getEntityWorld();
-
-		if(world.isRemote) {
-			return;
-		}
-
 		final GameRules gameRules = world.getGameRules();
 
 		if(gameRules.getBoolean("keepInventory")) {
@@ -49,7 +51,7 @@ public final class DeathChestPlaceHandler {
 		}
 
 		final Queue<DeathChestPlacer> placers = getPlacers(world);
-		placers.add(new DeathChestPlacer(world, player, event.getDrops()));
+		placers.add(new DeathChestPlacer(world, player, drops));
 
 		event.setCanceled(true);
 	}

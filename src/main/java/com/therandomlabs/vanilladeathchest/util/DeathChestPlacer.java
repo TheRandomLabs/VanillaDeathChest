@@ -70,7 +70,7 @@ public final class DeathChestPlacer {
 		world.setBlockState(pos, Blocks.CHEST.getDefaultState());
 
 		if(useDoubleChest) {
-			world.setBlockState(pos, Blocks.CHEST.getDefaultState());
+			world.setBlockState(east, Blocks.CHEST.getDefaultState());
 		}
 
 		final TileEntity tile = world.getTileEntity(pos);
@@ -94,7 +94,7 @@ public final class DeathChestPlacer {
 				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
 		)));
 
-		TileEntityChest chest = (TileEntityChest) (useDoubleChest ? tile2 : tile);
+		TileEntityChest chest = (TileEntityChest) tile;
 
 		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 			chest.setInventorySlotContents(i, drops.get(0).getItem());
@@ -102,7 +102,7 @@ public final class DeathChestPlacer {
 		}
 
 		if(useDoubleChest) {
-			chest = (TileEntityChest) tile;
+			chest = (TileEntityChest) tile2;
 
 			for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 				chest.setInventorySlotContents(i, drops.get(0).getItem());

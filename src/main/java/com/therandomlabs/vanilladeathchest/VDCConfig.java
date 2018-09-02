@@ -24,14 +24,14 @@ public class VDCConfig {
 				"Enable for infinite chests.")
 		public boolean dropDeathChests;
 
-		@Config.LangKey("vanilladeathchest.config.misc.gameruleDefaultValue")
+		@Config.LangKey("vanilladeathchest.config.misc.gameRuleDefaultValue")
 		@Config.Comment("The default value of the gamerule.")
-		public boolean gameruleDefaultValue = true;
+		public boolean gameRuleDefaultValue = true;
 
 		@Config.LangKey("vanilladeathchest.config.misc.gameruleName")
 		@Config.Comment("The name of the gamerule that specifies whether death chests should " +
 				"spawn. Set this to an empty string to disable the gamerule.")
-		public String gameruleName = "spawnDeathChests";
+		public String gameRuleName = "spawnDeathChests";
 
 		@Config.RequiresWorldRestart
 		@Config.LangKey("vanilladeathchest.config.misc.vdcreload")

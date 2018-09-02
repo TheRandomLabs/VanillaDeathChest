@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public final class VDCGameRuleAdder {
 	@SubscribeEvent
 	public static void onWorldLoad(WorldEvent.Load event) {
-		if(VDCConfig.misc.gameruleName.isEmpty()) {
+		if(VDCConfig.misc.gameRuleName.isEmpty()) {
 			return;
 		}
 
@@ -24,9 +24,9 @@ public final class VDCGameRuleAdder {
 
 		final GameRules gamerules = world.getGameRules();
 
-		if(!gamerules.hasRule(VDCConfig.misc.gameruleName)) {
-			gamerules.setOrCreateGameRule(VDCConfig.misc.gameruleName,
-					Boolean.toString(VDCConfig.misc.gameruleDefaultValue));
+		if(!gamerules.hasRule(VDCConfig.misc.gameRuleName)) {
+			gamerules.setOrCreateGameRule(VDCConfig.misc.gameRuleName,
+					Boolean.toString(VDCConfig.misc.gameRuleDefaultValue));
 		}
 	}
 }

@@ -30,8 +30,8 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsListener, Serve
 			return EnumActionResult.SUCCESS;
 		}
 
-		if(!(VDCConfig.misc.gameruleName.isEmpty() ||
-				gameRules.getBoolean(VDCConfig.misc.gameruleName))) {
+		if(!(VDCConfig.misc.gameRuleName.isEmpty() ||
+				gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {
 			return EnumActionResult.SUCCESS;
 		}
 

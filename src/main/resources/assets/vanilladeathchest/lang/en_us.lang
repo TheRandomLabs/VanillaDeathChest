@@ -8,7 +8,7 @@ vanilladeathchest.config.misc.vdcreloadclient=/vdcreloadclient
 
 vanilladeathchest.config.protection=Protection
 vanilladeathchest.config.protection.tooltip=Options related to death chest protection.
-vanilladeathchest.config.protection.bypassifCreative=Bypass if creative mode
+vanilladeathchest.config.protection.bypassIfCreative=Bypass if creative mode
 vanilladeathchest.config.protection.bypassPermissionLevel=Bypass permission level
 vanilladeathchest.config.protection.enabled=Enabled
 vanilladeathchest.config.protection.period=Protection period in ticks

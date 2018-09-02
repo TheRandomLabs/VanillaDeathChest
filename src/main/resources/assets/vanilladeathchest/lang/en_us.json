@@ -1,25 +1,4 @@
 {
-	"vanilladeathchest.config.misc": "Miscellaneous",
-	"vanilladeathchest.config.misc.tooltip": "Options that don't fit into any other categories.",
-	"vanilladeathchest.config.misc.dropDeathChests": "Drop death chests",
-	"vanilladeathchest.config.misc.gameruleDefaultValue": "Gamerule default value",
-	"vanilladeathchest.config.misc.gameruleName": "Gamerule name",
-	"vanilladeathchest.config.misc.vdcreload": "/vdcreload",
-	"vanilladeathchest.config.misc.vdcreloadclient": "/vdcreloadclient",
-
-	"vanilladeathchest.config.protection": "Protection",
-	"vanilladeathchest.config.protection.tooltip": "Options related to death chest protection.",
-	"vanilladeathchest.config.protection.bypassifCreative": "Bypass if creative mode",
-	"vanilladeathchest.config.protection.bypassPermissionLevel": "Bypass permission level",
-	"vanilladeathchest.config.protection.enabled": "Enabled",
-	"vanilladeathchest.config.protection.period": "Protection period in ticks",
-
-	"vanilladeathchest.config.spawning": "Spawning",
-	"vanilladeathchest.config.spawning.tooltip": "Options related to death chest spawning.",
-	"vanilladeathchest.config.spawning.chatMessage": "Chat message",
-	"vanilladeathchest.config.spawning.locationSearchRadius": "Location search radius",
-	"vanilladeathchest.config.spawning.useDoubleChests": "Use double chests",
-
 	"commands.vdcreloadclient.usage": "/vdcreloadclient",
 	"commands.vdcreloadclient.success": "VanillaDeathChest client-sided configuration reloaded!"
 }

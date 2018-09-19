@@ -18,27 +18,38 @@ import net.minecraft.world.World;
 public class DeathChestLocationFinder {
 	private static class SearchOrder implements Iterable<BlockPos> {
 		public final int size;
-		private final List<BlockPos> coordinates;
+		private List<BlockPos> coordinates;
 
 		public SearchOrder(int size) {
 			this.size = size;
 
-			final List<BlockPos> coordinates = new ArrayList<>();
+			coordinates = new ArrayList<>();
 
-			for(int x = -size; x <= size; x++) {
-				for(int y = -size; y <= size; y++) {
-					for(int z = -size; z <= size; z++) {
-						coordinates.add(new BlockPos(x, y, z));
-					}
-				}
+			for(int x = 0; x <= size; x++) {
+				add(x);
+				add(-x);
 			}
 
-			this.coordinates = ImmutableList.copyOf(coordinates);
+			coordinates = ImmutableList.copyOf(coordinates);
 		}
 
 		@Override
 		public Iterator<BlockPos> iterator() {
 			return coordinates.iterator();
+		}
+
+		private void add(int x) {
+			for(int y = 0; y <= size; y++) {
+				add(x, y);
+				add(x, -y);
+			}
+		}
+
+		private void add(int x, int y) {
+			for(int z = 0; z <= size; z++) {
+				coordinates.add(new BlockPos(x, y, z));
+				coordinates.add(new BlockPos(x, y, -z));
+			}
 		}
 	}
 

@@ -21,7 +21,7 @@ apply plugin: "net.minecraftforge.gradle.tweaker-client"
 apply plugin: "org.spongepowered.mixin"
 apply plugin: "java"
 
-version = "1.13-1.4.0.0-rift"
+version = "1.13-1.4.1.0-rift"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 
@@ -45,6 +45,6 @@ mixin {
 minecraft {
 	version = "1.13"
 	runDir = "run"
-	mappings = "snapshot_20180826"
+	mappings = "snapshot_20180908"
 	tweakClass = "org.dimdev.riftloader.launch.RiftLoaderClientTweaker"
 }

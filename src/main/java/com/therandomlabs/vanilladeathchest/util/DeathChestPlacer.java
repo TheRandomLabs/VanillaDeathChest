@@ -65,6 +65,17 @@ public final class DeathChestPlacer {
 
 		final BlockPos pos =
 				DeathChestLocationFinder.findLocation(world, player, playerPos, useDoubleChest);
+
+		if(pos == null) {
+			LOGGER.warn("No death chest location found for player at [%s]", pos);
+
+			for(EntityItem drop : drops) {
+				world.spawnEntity(drop);
+			}
+
+			return;
+		}
+
 		final BlockPos east = pos.east();
 
 		world.setBlockState(pos, Blocks.CHEST.getDefaultState());
@@ -78,8 +89,7 @@ public final class DeathChestPlacer {
 
 		if(!(tile instanceof TileEntityChest) ||
 				(useDoubleChest && !(tile2 instanceof TileEntityChest))) {
-			LOGGER.warn("Failed to place death chest at [" + pos + "] due to invalid " +
-					"tile entity");
+			LOGGER.warn("Failed to place death chest at [%s] due to invalid tile entity", pos);
 			return;
 		}
 
@@ -88,7 +98,7 @@ public final class DeathChestPlacer {
 
 		DeathChestManager.addDeathChest(world, playerID, creationTime, pos, useDoubleChest);
 
-		LOGGER.info("Death chest for " + profile.getName() + " spawned at [" + pos + "]");
+		LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
 
 		player.sendMessage(new TextComponentString(String.format(
 				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()

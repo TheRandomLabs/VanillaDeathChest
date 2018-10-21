@@ -82,7 +82,8 @@ public class VDCConfig {
 
 		@Config.LangKey("vanilladeathchest.config.spawning.chestType")
 		@Config.Comment("The type of death chest that should be placed.")
-		public DeathChestPlacer.ChestType chestType = DeathChestPlacer.ChestType.SINGLE_OR_DOUBLE;
+		public DeathChestPlacer.DeathChestType chestType =
+				DeathChestPlacer.DeathChestType.SINGLE_OR_DOUBLE;
 
 		@Config.LangKey("vanilladeathchest.config.spawning.locationSearchRadius")
 		@Config.Comment("The death chest location search radius.")

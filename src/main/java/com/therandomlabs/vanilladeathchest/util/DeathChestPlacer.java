@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import static com.therandomlabs.vanilladeathchest.VanillaDeathChest.LOGGER;
 
 public final class DeathChestPlacer {
-	public enum ChestType {
+	public enum DeathChestType {
 		SINGLE_ONLY,
 		SINGLE_OR_DOUBLE,
 		SHULKER_BOX
@@ -68,11 +68,11 @@ public final class DeathChestPlacer {
 	}
 
 	private void place(World world, EntityPlayer player) {
-		final ChestType type = VDCConfig.spawning.chestType;
+		final DeathChestType type = VDCConfig.spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = player.getPosition();
-		final boolean useDoubleChest = type == ChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
+		final boolean useDoubleChest = type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
 
 		final BlockPos pos =
 				DeathChestLocationFinder.findLocation(world, player, playerPos, useDoubleChest);
@@ -89,7 +89,7 @@ public final class DeathChestPlacer {
 
 		final Block block;
 
-		if(type == ChestType.SHULKER_BOX) {
+		if(type == DeathChestType.SHULKER_BOX) {
 			block = BlockShulkerBox.getBlockByColor(VDCConfig.spawning.shulkerBoxColor);
 		} else {
 			block = Blocks.CHEST;

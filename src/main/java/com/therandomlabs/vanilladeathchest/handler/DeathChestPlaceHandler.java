@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MODID)
 public final class DeathChestPlaceHandler {
-	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
+	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS =
+			new EnumMap<>(DimensionType.class);
 
 	@SubscribeEvent
 	public static void onPlayerDrops(PlayerDropsEvent event) {
@@ -73,15 +75,10 @@ public final class DeathChestPlaceHandler {
 
 	public static Queue<DeathChestPlacer> getPlacers(World world) {
 		synchronized(PLACERS) {
-			final DimensionType id = world.provider.getDimensionType();
-			Queue<DeathChestPlacer> placers = PLACERS.get(id);
-
-			if(placers == null) {
-				placers = Queues.newConcurrentLinkedQueue();
-				PLACERS.put(id, placers);
-			}
-
-			return placers;
+			return PLACERS.computeIfAbsent(
+					world.provider.getDimensionType(),
+					key -> Queues.newConcurrentLinkedQueue()
+			);
 		}
 	}
 }

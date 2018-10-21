@@ -6,17 +6,26 @@ import java.util.UUID;
 import com.mojang.authlib.GameProfile;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import static com.therandomlabs.vanilladeathchest.VanillaDeathChest.LOGGER;
 
 public final class DeathChestPlacer {
+	public enum ChestType {
+		SINGLE_ONLY,
+		SINGLE_OR_DOUBLE,
+		SHULKER_BOX
+	}
+
 	private final WeakReference<World> world;
 	private final WeakReference<EntityPlayer> player;
 	private final List<EntityItem> drops;
@@ -59,9 +68,11 @@ public final class DeathChestPlacer {
 	}
 
 	private void place(World world, EntityPlayer player) {
+		final ChestType type = VDCConfig.spawning.chestType;
+
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = player.getPosition();
-		final boolean useDoubleChest = VDCConfig.spawning.useDoubleChests && drops.size() > 27;
+		final boolean useDoubleChest = type == ChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
 
 		final BlockPos pos =
 				DeathChestLocationFinder.findLocation(world, player, playerPos, useDoubleChest);
@@ -76,19 +87,28 @@ public final class DeathChestPlacer {
 			return;
 		}
 
+		final Block block;
+
+		if(type == ChestType.SHULKER_BOX) {
+			block = BlockShulkerBox.getBlockByColor(VDCConfig.spawning.shulkerBoxColor);
+		} else {
+			block = Blocks.CHEST;
+		}
+
+		final IBlockState state = block.getDefaultState();
 		final BlockPos east = pos.east();
 
-		world.setBlockState(pos, Blocks.CHEST.getDefaultState());
+		world.setBlockState(pos, state);
 
 		if(useDoubleChest) {
-			world.setBlockState(east, Blocks.CHEST.getDefaultState());
+			world.setBlockState(east, state);
 		}
 
 		final TileEntity tile = world.getTileEntity(pos);
 		final TileEntity tile2 = useDoubleChest ? world.getTileEntity(east) : null;
 
-		if(!(tile instanceof TileEntityChest) ||
-				(useDoubleChest && !(tile2 instanceof TileEntityChest))) {
+		if(!(tile instanceof TileEntityLockableLoot) ||
+				(useDoubleChest && !(tile2 instanceof TileEntityLockableLoot))) {
 			LOGGER.warn("Failed to place death chest at [%s] due to invalid tile entity", pos);
 			return;
 		}
@@ -104,7 +124,7 @@ public final class DeathChestPlacer {
 				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
 		)));
 
-		TileEntityChest chest = (TileEntityChest) tile;
+		TileEntityLockableLoot chest = (TileEntityLockableLoot) tile;
 
 		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 			chest.setInventorySlotContents(i, drops.get(0).getItem());
@@ -112,7 +132,7 @@ public final class DeathChestPlacer {
 		}
 
 		if(useDoubleChest) {
-			chest = (TileEntityChest) tile2;
+			chest = (TileEntityLockableLoot) tile2;
 
 			for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 				chest.setInventorySlotContents(i, drops.get(0).getItem());

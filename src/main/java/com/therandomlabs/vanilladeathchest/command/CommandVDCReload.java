@@ -33,7 +33,7 @@ public class CommandVDCReload extends CommandBase {
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args)
 			throws CommandException {
-		VDCConfig.reload();
+		VDCConfig.reloadFromDisk();
 
 		if(server.isDedicatedServer()) {
 			notifyCommandListener(sender, this, "VanillaDeathChest configuration reloaded!");

@@ -42,7 +42,8 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 		return onBlockInteract(world, player, pos);
 	}
 
-	public static EnumActionResult onBlockInteract(World world, EntityPlayer player, BlockPos pos) {
+	public static EnumActionResult onBlockInteract(World world, EntityPlayer player,
+			BlockPos pos) {
 		final DeathChest deathChest = DeathChestManager.getDeathChest(world, pos);
 
 		if(deathChest == null) {

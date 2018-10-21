@@ -31,7 +31,7 @@ public class DeathChestDropHandler implements
 
 	@Override
 	public IItemProvider getBlockDrop(IBlockState state, World world, BlockPos pos, int fortune) {
-		return !VDCConfig.misc.dropDeathChests && justRemoved.contains(pos) ? Items.AIR : DEFAULT;
+		return !VDCConfig.misc.dropDeathChests && justRemoved.contains(pos) ? Items.AIR : null;
 	}
 
 	@Override

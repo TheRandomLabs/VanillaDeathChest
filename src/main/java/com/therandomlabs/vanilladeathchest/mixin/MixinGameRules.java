@@ -17,6 +17,7 @@ public class MixinGameRules {
 	@Final
 	private static TreeMap<String, GameRules.ValueDefinition> DEFINITIONS;
 
+	@SuppressWarnings("UnresolvedMixinReference")
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void init(CallbackInfo callback) {
 		for(GameRuleDefinitionModifier listener :

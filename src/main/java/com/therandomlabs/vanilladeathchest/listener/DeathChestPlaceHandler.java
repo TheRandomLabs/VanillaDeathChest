@@ -1,7 +1,7 @@
 package com.therandomlabs.vanilladeathchest.listener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -19,7 +19,8 @@ import net.minecraft.world.dimension.DimensionType;
 import org.dimdev.rift.listener.ServerTickable;
 
 public class DeathChestPlaceHandler implements PlayerDropAllItemsListener, ServerTickable {
-	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
+	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS =
+			new EnumMap<>(DimensionType.class);
 
 	@Override
 	public EnumActionResult onPlayerDropAllItems(World world, EntityPlayer player,
@@ -48,6 +49,15 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsListener, Serve
 		}
 	}
 
+	public static Queue<DeathChestPlacer> getPlacers(World world) {
+		synchronized(PLACERS) {
+			return PLACERS.computeIfAbsent(
+					world.dimension.getType(),
+					key -> Queues.newConcurrentLinkedQueue()
+			);
+		}
+	}
+
 	private static void worldTick(World world) {
 		final Queue<DeathChestPlacer> placers = getPlacers(world);
 		final List<DeathChestPlacer> toReadd = new ArrayList<>();
@@ -60,19 +70,5 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsListener, Serve
 		}
 
 		placers.addAll(toReadd);
-	}
-
-	public static Queue<DeathChestPlacer> getPlacers(World world) {
-		synchronized(PLACERS) {
-			final DimensionType id = world.dimension.getType();
-			Queue<DeathChestPlacer> placers = PLACERS.get(id);
-
-			if(placers == null) {
-				placers = Queues.newConcurrentLinkedQueue();
-				PLACERS.put(id, placers);
-			}
-
-			return placers;
-		}
 	}
 }

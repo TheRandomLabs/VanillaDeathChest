@@ -24,6 +24,7 @@ public class CommandVDCReload {
 					true
 			);
 		} else {
+			//noinspection NoTranslation
 			source.sendFeedback(
 					new TextComponentTranslation("commands.vdcreloadclient.success"),
 					true

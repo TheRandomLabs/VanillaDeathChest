@@ -21,7 +21,7 @@ public class MixinBlock {
 				RiftLoader.instance.getListeners(GetBlockDropListener.class)) {
 			final IItemProvider provider = listener.getBlockDrop(state, world, pos, fortune);
 
-			if(provider != GetBlockDropListener.DEFAULT) {
+			if(provider != null) {
 				callback.setReturnValue(provider);
 				callback.cancel();
 				return;

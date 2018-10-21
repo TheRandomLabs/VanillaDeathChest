@@ -6,7 +6,10 @@ import java.util.UUID;
 import com.mojang.authlib.GameProfile;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
+import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -19,6 +22,12 @@ import net.minecraft.world.World;
 import static com.therandomlabs.vanilladeathchest.VanillaDeathChest.LOGGER;
 
 public final class DeathChestPlacer {
+	public enum DeathChestType {
+		SINGLE_ONLY,
+		SINGLE_OR_DOUBLE,
+		SHULKER_BOX
+	}
+
 	private final WeakReference<World> world;
 	private final WeakReference<EntityPlayer> player;
 	private final List<EntityItem> drops;
@@ -61,9 +70,12 @@ public final class DeathChestPlacer {
 	}
 
 	private void place(World world, EntityPlayer player) {
+		final DeathChestType type = VDCConfig.spawning.chestType;
+
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = player.getPosition();
-		final boolean useDoubleChest = VDCConfig.spawning.useDoubleChests && drops.size() > 27;
+		final boolean useDoubleChest =
+				type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
 
 		final BlockPos pos =
 				DeathChestLocationFinder.findLocation(world, player, playerPos, useDoubleChest);
@@ -78,19 +90,22 @@ public final class DeathChestPlacer {
 			return;
 		}
 
+		final Block block;
+
+		if(type == DeathChestType.SHULKER_BOX) {
+			block = BlockShulkerBox.getBlockByColor(VDCConfig.spawning.shulkerBoxColor);
+		} else {
+			block = Blocks.CHEST;
+		}
+
+		final IBlockState state = block.getDefaultState();
 		final BlockPos east = pos.east();
 
 		if(useDoubleChest) {
-			world.setBlockState(pos, Blocks.CHEST.getDefaultState().with(
-					BlockChest.TYPE,
-					ChestType.LEFT
-			));
-			world.setBlockState(east, Blocks.CHEST.getDefaultState().with(
-					BlockChest.TYPE,
-					ChestType.RIGHT
-			));
+			world.setBlockState(pos, state.with(BlockChest.TYPE, ChestType.LEFT));
+			world.setBlockState(east, state.with(BlockChest.TYPE, ChestType.RIGHT));
 		} else {
-			world.setBlockState(pos, Blocks.CHEST.getDefaultState());
+			world.setBlockState(pos, state);
 		}
 
 		final TileEntity tile = world.getTileEntity(pos);

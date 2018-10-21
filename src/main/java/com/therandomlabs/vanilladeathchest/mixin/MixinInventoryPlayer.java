@@ -21,11 +21,10 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(InventoryPlayer.class)
 public class MixinInventoryPlayer {
 	@Shadow
+	public EntityPlayer player;
+	@Shadow
 	@Final
 	private List<NonNullList<ItemStack>> allInventories;
-
-	@Shadow
-	private EntityPlayer player;
 
 	@Overwrite
 	public void dropAllItems() {

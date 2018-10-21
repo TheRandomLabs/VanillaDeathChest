@@ -28,8 +28,8 @@ public class MixinPlayerInteractionManager {
 
 	@Inject(method = "processRightClickBlock", at = @At("HEAD"), cancellable = true)
 	public void processRightClickBlock(EntityPlayer player, World world,
-			ItemStack stack, EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY,
-			float hitZ, CallbackInfoReturnable<EnumActionResult> callback) {
+			ItemStack stack, EnumHand hand, BlockPos pos, EnumFacing facing, float hitX,
+			float hitY, float hitZ, CallbackInfoReturnable<EnumActionResult> callback) {
 		for(RightClickBlockListener listener :
 				RiftLoader.instance.getListeners(RightClickBlockListener.class)) {
 			final EnumActionResult result = listener.onRightClickBlock(

@@ -9,7 +9,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface RightClickBlockListener {
-	EnumActionResult onRightClickBlock(World world, EntityPlayerMP player,
-			ItemStack stack, EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY,
-			float hitZ);
+	EnumActionResult onRightClickBlock(World world, EntityPlayerMP player, ItemStack stack,
+			EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ);
 }

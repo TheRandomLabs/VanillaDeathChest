@@ -6,7 +6,5 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface GetBlockDropListener {
-	IItemProvider DEFAULT = null;
-
 	IItemProvider getBlockDrop(IBlockState state, World world, BlockPos pos, int fortune);
 }

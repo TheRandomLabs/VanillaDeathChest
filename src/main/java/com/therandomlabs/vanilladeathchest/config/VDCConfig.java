@@ -1,5 +1,8 @@
 package com.therandomlabs.vanilladeathchest.config;
 
+import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
+import net.minecraft.item.EnumDyeColor;
+
 public class VDCConfig {
 	public static class Config {
 		public @interface Comment {
@@ -58,16 +61,20 @@ public class VDCConfig {
 	}
 
 	public static class Spawning {
-		@Config.Comment("The message that should be sent to a player when they die and a " +
-				"death chest is placed. %d refers to the X, Y and Z coordinates. Set this to an " +
-				"empty string to disable this message.")
+		@Config.Comment("The message sent to a player when they die and a death chest is placed. " +
+				"%d refers to the X, Y and Z coordinates. Set this to an empty string to disable " +
+				"this message.")
 		public String chatMessage = "Death chest spawned at [%d, %d, %d]";
+
+		@Config.Comment("The type of death chest that should be placed.")
+		public DeathChestPlacer.DeathChestType chestType =
+				DeathChestPlacer.DeathChestType.SINGLE_OR_DOUBLE;
 
 		@Config.Comment("The death chest location search radius.")
 		public int locationSearchRadius = 8;
 
-		@Config.Comment("Whether to use double chests.")
-		public boolean useDoubleChests = true;
+		@Config.Comment("The color of the shulker box if chestType is set to SHULKER_BOX.")
+		public EnumDyeColor shulkerBoxColor = EnumDyeColor.WHITE;
 	}
 
 	@Config.Comment("Options that don't fit into any other categories.")
@@ -80,6 +87,6 @@ public class VDCConfig {
 	public static Spawning spawning = new Spawning();
 
 	public static void reload() {
-		//TODO
+
 	}
 }

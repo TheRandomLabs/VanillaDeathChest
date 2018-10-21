@@ -75,8 +75,10 @@ public class VDCConfig {
 
 	public static class Spawning {
 		@Config.LangKey("vanilladeathchest.config.spawning.chatMessage")
-		@Config.Comment("The message sent to a player when they die and a death chest is placed. " +
-				"%d refers to the X, Y and Z coordinates. Set this to an empty string to disable " +
+		@Config.Comment("The message sent to a player when they die and a death chest is placed." +
+				" " +
+				"%d refers to the X, Y and Z coordinates. Set this to an empty string to disable" +
+				" " +
 				"this message.")
 		public String chatMessage = "Death chest spawned at [%d, %d, %d]";
 
@@ -131,9 +133,13 @@ public class VDCConfig {
 
 	public static void reloadFromDisk() {
 		try {
-			final File file =
-					new File(Loader.instance().getConfigDir(), VanillaDeathChest.MODID + ".cfg");
+			final File file = new File(
+					Loader.instance().getConfigDir(),
+					VanillaDeathChest.MODID + ".cfg"
+			);
+
 			((Map) CONFIGS.get(null)).remove(file.getAbsolutePath());
+
 			reload();
 		} catch(Exception ex) {
 			throw new ReportedException(new CrashReport("Error while modifying config", ex));

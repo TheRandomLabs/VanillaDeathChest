@@ -21,11 +21,6 @@ public class CommandVDCReload extends CommandBase {
 	}
 
 	@Override
-	public int getRequiredPermissionLevel() {
-		return client ? 0 : 4;
-	}
-
-	@Override
 	public String getUsage(ICommandSender sender) {
 		return client ? "commands.vdcreloadclient.usage" : "/" + getName();
 	}
@@ -40,5 +35,10 @@ public class CommandVDCReload extends CommandBase {
 		} else {
 			sender.sendMessage(new TextComponentTranslation("commands.vdcreloadclient.success"));
 		}
+	}
+
+	@Override
+	public int getRequiredPermissionLevel() {
+		return client ? 0 : 4;
 	}
 }

@@ -63,7 +63,8 @@ public final class DeathChestInteractionHandler {
 		}
 	}
 
-	public static EnumActionResult onBlockInteract(World world, EntityPlayer player, BlockPos pos) {
+	public static EnumActionResult onBlockInteract(World world, EntityPlayer player,
+			BlockPos pos) {
 		final DeathChest deathChest = DeathChestManager.getDeathChest(world, pos);
 
 		if(deathChest == null) {

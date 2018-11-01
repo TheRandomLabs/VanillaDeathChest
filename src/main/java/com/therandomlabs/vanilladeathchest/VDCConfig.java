@@ -75,10 +75,8 @@ public class VDCConfig {
 
 	public static class Spawning {
 		@Config.LangKey("vanilladeathchest.config.spawning.chatMessage")
-		@Config.Comment("The message sent to a player when they die and a death chest is placed." +
-				" " +
-				"%d refers to the X, Y and Z coordinates. Set this to an empty string to disable" +
-				" " +
+		@Config.Comment("The message sent to a player when they die and a death chest is placed. " +
+				"%d refers to the X, Y and Z coordinates. Set this to an empty string to disable " +
 				"this message.")
 		public String chatMessage = "Death chest spawned at [%d, %d, %d]";
 

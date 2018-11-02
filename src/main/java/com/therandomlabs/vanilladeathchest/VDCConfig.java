@@ -26,17 +26,21 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class VDCConfig {
 	public static class Misc {
 		@Config.LangKey("vanilladeathchest.config.misc.dropDeathChests")
-		@Config.Comment("Whether death chests should be dropped when broken. " +
-				"Enable for infinite chests.")
+		@Config.Comment({
+				"Whether death chests should be dropped when broken.",
+				"Enable this for infinite chests."
+		})
 		public boolean dropDeathChests;
 
 		@Config.LangKey("vanilladeathchest.config.misc.gameRuleDefaultValue")
-		@Config.Comment("The default value of the gamerule.")
+		@Config.Comment("The default value of the spawnDeathChests gamerule.")
 		public boolean gameRuleDefaultValue = true;
 
 		@Config.LangKey("vanilladeathchest.config.misc.gameruleName")
-		@Config.Comment("The name of the gamerule that specifies whether death chests should " +
-				"spawn. Set this to an empty string to disable the gamerule.")
+		@Config.Comment({
+				"The name of the spawnDeathChests gamerule.",
+				"Set this to an empty string to disable the gamerule."
+		})
 		public String gameRuleName = "spawnDeathChests";
 
 		@Config.RequiresWorldRestart
@@ -52,7 +56,8 @@ public class VDCConfig {
 
 	public static class Protection {
 		@Config.LangKey("vanilladeathchest.config.protection.bypassIfCreative")
-		@Config.Comment("Whether players in creative mode can bypass death chest protection.")
+		@Config.Comment("Whether players in creative mode should be able to bypass death chest " +
+				"protection.")
 		public boolean bypassIfCreative = true;
 
 		@Config.RangeInt(min = 0)
@@ -61,23 +66,29 @@ public class VDCConfig {
 		public int bypassPermissionLevel = 4;
 
 		@Config.LangKey("vanilladeathchest.config.protection.enabled")
-		@Config.Comment("Whether death chests should be protected. When this is enabled, " +
-				"death chests can only be broken by their owners.")
+		@Config.Comment({
+				"Whether death chests should be protected.",
+				"When this is enabled, death chests can only be broken by their owners."
+		})
 		public boolean enabled = true;
 
 		@Config.RangeInt(min = 0)
 		@Config.LangKey("vanilladeathchest.config.protection.period")
-		@Config.Comment("The amount of time in ticks death chest protection should last. " +
-				"The default is 5 in-game days. Set this to 0 to protect death chests " +
-				"indefinitely.")
+		@Config.Comment({
+				"The amount of time in ticks death chest protection should last.",
+				"120000 ticks is 5 in-game days.",
+				"Set this to 0 to protect death chests indefinitely."
+		})
 		public int period = 120000;
 	}
 
 	public static class Spawning {
 		@Config.LangKey("vanilladeathchest.config.spawning.chatMessage")
-		@Config.Comment("The message sent to a player when they die and a death chest is placed. " +
-				"%d refers to the X, Y and Z coordinates. Set this to an empty string to disable " +
-				"this message.")
+		@Config.Comment({
+				"The message sent to a player when they die and a death chest is placed.",
+				"%d refers to the X, Y and Z coordinates.",
+				"Set this to an empty string to disable the message."
+		})
 		public String chatMessage = "Death chest spawned at [%d, %d, %d]";
 
 		@Config.LangKey("vanilladeathchest.config.spawning.chestType")
@@ -165,7 +176,7 @@ public class VDCConfig {
 
 				//Add default value to comment
 				comments.put(property, comment);
-				property.setComment(comment + "\n" + "Default: " + property.getDefault());
+				property.setComment(comment + "\nDefault: " + property.getDefault());
 			});
 
 			if(category.getValues().isEmpty() || category.getComment() == null) {

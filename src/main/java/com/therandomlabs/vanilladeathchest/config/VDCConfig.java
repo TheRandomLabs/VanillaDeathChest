@@ -185,8 +185,11 @@ public class VDCConfig {
 
 		//Write JSON
 
-		final String raw = new GsonBuilder().setPrettyPrinting().create().toJson(config).
-				replaceAll(" {2}", "\t");
+		final String raw = new GsonBuilder().
+				setPrettyPrinting().
+				disableHtmlEscaping().
+				create().
+				toJson(config).replaceAll(" {2}", "\t");
 
 		try {
 			Files.createDirectories(PATH.getParent());

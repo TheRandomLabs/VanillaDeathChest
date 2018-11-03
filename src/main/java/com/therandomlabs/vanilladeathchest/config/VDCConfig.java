@@ -254,7 +254,7 @@ public class VDCConfig {
 
 					for(Object constant : type.getEnumConstants()) {
 						if(constant.toString().equals(string)) {
-							newValue = string;
+							newValue = constant;
 							break;
 						}
 					}

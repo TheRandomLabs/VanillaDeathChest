@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber(modid = VanillaDeathChest.MODID)
+@Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestInteractionHandler {
 	private static BlockPos harvesting;
 

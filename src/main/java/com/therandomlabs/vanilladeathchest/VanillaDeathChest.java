@@ -9,13 +9,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = VanillaDeathChest.MODID, version = VanillaDeathChest.VERSION,
+@Mod(
+		modid = VanillaDeathChest.MOD_ID, version = VanillaDeathChest.VERSION,
 		acceptedMinecraftVersions = VanillaDeathChest.ACCEPTED_MINECRAFT_VERSIONS,
 		acceptableRemoteVersions = VanillaDeathChest.ACCEPTABLE_REMOTE_VERSIONS,
 		updateJSON = VanillaDeathChest.UPDATE_JSON,
-		certificateFingerprint = VanillaDeathChest.CERTIFICATE_FINGERPRINT)
+		certificateFingerprint = VanillaDeathChest.CERTIFICATE_FINGERPRINT
+)
 public final class VanillaDeathChest {
-	public static final String MODID = "vanilladeathchest";
+	public static final String MOD_ID = "vanilladeathchest";
 	public static final String VERSION = "@VERSION@";
 	public static final String ACCEPTED_MINECRAFT_VERSIONS = "[1.12,1.13)";
 	public static final String ACCEPTABLE_REMOTE_VERSIONS = "*";
@@ -23,7 +25,7 @@ public final class VanillaDeathChest {
 			"https://raw.githubusercontent.com/TheRandomLabs/VanillaDeathChest/misc/versions.json";
 	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
 
-	public static final Logger LOGGER = LogManager.getLogger(MODID);
+	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
 	@SidedProxy(clientSide = "com.therandomlabs.vanilladeathchest.ClientProxy",
 			serverSide = "com.therandomlabs.vanilladeathchest.CommonProxy")

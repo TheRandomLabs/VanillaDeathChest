@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-@Mod.EventBusSubscriber(modid = VanillaDeathChest.MODID)
+@Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestPlaceHandler {
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS =
 			new EnumMap<>(DimensionType.class);

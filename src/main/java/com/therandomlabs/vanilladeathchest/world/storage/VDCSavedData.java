@@ -27,7 +27,7 @@ public class VDCSavedData extends WorldSavedData {
 	private Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
 
 	public VDCSavedData() {
-		super(VanillaDeathChest.MODID);
+		super(VanillaDeathChest.MOD_ID);
 	}
 
 	public VDCSavedData(String name) {
@@ -79,11 +79,11 @@ public class VDCSavedData extends WorldSavedData {
 	public static VDCSavedData get(World world) {
 		final MapStorage storage = world.getMapStorage();
 		VDCSavedData instance =
-				(VDCSavedData) storage.getOrLoadData(VDCSavedData.class, VanillaDeathChest.MODID);
+				(VDCSavedData) storage.getOrLoadData(VDCSavedData.class, VanillaDeathChest.MOD_ID);
 
 		if(instance == null) {
 			instance = new VDCSavedData();
-			storage.setData(VanillaDeathChest.MODID, instance);
+			storage.setData(VanillaDeathChest.MOD_ID, instance);
 		}
 
 		return instance;

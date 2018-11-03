@@ -21,8 +21,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-@Mod.EventBusSubscriber(modid = VanillaDeathChest.MODID)
-@Config(modid = VanillaDeathChest.MODID, name = VanillaDeathChest.MODID, category = "")
+@Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
+@Config(modid = VanillaDeathChest.MOD_ID, name = VanillaDeathChest.MOD_ID, category = "")
 public class VDCConfig {
 	public static class Misc {
 		@Config.LangKey("vanilladeathchest.config.misc.dropDeathChests")
@@ -125,13 +125,13 @@ public class VDCConfig {
 
 	@SubscribeEvent
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-		if(event.getModID().equals(VanillaDeathChest.MODID)) {
+		if(event.getModID().equals(VanillaDeathChest.MOD_ID)) {
 			reload();
 		}
 	}
 
 	public static void reload() {
-		ConfigManager.sync(VanillaDeathChest.MODID, Config.Type.INSTANCE);
+		ConfigManager.sync(VanillaDeathChest.MOD_ID, Config.Type.INSTANCE);
 
 		try {
 			modifyConfig();
@@ -144,7 +144,7 @@ public class VDCConfig {
 		try {
 			final File file = new File(
 					Loader.instance().getConfigDir(),
-					VanillaDeathChest.MODID + ".cfg"
+					VanillaDeathChest.MOD_ID + ".cfg"
 			);
 
 			((Map) CONFIGS.get(null)).remove(file.getAbsolutePath());
@@ -157,7 +157,7 @@ public class VDCConfig {
 
 	private static void modifyConfig() throws IllegalAccessException, InvocationTargetException {
 		final Configuration config = (Configuration) GET_CONFIGURATION.invoke(
-				null, VanillaDeathChest.MODID, VanillaDeathChest.MODID
+				null, VanillaDeathChest.MOD_ID, VanillaDeathChest.MOD_ID
 		);
 
 		final Map<Property, String> comments = new HashMap<>();

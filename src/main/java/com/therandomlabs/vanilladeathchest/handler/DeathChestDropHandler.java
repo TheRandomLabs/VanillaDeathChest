@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-@Mod.EventBusSubscriber(modid = VanillaDeathChest.MODID)
+@Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestDropHandler {
 	private static final Item CHEST = Item.getItemFromBlock(Blocks.CHEST);
 	private static final List<BlockPos> justRemoved = new ArrayList<>();

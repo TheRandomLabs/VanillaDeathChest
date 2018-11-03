@@ -14,11 +14,13 @@ buildscript {
 	dependencies {
 		classpath "org.dimdev:ForgeGradle:2.3-SNAPSHOT"
 		classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
+		classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
 	}
 }
 
 apply plugin: "net.minecraftforge.gradle.tweaker-client"
 apply plugin: "org.spongepowered.mixin"
+apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "java"
 
 version = "1.13-1.5.0.0-rift"
@@ -31,10 +33,22 @@ repositories {
 	maven {
 		url "https://www.dimdev.org/maven/"
 	}
+
+	ivy {
+		artifactPattern "https://endless.blue/files/ivy/[module]-[revision].[ext]"
+	}
 }
 
 dependencies {
 	implementation "org.dimdev:rift:1.0.4-+:dev"
+	shadow "blue.endless:Jankson:0.0.4"
+	compile "blue.endless:Jankson:0.0.4"
+}
+
+shadowJar {
+	classifier = ""
+	relocate "blue.endless.jankson", "com.therandomlabs.vanilladeathchest.repackage.blue.endless.jankson"
+	configurations = [project.configurations.shadow]
 }
 
 mixin {

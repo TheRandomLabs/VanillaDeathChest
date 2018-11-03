@@ -1,6 +1,8 @@
 package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.ReportedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.riftloader.listener.InitializationListener;
@@ -17,5 +19,9 @@ public final class VanillaDeathChest implements InitializationListener {
 		Mixins.addConfiguration("mixins." + MOD_ID + ".json");
 
 		VDCConfig.reload();
+	}
+
+	public static void crashReport(String message, Throwable throwable) {
+		throw new ReportedException(new CrashReport(message, throwable));
 	}
 }

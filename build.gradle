@@ -51,6 +51,18 @@ shadowJar {
 	configurations = [project.configurations.shadow]
 }
 
+reobf {
+	shadowJar {
+		mappingType = "NOTCH"
+	}
+}
+
+tasks.build.dependsOn reobfShadowJar
+
+artifacts {
+	archives shadowJar
+}
+
 mixin {
 	defaultObfuscationEnv notch
 	add sourceSets.main, "mixins.vanilladeathchest.refmap.json"

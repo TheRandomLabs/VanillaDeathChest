@@ -1,8 +1,5 @@
 package com.therandomlabs.vanilladeathchest;
 
-import java.security.MessageDigest;
-import java.security.cert.Certificate;
-import java.util.ArrayList;
 import java.util.List;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.util.CertificateHelper;
@@ -22,7 +19,7 @@ public final class VanillaDeathChest implements InitializationListener {
 	@Override
 	public void onInitialization() {
 		if(!verifyFingerprint()) {
-			LOGGER.error("Invalid fingerprint detected!");
+			LOGGER.error("Invalid fingerprint detected for VanillaDeathChest!");
 		}
 
 		MixinBootstrap.init();

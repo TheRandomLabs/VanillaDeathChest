@@ -15,7 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -111,8 +111,8 @@ public final class DeathChestPlacer {
 		final TileEntity tile = world.getTileEntity(pos);
 		final TileEntity tile2 = useDoubleChest ? world.getTileEntity(east) : null;
 
-		if(!(tile instanceof TileEntityChest) ||
-				(useDoubleChest && !(tile2 instanceof TileEntityChest))) {
+		if(!(tile instanceof TileEntityLockableLoot) ||
+				(useDoubleChest && !(tile2 instanceof TileEntityLockableLoot))) {
 			LOGGER.warn("Failed to place death chest at [%s] due to invalid tile entity", pos);
 			return;
 		}
@@ -128,7 +128,7 @@ public final class DeathChestPlacer {
 				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
 		)));
 
-		TileEntityChest chest = (TileEntityChest) (useDoubleChest ? tile2 : tile);
+		TileEntityLockableLoot chest = (TileEntityLockableLoot) (useDoubleChest ? tile2 : tile);
 
 		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 			chest.setInventorySlotContents(i, drops.get(0).getItem());
@@ -136,7 +136,7 @@ public final class DeathChestPlacer {
 		}
 
 		if(useDoubleChest) {
-			chest = (TileEntityChest) tile;
+			chest = (TileEntityLockableLoot) tile;
 
 			for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 				chest.setInventorySlotContents(i, drops.get(0).getItem());

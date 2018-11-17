@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Mixins;
 public final class VanillaDeathChest implements InitializationListener {
 	public static final String MOD_ID = "vanilladeathchest";
 	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
+
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
 	@Override

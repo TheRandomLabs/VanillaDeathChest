@@ -22,10 +22,10 @@ public final class VDCGameRuleAdder {
 			return;
 		}
 
-		final GameRules gamerules = world.getGameRules();
+		final GameRules gameRules = world.getGameRules();
 
-		if(!gamerules.hasRule(VDCConfig.misc.gameRuleName)) {
-			gamerules.setOrCreateGameRule(
+		if(!gameRules.hasRule(VDCConfig.misc.gameRuleName)) {
+			gameRules.setOrCreateGameRule(
 					VDCConfig.misc.gameRuleName,
 					Boolean.toString(VDCConfig.misc.gameRuleDefaultValue)
 			);

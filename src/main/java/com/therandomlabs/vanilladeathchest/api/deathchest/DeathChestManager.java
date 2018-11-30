@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.api.event.DeathChestRemoveEvent;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,7 +34,9 @@ public final class DeathChestManager {
 	}
 
 	public static DeathChest getDeathChest(World world, BlockPos pos) {
-		if(world.getBlockState(pos).getBlock() != Blocks.CHEST) {
+		final Block block = world.getBlockState(pos).getBlock();
+
+		if(block != Blocks.CHEST && !(block instanceof BlockShulkerBox)) {
 			return null;
 		}
 

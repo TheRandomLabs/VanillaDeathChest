@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public final class DeathChestInteractionHandler {
 	private static BlockPos harvesting;
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		final World world = event.getWorld();
 
@@ -34,7 +34,7 @@ public final class DeathChestInteractionHandler {
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onBlockBreak(BlockEvent.BreakEvent event) {
 		final World world = event.getWorld();
 

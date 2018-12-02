@@ -22,7 +22,7 @@ public class VDCSavedData extends WorldSavedData {
 	public static final String POS_KEY = "Pos";
 	public static final String IS_DOUBLE_CHEST_KEY = "IsDoubleChest";
 
-	private Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
+	private final Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
 
 	public VDCSavedData() {
 		super(VanillaDeathChest.MOD_ID);

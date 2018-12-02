@@ -75,7 +75,7 @@ public class VDCSavedData extends WorldSavedData {
 	}
 
 	public static VDCSavedData get(World world) {
-		final MapStorage storage = world.getMapStorage();
+		final MapStorage storage = world.getPerWorldStorage();
 		VDCSavedData instance =
 				(VDCSavedData) storage.getOrLoadData(VDCSavedData.class, VanillaDeathChest.MOD_ID);
 

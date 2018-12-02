@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
+import com.therandomlabs.vanilladeathchest.util.VDCUtils;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.ReportedException;
@@ -19,7 +20,6 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 @Config(modid = VanillaDeathChest.MOD_ID, name = VanillaDeathChest.MOD_ID, category = "")
@@ -117,11 +117,11 @@ public class VDCConfig {
 	@Config.Comment("Options related to death chest spawning.")
 	public static Spawning spawning = new Spawning();
 
-	private static final Method GET_CONFIGURATION = ReflectionHelper.findMethod(
+	private static final Method GET_CONFIGURATION = VDCUtils.findMethod(
 			ConfigManager.class, "getConfiguration", "getConfiguration", String.class, String.class
 	);
 
-	private static final Field CONFIGS = ReflectionHelper.findField(ConfigManager.class, "CONFIGS");
+	private static final Field CONFIGS = VDCUtils.findField(ConfigManager.class, "CONFIGS");
 
 	@SubscribeEvent
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {

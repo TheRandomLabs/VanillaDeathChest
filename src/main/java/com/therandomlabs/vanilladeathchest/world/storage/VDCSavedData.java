@@ -13,11 +13,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
-import org.apache.commons.lang3.ArrayUtils;
+import net.minecraftforge.common.util.Constants;
 
 public class VDCSavedData extends WorldSavedData {
-	public static final int TAG_COMPOUND = ArrayUtils.indexOf(NBTBase.NBT_TYPES, "COMPOUND");
-
 	public static final String TAG_KEY = "DeathChests";
 	public static final String UUID_KEY = "UUID";
 	public static final String CREATION_TIME_KEY = "CreationTime";
@@ -38,7 +36,7 @@ public class VDCSavedData extends WorldSavedData {
 	public void readFromNBT(NBTTagCompound nbt) {
 		deathChests.clear();
 
-		final NBTTagList list = nbt.getTagList(TAG_KEY, TAG_COMPOUND);
+		final NBTTagList list = nbt.getTagList(TAG_KEY, Constants.NBT.TAG_COMPOUND);
 
 		for(NBTBase tag : list) {
 			final NBTTagCompound compound = (NBTTagCompound) tag;

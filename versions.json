@@ -1,6 +1,7 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/vanilladeathchest",
 	"1.12.2": {
+		"1.12.2-1.5.0.4": "Death chest positions are now stored per world to avoid conflicts.",
 		"1.12.2-1.5.0.3": "Fixed shulker box protection.\nFixed https://github.com/TheRandomLabs/VanillaDeathChest/issues/3",
 		"1.12.2-1.5.0.2": "Minor tweaks to the configuration property comments.",
 		"1.12.2-1.5.0.1": "Fixed the jar signature verification.",
@@ -18,6 +19,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12.1": {
+		"1.12.2-1.5.0.4": "Death chest positions are now stored per world to avoid conflicts.",
 		"1.12.2-1.5.0.3": "Fixed shulker box protection.\nFixed https://github.com/TheRandomLabs/VanillaDeathChest/issues/3",
 		"1.12.2-1.5.0.2": "Minor tweaks to the configuration property comments.",
 		"1.12.2-1.5.0.1": "Fixed the jar signature verification.",
@@ -35,6 +37,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12": {
+		"1.12.2-1.5.0.4": "Death chest positions are now stored per world to avoid conflicts.",
 		"1.12.2-1.5.0.3": "Fixed shulker box protection.\nFixed https://github.com/TheRandomLabs/VanillaDeathChest/issues/3",
 		"1.12.2-1.5.0.2": "Minor tweaks to the configuration property comments.",
 		"1.12.2-1.5.0.1": "Fixed the jar signature verification.",
@@ -52,11 +55,11 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"promos": {
-		"1.12.2-latest": "1.12.2-1.5.0.3",
-		"1.12.2-recommended": "1.12.2-1.5.0.3",
-		"1.12.1-latest": "1.12.2-1.5.0.3",
-		"1.12.1-recommended": "1.12.2-1.5.0.3",
-		"1.12-latest": "1.12.2-1.5.0.3",
-		"1.12-recommended": "1.12.2-1.5.0.3"
+		"1.12.2-latest": "1.12.2-1.5.0.4",
+		"1.12.2-recommended": "1.12.2-1.5.0.4",
+		"1.12.1-latest": "1.12.2-1.5.0.4",
+		"1.12.1-recommended": "1.12.2-1.5.0.4",
+		"1.12-latest": "1.12.2-1.5.0.4",
+		"1.12-recommended": "1.12.2-1.5.0.4"
 	}
 }

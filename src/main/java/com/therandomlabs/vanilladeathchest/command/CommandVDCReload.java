@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
@@ -18,7 +19,9 @@ public class CommandVDCReload {
 	public static int execute(CommandSource source) {
 		VDCConfig.reload();
 
-		if(source.getServer().isDedicatedServer()) {
+		final MinecraftServer server = source.getServer();
+
+		if(server != null && server.isDedicatedServer()) {
 			source.sendFeedback(
 					new TextComponentString("VanillaDeathChest configuration reloaded!"),
 					true

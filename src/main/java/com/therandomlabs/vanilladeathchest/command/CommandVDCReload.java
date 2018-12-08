@@ -30,7 +30,7 @@ public class CommandVDCReload extends CommandBase {
 			throws CommandException {
 		VDCConfig.reloadFromDisk();
 
-		if(server.isDedicatedServer()) {
+		if(server != null && server.isDedicatedServer()) {
 			notifyCommandListener(sender, this, "VanillaDeathChest configuration reloaded!");
 		} else {
 			sender.sendMessage(new TextComponentTranslation("commands.vdcreloadclient.success"));

@@ -49,7 +49,7 @@ public final class CertificateHelper {
 		final StringBuilder hex = new StringBuilder(2 * checksum.length);
 
 		for(byte b : checksum) {
-			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt(b & 0x0F));
+			hex.append(HEXES.charAt((b & 0xf0) >> 4)).append(HEXES.charAt(b & 0x0f));
 		}
 
 		return hex.toString();

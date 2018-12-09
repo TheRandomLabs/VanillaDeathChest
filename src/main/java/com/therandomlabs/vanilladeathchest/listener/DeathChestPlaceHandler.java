@@ -1,7 +1,7 @@
 package com.therandomlabs.vanilladeathchest.listener;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -19,8 +19,7 @@ import net.minecraft.world.dimension.DimensionType;
 import org.dimdev.rift.listener.ServerTickable;
 
 public class DeathChestPlaceHandler implements PlayerDropAllItemsListener, ServerTickable {
-	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS =
-			new EnumMap<>(DimensionType.class);
+	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
 
 	@Override
 	public EnumActionResult onPlayerDropAllItems(World world, EntityPlayer player,
@@ -44,7 +43,7 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsListener, Serve
 
 	@Override
 	public void serverTick(MinecraftServer server) {
-		for(World world : server.worlds) {
+		for(World world : server.getWorlds()) {
 			worldTick(world);
 		}
 	}

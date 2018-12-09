@@ -1,7 +1,15 @@
 buildscript {
 	repositories {
+		jcenter()
+
+		mavenCentral()
+
 		maven {
 			url "https://www.jitpack.io"
+		}
+
+		maven {
+			url "https://files.minecraftforge.net/maven"
 		}
 
 		maven {
@@ -11,11 +19,14 @@ buildscript {
 
 	dependencies {
 		classpath "com.github.Chocohead:ForgeGradle:moderniser-SNAPSHOT"
+		classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
 		classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
 	}
 }
 
 apply plugin: "net.minecraftforge.gradle.tweaker-client"
+apply plugin: "org.spongepowered.mixin"
+apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "java"
 
 version = "1.13.2-1.5.0.5-rift"
@@ -25,6 +36,8 @@ archivesBaseName = "vanilladeathchest"
 sourceCompatibility = targetCompatibility = "1.8"
 
 repositories {
+	mavenCentral()
+
 	maven {
 		url "https://www.dimdev.org/maven/"
 	}
@@ -52,6 +65,18 @@ shadowJar {
 	classifier = ""
 	relocate "blue.endless.jankson", "com.therandomlabs.vanilladeathchest.repackage.blue.endless.jankson"
 	configurations = [project.configurations.shadow]
+}
+
+reobf {
+	shadowJar {
+		mappingType = "NOTCH"
+	}
+}
+
+tasks.build.dependsOn reobfShadowJar
+
+artifacts {
+	archives shadowJar
 }
 
 mixin {

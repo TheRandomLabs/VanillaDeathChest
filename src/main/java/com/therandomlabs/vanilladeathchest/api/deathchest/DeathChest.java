@@ -42,7 +42,7 @@ public class DeathChest {
 
 		if(!VDCConfig.protection.enabled ||
 				playerID.equals(player.getUniqueID()) ||
-				(VDCConfig.protection.bypassIfCreative && player.capabilities.isCreativeMode)) {
+				(VDCConfig.protection.bypassIfCreative && player.abilities.isCreativeMode)) {
 			return true;
 		}
 
@@ -55,7 +55,7 @@ public class DeathChest {
 				return false;
 			}
 
-			final long timeElapsed = player.getEntityWorld().getTotalWorldTime() - creationTime;
+			final long timeElapsed = player.getEntityWorld().getGameTime() - creationTime;
 			return timeElapsed > VDCConfig.protection.period;
 		}
 

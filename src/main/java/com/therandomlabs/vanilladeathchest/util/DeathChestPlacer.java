@@ -118,7 +118,7 @@ public final class DeathChestPlacer {
 		}
 
 		final UUID playerID = player.getUniqueID();
-		final long creationTime = world.getTotalWorldTime();
+		final long creationTime = world.getGameTime();
 
 		DeathChestManager.addDeathChest(world, playerID, creationTime, pos, useDoubleChest);
 

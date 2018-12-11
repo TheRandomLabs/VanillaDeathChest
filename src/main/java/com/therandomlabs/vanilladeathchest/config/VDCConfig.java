@@ -23,8 +23,8 @@ import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.item.EnumDyeColor;
 import org.apache.commons.lang3.StringUtils;
 
-public class VDCConfig {
-	public static class Misc {
+public final class VDCConfig {
+	public static final class Misc {
 		@Config.LangKey("vanilladeathchest.config.misc.dropDeathChests")
 		@Config.Comment({
 				"Whether death chests should be dropped when broken.",
@@ -54,7 +54,7 @@ public class VDCConfig {
 		public boolean vdcreloadclient = true;
 	}
 
-	public static class Protection {
+	public static final class Protection {
 		@Config.LangKey("vanilladeathchest.config.protection.bypassIfCreative")
 		@Config.Comment("Whether players in creative mode should be able to bypass death chest " +
 				"protection.")
@@ -82,7 +82,7 @@ public class VDCConfig {
 		public int period = 120000;
 	}
 
-	public static class Spawning {
+	public static final class Spawning {
 		@Config.LangKey("vanilladeathchest.config.spawning.chatMessage")
 		@Config.Comment({
 				"The message sent to a player when they die and a death chest is placed.",
@@ -110,15 +110,15 @@ public class VDCConfig {
 
 	@Config.LangKey("vanilladeathchest.config.misc")
 	@Config.Comment("Options that don't fit into any other categories.")
-	public static Misc misc = new Misc();
+	public static final Misc misc = new Misc();
 
 	@Config.LangKey("vanilladeathchest.config.protection")
 	@Config.Comment("Options related to death chest protection.")
-	public static Protection protection = new Protection();
+	public static final Protection protection = new Protection();
 
 	@Config.LangKey("vanilladeathchest.config.spawning")
 	@Config.Comment("Options related to death chest spawning.")
-	public static Spawning spawning = new Spawning();
+	public static final Spawning spawning = new Spawning();
 
 	private static final Map<String, Category> CATEGORIES = new HashMap<>();
 

@@ -5,6 +5,9 @@ import java.lang.annotation.RetentionPolicy;
 
 public class Config {
 	@Retention(RetentionPolicy.RUNTIME)
+	public @interface Ignore {}
+
+	@Retention(RetentionPolicy.RUNTIME)
 	public @interface Comment {
 		String[] value();
 	}

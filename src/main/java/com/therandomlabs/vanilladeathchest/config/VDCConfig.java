@@ -105,6 +105,7 @@ public final class VDCConfig {
 		public DyeColor shulkerBoxColor = DyeColor.WHITE;
 	}
 
+	@Config.Ignore
 	public static final Path PATH =
 			Paths.get("config", VanillaDeathChest.MOD_ID + ".json").toAbsolutePath();
 
@@ -127,7 +128,8 @@ public final class VDCConfig {
 			for(Field field : VDCConfig.class.getDeclaredFields()) {
 				final int modifiers = field.getModifiers();
 
-				if(!Modifier.isPublic(modifiers) || Modifier.isFinal(modifiers)) {
+				if(!Modifier.isPublic(modifiers) ||
+						field.getAnnotation(Config.Ignore.class) != null) {
 					continue;
 				}
 

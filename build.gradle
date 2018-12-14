@@ -73,7 +73,7 @@ reobf {
 	}
 }
 
-tasks.build.dependsOn reobfShadowJar
+build.dependsOn shadowJar
 
 artifacts {
 	archives shadowJar

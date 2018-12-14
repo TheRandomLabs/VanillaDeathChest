@@ -106,6 +106,7 @@ public final class VDCConfig {
 		public EnumDyeColor shulkerBoxColor = EnumDyeColor.WHITE;
 	}
 
+	@Config.Ignore
 	public static final Path PATH =
 			Paths.get("config", VanillaDeathChest.MOD_ID + ".json").toAbsolutePath();
 

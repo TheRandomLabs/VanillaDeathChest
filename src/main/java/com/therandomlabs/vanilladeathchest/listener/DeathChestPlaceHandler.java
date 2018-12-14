@@ -24,6 +24,10 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsListener, Serve
 	@Override
 	public EnumActionResult onPlayerDropAllItems(World world, EntityPlayer player,
 			List<EntityItem> drops) {
+		if(drops.isEmpty()) {
+			return EnumActionResult.SUCCESS;
+		}
+
 		final GameRules gameRules = world.getGameRules();
 
 		if(gameRules.getBoolean("keepInventory")) {

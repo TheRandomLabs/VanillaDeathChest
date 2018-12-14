@@ -8,12 +8,14 @@ import net.minecraft.world.GameRules;
 public class VDCGameRuleAdder implements GameRuleDefinitionModifier {
 	@Override
 	public void modify(Map<String, GameRules.ValueDefinition> definitions) {
-		definitions.put(
-				VDCConfig.misc.gameRuleName,
-				new GameRules.ValueDefinition(
-						Boolean.toString(VDCConfig.misc.gameRuleDefaultValue),
-						GameRules.ValueType.BOOLEAN_VALUE
-				)
-		);
+		if(!VDCConfig.misc.gameRuleName.isEmpty()) {
+			definitions.put(
+					VDCConfig.misc.gameRuleName,
+					new GameRules.ValueDefinition(
+							Boolean.toString(VDCConfig.misc.gameRuleDefaultValue),
+							GameRules.ValueType.BOOLEAN_VALUE
+					)
+			);
+		}
 	}
 }

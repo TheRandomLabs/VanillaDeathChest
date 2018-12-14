@@ -5,19 +5,19 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTUtil;
+import net.minecraft.class_37;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.PersistedState;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.TagHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.storage.WorldSavedData;
-import net.minecraft.world.storage.WorldSavedDataStorage;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class VDCSavedData extends WorldSavedData {
-	public static final int TAG_COMPOUND = ArrayUtils.indexOf(INBTBase.NBT_TYPES, "COMPOUND");
+public class VDCSavedData extends PersistedState {
+	public static final int TAG_COMPOUND = ArrayUtils.indexOf(Tag.TYPES, "COMPOUND");
 
 	public static final String TAG_KEY = "DeathChests";
 	public static final String UUID_KEY = "UUID";
@@ -36,17 +36,17 @@ public class VDCSavedData extends WorldSavedData {
 	}
 
 	@Override
-	public void read(NBTTagCompound nbt) {
+	public void deserialize(CompoundTag nbt) {
 		deathChests.clear();
 
-		final NBTTagList list = nbt.getList(TAG_KEY, TAG_COMPOUND);
+		final ListTag list = nbt.getList(TAG_KEY, TAG_COMPOUND);
 
-		for(INBTBase tag : list) {
-			final NBTTagCompound compound = (NBTTagCompound) tag;
+		for(Tag tag : list) {
+			final CompoundTag compound = (CompoundTag) tag;
 
-			final UUID playerID = NBTUtil.readUniqueId(compound.getCompound(UUID_KEY));
+			final UUID playerID = TagHelper.deserializeUuid(compound.getCompound(UUID_KEY));
 			final long creationTime = compound.getLong(CREATION_TIME_KEY);
-			final BlockPos pos = NBTUtil.readBlockPos(compound.getCompound(POS_KEY));
+			final BlockPos pos = TagHelper.deserializeBlockPos(compound.getCompound(POS_KEY));
 			final boolean isDoubleChest = compound.getBoolean(IS_DOUBLE_CHEST_KEY);
 
 			deathChests.put(pos, new DeathChest(playerID, creationTime, pos, isDoubleChest));
@@ -54,16 +54,16 @@ public class VDCSavedData extends WorldSavedData {
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound nbt) {
-		final NBTTagList tagList = new NBTTagList();
+	public CompoundTag serialize(CompoundTag nbt) {
+		final ListTag tagList = new ListTag();
 
 		for(Map.Entry<BlockPos, DeathChest> entry : deathChests.entrySet()) {
 			final DeathChest deathChest = entry.getValue();
-			final NBTTagCompound compound = new NBTTagCompound();
+			final CompoundTag compound = new CompoundTag();
 
-			compound.put(UUID_KEY, NBTUtil.writeUniqueId(deathChest.getPlayerID()));
+			compound.put(UUID_KEY, TagHelper.serializeUuid(deathChest.getPlayerID()));
 			compound.putLong(CREATION_TIME_KEY, deathChest.getCreationTime());
-			compound.put(POS_KEY, NBTUtil.writeBlockPos(entry.getKey()));
+			compound.put(POS_KEY, TagHelper.serializeBlockPos(entry.getKey()));
 			compound.putBoolean(IS_DOUBLE_CHEST_KEY, deathChest.isDoubleChest());
 
 			tagList.add(compound);
@@ -78,15 +78,15 @@ public class VDCSavedData extends WorldSavedData {
 	}
 
 	public static VDCSavedData get(World world) {
-		final WorldSavedDataStorage storage = world.getSavedDataStorage();
+		final class_37 storage = world.method_8646();
 		final DimensionType dimensionType = world.getDimension().getType();
 
 		VDCSavedData instance =
-				storage.get(dimensionType, VDCSavedData::new, VanillaDeathChest.MOD_ID);
+				storage.method_268(dimensionType, VDCSavedData::new, VanillaDeathChest.MOD_ID);
 
 		if(instance == null) {
 			instance = new VDCSavedData();
-			storage.set(dimensionType, VanillaDeathChest.MOD_ID, instance);
+			storage.method_267(dimensionType, VanillaDeathChest.MOD_ID, instance);
 		}
 
 		return instance;

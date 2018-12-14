@@ -1,0 +1,14 @@
+{
+	"id": "vanilladeathchest",
+	"name": "VanillaDeathChest",
+	"description": "Places chests (or shulker boxes) where players die that contain all of their items.",
+	"version": "${version}",
+	"side": "universal",
+	"initializer": "com.therandomlabs.vanilladeathchest.VanillaDeathChest",
+	"requires": {
+		"fabric": "*"
+	},
+	"mixins": {
+		"common": "vanilladeathchest.common.json"
+	}
+}

@@ -2,37 +2,25 @@ package com.therandomlabs.vanilladeathchest.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.StringTextComponent;
 
 public class CommandVDCReload {
-	public static void register(CommandDispatcher<CommandSource> dispatcher) {
-		dispatcher.register(Commands.literal("vdcreload").
+	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+		dispatcher.register(LiteralArgumentBuilder.<ServerCommandSource>literal("vdcreload").
 				requires(source -> source.hasPermissionLevel(4)).
 				executes(context -> execute(context.getSource())));
 	}
 
-	public static int execute(CommandSource source) {
+	public static int execute(ServerCommandSource source) {
 		VDCConfig.reload();
 
-		final MinecraftServer server = source.getServer();
-
-		if(server != null && server.isDedicatedServer()) {
-			source.sendFeedback(
-					new TextComponentString("VanillaDeathChest configuration reloaded!"),
-					true
-			);
-		} else {
-			//noinspection NoTranslation
-			source.sendFeedback(
-					new TextComponentTranslation("commands.vdcreloadclient.success"),
-					true
-			);
-		}
+		source.sendFeedback(
+				new StringTextComponent("VanillaDeathChest configuration reloaded!"),
+				true
+		);
 
 		return Command.SINGLE_SUCCESS;
 	}

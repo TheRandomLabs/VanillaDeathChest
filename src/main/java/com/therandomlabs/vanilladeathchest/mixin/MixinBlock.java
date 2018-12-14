@@ -1,31 +1,39 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
-import com.therandomlabs.vanilladeathchest.api.listener.GetBlockDropListener;
+import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.riftloader.RiftLoader;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(Block.class)
 public class MixinBlock {
-	@Inject(method = "getItemDropped", at = @At("RETURN"), cancellable = true)
-	public void getItemDropped(IBlockState state, World world, BlockPos pos,
-			int fortune, CallbackInfoReturnable<IItemProvider> callback) {
-		for(GetBlockDropListener listener :
-				RiftLoader.instance.getListeners(GetBlockDropListener.class)) {
-			final IItemProvider provider = listener.getBlockDrop(state, world, pos, fortune);
+	@Overwrite
+	public static void dropStack(World world, BlockPos pos, ItemStack stack) {
+		if(world.isRemote || stack.isEmpty() || !world.getGameRules().getBoolean("doTileDrops")) {
+			return;
+		}
 
-			if(provider != null) {
-				callback.setReturnValue(provider);
-				callback.cancel();
-				return;
+		for(BlockEvent.GetDrop event : BlockEvent.GET_DROP.getBackingArray()) {
+			final ItemStack newStack = event.getDrop(world, pos, stack);
+
+			if(newStack != null) {
+				stack = newStack;
+				break;
 			}
 		}
+
+		final ItemEntity item = new ItemEntity(
+				world,
+				pos.getX() + world.random.nextFloat() * 0.5 + 0.25,
+				pos.getY() + world.random.nextFloat() * 0.5 + 0.25,
+				pos.getZ() + world.random.nextFloat() * 0.5 + 0.25,
+				stack
+		);
+		item.setPickupDelayDefault();
+		world.spawnEntity(item);
 	}
 }

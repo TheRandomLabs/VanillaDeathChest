@@ -1,9 +1,8 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
 import java.util.TreeMap;
-import com.therandomlabs.vanilladeathchest.api.listener.GameRuleDefinitionModifier;
+import com.therandomlabs.vanilladeathchest.api.event.GameRuleEvent;
 import net.minecraft.world.GameRules;
-import org.dimdev.riftloader.RiftLoader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,14 +14,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGameRules {
 	@Shadow
 	@Final
-	private static TreeMap<String, GameRules.ValueDefinition> DEFINITIONS;
+	private static TreeMap<String, GameRules.Key> KEYS;
 
 	@SuppressWarnings("UnresolvedMixinReference")
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void init(CallbackInfo callback) {
-		for(GameRuleDefinitionModifier listener :
-				RiftLoader.instance.getListeners(GameRuleDefinitionModifier.class)) {
-			listener.modify(DEFINITIONS);
+		for(GameRuleEvent.Modify event : GameRuleEvent.MODIFY.getBackingArray()) {
+			event.modify(KEYS);
 		}
 	}
 }

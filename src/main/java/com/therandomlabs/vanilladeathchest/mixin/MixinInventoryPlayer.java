@@ -3,76 +3,75 @@ package com.therandomlabs.vanilladeathchest.mixin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import com.therandomlabs.vanilladeathchest.api.listener.PlayerDropAllItemsListener;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import com.therandomlabs.vanilladeathchest.api.event.PlayerEvent;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import org.dimdev.riftloader.RiftLoader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(InventoryPlayer.class)
+@Mixin(PlayerInventory.class)
 public class MixinInventoryPlayer {
 	@Shadow
-	public EntityPlayer player;
+	public PlayerEntity player;
 	@Shadow
 	@Final
-	private List<NonNullList<ItemStack>> allInventories;
+	private List<DefaultedList<ItemStack>> field_7543;
 
 	@Overwrite
-	public void dropAllItems() {
+	public void dropAll() {
 		final World world = player.getEntityWorld();
-		final List<EntityItem> drops = new ArrayList<>();
+		final List<ItemEntity> drops = new ArrayList<>();
 
-		for(List<ItemStack> stacks : allInventories) {
+		for(List<ItemStack> stacks : field_7543) {
 			for(int i = 0; i < stacks.size(); i++) {
 				final ItemStack stack = stacks.get(i);
 
 				if(!stack.isEmpty()) {
-					final EntityItem item = dropItem(world, player, stack);
+					final ItemEntity item = dropItem(world, player, stack);
 					drops.add(item);
 					stacks.set(i, ItemStack.EMPTY);
 				}
 			}
 		}
 
-		for(PlayerDropAllItemsListener listener :
-				RiftLoader.instance.getListeners(PlayerDropAllItemsListener.class)) {
-			final EnumActionResult result = listener.onPlayerDropAllItems(world, player, drops);
+		for(PlayerEvent.DropAllItems event :
+				PlayerEvent.DROP_ALL_ITEMS.getBackingArray()) {
+			final ActionResult result = event.onPlayerDropAllItems(world, player, drops);
 
-			if(result == EnumActionResult.PASS) {
+			if(result == ActionResult.PASS) {
 				return;
 			}
 		}
 
 		if(!drops.isEmpty()) {
-			for(EntityItem drop : drops) {
+			for(ItemEntity drop : drops) {
 				world.spawnEntity(drop);
 			}
 		}
 	}
 
-	private static EntityItem dropItem(World world, EntityPlayer player, ItemStack stack) {
-		final double y = player.posY - 0.30000001192092896 + player.getEyeHeight();
-		final EntityItem item = new EntityItem(world, player.posX, y, player.posZ, stack);
+	private static ItemEntity dropItem(World world, PlayerEntity player, ItemStack stack) {
+		final double y = player.y - 0.30000001192092896 + player.getEyeHeight();
+		final ItemEntity item = new ItemEntity(world, player.x, y, player.z, stack);
 
 		item.setPickupDelay(40);
 
-		final Random rng = player.getRNG();
+		final Random random = player.getRand();
 
-		final float value1 = rng.nextFloat() * 0.5F;
-		final float value2 = rng.nextFloat() * 6.2831855F;
+		final float value1 = random.nextFloat() * 0.5F;
+		final float value2 = random.nextFloat() * 6.2831855F;
 
-		item.motionX = -MathHelper.sin(value2) * value1;
-		item.motionY = 0.20000000298023224;
-		item.motionZ = MathHelper.cos(value2) * value1;
+		item.velocityX = -MathHelper.sin(value2) * value1;
+		item.velocityY = 0.20000000298023224;
+		item.velocityZ = MathHelper.cos(value2) * value1;
 
 		return item;
 	}

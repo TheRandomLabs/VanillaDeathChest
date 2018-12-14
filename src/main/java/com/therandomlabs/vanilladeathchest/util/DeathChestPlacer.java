@@ -8,18 +8,18 @@ import com.mojang.authlib.GameProfile;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.state.properties.ChestType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityLockableLoot;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.block.enums.ChestType;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import static com.therandomlabs.vanilladeathchest.VanillaDeathChest.LOGGER;
 
@@ -34,12 +34,12 @@ public final class DeathChestPlacer {
 	private static final Random random = new Random();
 
 	private final WeakReference<World> world;
-	private final WeakReference<EntityPlayer> player;
-	private final List<EntityItem> drops;
+	private final WeakReference<PlayerEntity> player;
+	private final List<ItemEntity> drops;
 
 	private boolean alreadyCalled;
 
-	public DeathChestPlacer(World world, EntityPlayer player, List<EntityItem> drops) {
+	public DeathChestPlacer(World world, PlayerEntity player, List<ItemEntity> drops) {
 		this.world = new WeakReference<>(world);
 		this.player = new WeakReference<>(player);
 		this.drops = drops;
@@ -58,7 +58,7 @@ public final class DeathChestPlacer {
 			return true;
 		}
 
-		final EntityPlayer player = this.player.get();
+		final PlayerEntity player = this.player.get();
 
 		if(player == null) {
 			return true;
@@ -67,18 +67,18 @@ public final class DeathChestPlacer {
 		place(world, player);
 
 		//Drop any remaining items
-		for(EntityItem drop : drops) {
+		for(ItemEntity drop : drops) {
 			world.spawnEntity(drop);
 		}
 
 		return true;
 	}
 
-	private void place(World world, EntityPlayer player) {
+	private void place(World world, PlayerEntity player) {
 		final DeathChestType type = VDCConfig.spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
-		final BlockPos playerPos = player.getPosition();
+		final BlockPos playerPos = player.getPos();
 		final boolean useDoubleChest =
 				type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
 
@@ -88,7 +88,7 @@ public final class DeathChestPlacer {
 		if(pos == null) {
 			LOGGER.warn("No death chest location found for player at [%s]", pos);
 
-			for(EntityItem drop : drops) {
+			for(ItemEntity drop : drops) {
 				world.spawnEntity(drop);
 			}
 
@@ -98,61 +98,62 @@ public final class DeathChestPlacer {
 		final Block block;
 
 		if(type == DeathChestType.SHULKER_BOX) {
-			block = BlockShulkerBox.getBlockByColor(VDCConfig.spawning.shulkerBoxColor);
+			block = ShulkerBoxBlock.get(VDCConfig.spawning.shulkerBoxColor);
 		} else if(type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
-			block = BlockShulkerBox.getBlockByColor(EnumDyeColor.byId(random.nextInt(16)));
+			block = ShulkerBoxBlock.get(DyeColor.byId(random.nextInt(16)));
 		} else {
 			block = Blocks.CHEST;
 		}
 
-		final IBlockState state = block.getDefaultState();
+		final BlockState state = block.getDefaultState();
 		final BlockPos east = pos.east();
 
 		if(useDoubleChest) {
-			world.setBlockState(pos, state.with(BlockChest.TYPE, ChestType.LEFT));
-			world.setBlockState(east, state.with(BlockChest.TYPE, ChestType.RIGHT));
+			world.setBlockState(pos, state.with(ChestBlock.field_10770, ChestType.LEFT));
+			world.setBlockState(east, state.with(ChestBlock.field_10770, ChestType.RIGHT));
 		} else {
 			world.setBlockState(pos, state);
 		}
 
-		final TileEntity tile = world.getTileEntity(pos);
-		final TileEntity tile2 = useDoubleChest ? world.getTileEntity(east) : null;
+		final BlockEntity blockEntity = world.getBlockEntity(pos);
+		final BlockEntity blockEntity2 = useDoubleChest ? world.getBlockEntity(east) : null;
 
-		if(!(tile instanceof TileEntityLockableLoot) ||
-				(useDoubleChest && !(tile2 instanceof TileEntityLockableLoot))) {
-			LOGGER.warn("Failed to place death chest at [%s] due to invalid tile entity", pos);
+		if(!(blockEntity instanceof LootableContainerBlockEntity) ||
+				(useDoubleChest && !(blockEntity2 instanceof LootableContainerBlockEntity))) {
+			LOGGER.warn("Failed to place death chest at [%s] due to invalid block entity", pos);
 			return;
 		}
 
-		final UUID playerID = player.getUniqueID();
-		final long creationTime = world.getGameTime();
+		final UUID playerID = player.getUuid();
+		final long creationTime = world.getTime();
 
 		DeathChestManager.addDeathChest(world, playerID, creationTime, pos, useDoubleChest);
 
 		LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
 
-		player.sendMessage(new TextComponentString(String.format(
+		player.addChatMessage(new StringTextComponent(String.format(
 				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
-		)));
+		)), false);
 
-		TileEntityLockableLoot chest = (TileEntityLockableLoot) (useDoubleChest ? tile2 : tile);
+		LootableContainerBlockEntity chest =
+				(LootableContainerBlockEntity) (useDoubleChest ? blockEntity : blockEntity2);
 
 		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
-			chest.setInventorySlotContents(i, drops.get(0).getItem());
+			chest.setInvStack(i, drops.get(0).getStack());
 			drops.remove(0);
 		}
 
 		if(useDoubleChest) {
-			chest = (TileEntityLockableLoot) tile;
+			chest = (LootableContainerBlockEntity) blockEntity;
 
 			for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
-				chest.setInventorySlotContents(i, drops.get(0).getItem());
+				chest.setInvStack(i, drops.get(0).getStack());
 				drops.remove(0);
 			}
 		}
 
 		//Drop any remaining items
-		for(EntityItem drop : drops) {
+		for(ItemEntity drop : drops) {
 			world.spawnEntity(drop);
 		}
 	}

@@ -2,14 +2,13 @@ package com.therandomlabs.vanilladeathchest.api.deathchest;
 
 import java.util.Map;
 import java.util.UUID;
-import com.therandomlabs.vanilladeathchest.api.listener.DeathChestRemoveListener;
+import com.therandomlabs.vanilladeathchest.api.event.DeathChestEvent;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.riftloader.RiftLoader;
 
 public final class DeathChestManager {
 	private DeathChestManager() {}
@@ -36,7 +35,7 @@ public final class DeathChestManager {
 	public static DeathChest getDeathChest(World world, BlockPos pos) {
 		final Block block = world.getBlockState(pos).getBlock();
 
-		if(block != Blocks.CHEST && !(block instanceof BlockShulkerBox)) {
+		if(block != Blocks.CHEST && !(block instanceof ShulkerBoxBlock)) {
 			return null;
 		}
 
@@ -74,9 +73,8 @@ public final class DeathChestManager {
 			east = null;
 		}
 
-		for(DeathChestRemoveListener listener :
-				RiftLoader.instance.getListeners(DeathChestRemoveListener.class)) {
-			listener.onDeathChestRemove(chest, west, east);
+		for(DeathChestEvent.Remove event : DeathChestEvent.REMOVE.getBackingArray()) {
+			event.onRemove(chest, west, east);
 		}
 
 		return chest;

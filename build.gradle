@@ -2,63 +2,54 @@ buildscript {
 	repositories {
 		jcenter()
 
-		mavenCentral()
+		gradlePluginPortal()
 
 		maven {
-			url "https://www.jitpack.io"
-		}
-
-		maven {
-			url "https://files.minecraftforge.net/maven"
-		}
-
-		maven {
-			url "http://repo.spongepowered.org/maven"
+			url "http://maven.fabricmc.net/"
 		}
 	}
 
 	dependencies {
-		classpath "com.github.Chocohead:ForgeGradle:moderniser-SNAPSHOT"
-		classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
+		classpath "net.fabricmc:fabric-loom:0.1.0-SNAPSHOT"
 		classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
 	}
 }
 
-apply plugin: "net.minecraftforge.gradle.tweaker-client"
-apply plugin: "org.spongepowered.mixin"
+apply plugin: "fabric-loom"
 apply plugin: "com.github.johnrengelman.shadow"
-apply plugin: "java"
 
-version = "1.13.2-1.5.1.0-rift"
-group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
+version = "1.14-1.5.1.0-fabric"
 
 sourceCompatibility = targetCompatibility = "1.8"
 
 repositories {
-	mavenCentral()
-
-	maven {
-		url "https://www.dimdev.org/maven/"
-	}
-
-	maven {
-		url "https://www.jitpack.io"
-	}
-
-	maven {
-		url "http://repo.strezz.org/artifactory/list/Strezz-Central"
-	}
-
 	ivy {
 		artifactPattern "https://endless.blue/files/ivy/[module]-[revision].[ext]"
 	}
 }
 
 dependencies {
-	implementation "com.github.Chocohead:Rift:jitpack-SNAPSHOT:dev"
+	minecraft "com.mojang:minecraft:18w50a"
+	mappings "net.fabricmc:yarn:18w50a.2"
+	modCompile "net.fabricmc:fabric-loader:0.2.0.64"
+	modCompile "net.fabricmc:fabric:0.1.1.47"
+
 	shadow "blue.endless:Jankson:0.0.4"
 	compile "blue.endless:Jankson:0.0.4"
+}
+
+minecraft {}
+
+processResources {
+	//Ensure this task is redone when the version changes
+	inputs.property "version", project.version
+
+	//Replace version and mcversion in mcmod.info
+	from(sourceSets.main.resources) {
+		include "mcmod.info"
+		expand "version": project.version
+	}
 }
 
 shadowJar {
@@ -67,43 +58,8 @@ shadowJar {
 	configurations = [project.configurations.shadow]
 }
 
-reobf {
-	shadowJar {
-		mappingType = "NOTCH"
-	}
-}
-
 build.dependsOn shadowJar
 
 artifacts {
 	archives shadowJar
 }
-
-mixin {
-	defaultObfuscationEnv notch
-	add sourceSets.main, "mixins.vanilladeathchest.refmap.json"
-}
-
-minecraft {
-	version = "1.13.2"
-	runDir = "run"
-	mappings = "snapshot_20181130"
-	tweakClass = "org.dimdev.riftloader.launch.RiftLoaderClientTweaker"
-
-	replace "@FINGERPRINT@", project.findProperty("signSHA1")
-}
-
-task signJar(type: SignJar, dependsOn: reobfJar) {
-	onlyIf {
-		project.hasProperty("keyStore")
-	}
-
-	keyStore = project.findProperty("keyStore")
-	alias = project.findProperty("keyStoreAlias")
-	storePass = project.findProperty("keyStorePass")
-	keyPass = project.findProperty("keyStoreKeyPass")
-	inputFile = jar.archivePath
-	outputFile = jar.archivePath
-}
-
-build.dependsOn signJar

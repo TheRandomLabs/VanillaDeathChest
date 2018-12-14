@@ -20,7 +20,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.util.DyeColor;
 import org.apache.commons.lang3.StringUtils;
 
 public final class VDCConfig {
@@ -102,7 +102,7 @@ public final class VDCConfig {
 
 		@Config.LangKey("vanilladeathchest.config.spawning.shulkerBoxColor")
 		@Config.Comment("The color of the shulker box if chestType is set to SHULKER_BOX.")
-		public EnumDyeColor shulkerBoxColor = EnumDyeColor.WHITE;
+		public DyeColor shulkerBoxColor = DyeColor.WHITE;
 	}
 
 	public static final Path PATH =

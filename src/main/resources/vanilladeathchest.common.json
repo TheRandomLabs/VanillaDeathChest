@@ -5,7 +5,7 @@
 	"mixins": [
 		"MixinBlock",
 		"MixinGameRules",
-		"MixinInventoryPlayer",
+		"MixinPlayerInventory",
 	],
 	"injectors": {
 		"defaultRequire": 1

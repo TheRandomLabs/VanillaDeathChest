@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(PlayerInventory.class)
-public class MixinInventoryPlayer {
+public class MixinPlayerInventory {
 	@Shadow
 	public PlayerEntity player;
 	@Shadow

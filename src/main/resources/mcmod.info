@@ -2,7 +2,7 @@
 	{
 		"modid": "vanilladeathchest",
 		"name": "VanillaDeathChest",
-		"description": "Takes the gravestone from OpenBlocks and replaces it with a vanilla chest.",
+		"description": "Places chests (or shulker boxes) where players die that contain all of their items.",
 		"version": "${version}",
 		"mcversion": "${mcversion}",
 		"url": "https://minecraft.curseforge.com/projects/vanilladeathchest",

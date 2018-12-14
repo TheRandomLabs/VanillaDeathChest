@@ -136,7 +136,7 @@ public final class DeathChestPlacer {
 		)), false);
 
 		LootableContainerBlockEntity chest =
-				(LootableContainerBlockEntity) (useDoubleChest ? blockEntity : blockEntity2);
+				(LootableContainerBlockEntity) (useDoubleChest ? blockEntity2 : blockEntity);
 
 		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 			chest.setInvStack(i, drops.get(0).getStack());

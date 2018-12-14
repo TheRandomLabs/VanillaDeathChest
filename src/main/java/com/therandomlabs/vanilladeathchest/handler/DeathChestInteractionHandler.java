@@ -34,14 +34,15 @@ public class DeathChestInteractionHandler implements PlayerInteractionEvent.Bloc
 			}
 		}
 
-		return result;
+		return result == ActionResult.PASS ? ActionResult.SUCCESS : ActionResult.PASS;
 	}
 
 	//onRightClickBlock
 	@Override
 	public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos,
 			Direction direction, float hitX, float hitY, float hitZ) {
-		return onBlockInteract(world, player, pos);
+		return onBlockInteract(world, player, pos) == ActionResult.PASS ?
+				ActionResult.SUCCESS : ActionResult.PASS;
 	}
 
 	public static ActionResult onBlockInteract(World world, PlayerEntity player,

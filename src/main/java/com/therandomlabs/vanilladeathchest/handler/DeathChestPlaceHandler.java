@@ -24,6 +24,10 @@ public class DeathChestPlaceHandler implements PlayerEvent.DropAllItems, Consume
 	@Override
 	public ActionResult onPlayerDropAllItems(World world, PlayerEntity player,
 			List<ItemEntity> drops) {
+		if(drops.isEmpty()) {
+			return ActionResult.SUCCESS;
+		}
+
 		final GameRules gameRules = world.getGameRules();
 
 		if(gameRules.getBoolean("keepInventory")) {

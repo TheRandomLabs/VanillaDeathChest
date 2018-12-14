@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,12 +176,18 @@ public final class VDCConfig {
 
 		//Remove non-category entries
 
+		final List<String> toRemove = new ArrayList<>();
+
 		for(Map.Entry<String, JsonElement> entry : config.entrySet()) {
 			final String key = entry.getKey();
 
 			if(!CATEGORIES.containsKey(key) || !entry.getValue().isJsonObject()) {
-				config.remove(key);
+				toRemove.add(key);
 			}
+		}
+
+		for(String key : toRemove) {
+			config.remove(key);
 		}
 
 		//Write JSON

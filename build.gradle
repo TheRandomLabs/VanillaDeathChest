@@ -41,17 +41,6 @@ dependencies {
 
 minecraft {}
 
-processResources {
-	//Ensure this task is redone when the version changes
-	inputs.property "version", project.version
-
-	//Replace version and mcversion in mcmod.info
-	from(sourceSets.main.resources) {
-		include "mcmod.info"
-		expand "version": project.version
-	}
-}
-
 shadowJar {
 	classifier = ""
 	relocate "blue.endless.jankson", "com.therandomlabs.vanilladeathchest.repackage.blue.endless.jankson"

@@ -1,8 +1,8 @@
 package com.therandomlabs.vanilladeathchest.listener;
 
 import java.util.Map;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.api.listener.GameRuleDefinitionModifier;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.world.GameRules;
 
 public class VDCGameRuleAdder implements GameRuleDefinitionModifier {

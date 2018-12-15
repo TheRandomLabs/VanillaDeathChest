@@ -8,11 +8,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 
 public final class PlayerEvent {
-	public static final HandlerList<DropAllItems> DROP_ALL_ITEMS =
-			new HandlerList<>(DropAllItems.class);
-
 	@FunctionalInterface
 	public interface DropAllItems {
 		ActionResult onPlayerDropAllItems(World world, PlayerEntity player, List<ItemEntity> drops);
 	}
+
+	public static final HandlerList<DropAllItems> DROP_ALL_ITEMS =
+			new HandlerList<>(DropAllItems.class);
 }

@@ -3,6 +3,8 @@ package com.therandomlabs.vanilladeathchest.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.util.ReportedException;
 
 public final class VDCUtils {
 	private VDCUtils() {}
@@ -31,5 +33,9 @@ public final class VDCUtils {
 		}
 
 		return null;
+	}
+
+	public static void crashReport(String message, Throwable throwable) {
+		throw new ReportedException(new CrashReport(message, throwable));
 	}
 }

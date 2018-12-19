@@ -3,6 +3,7 @@ package com.therandomlabs.vanilladeathchest;
 import com.therandomlabs.vanilladeathchest.command.CommandVDCReload;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -32,8 +33,13 @@ public final class VanillaDeathChest {
 	public static CommonProxy proxy;
 
 	@Mod.EventHandler
+	public static void construct(FMLConstructionEvent event) {
+		proxy.construct();
+	}
+
+	@Mod.EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {
-		proxy.preInit(event);
+		proxy.preInit();
 	}
 
 	@Mod.EventHandler

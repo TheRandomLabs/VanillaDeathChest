@@ -2,7 +2,7 @@
 	"id": "vanilladeathchest",
 	"name": "VanillaDeathChest",
 	"description": "Places chests (or shulker boxes) where players die that contain all of their items.",
-	"version": "1.14-1.5.1.3-Fabric",
+	"version": "1.14-1.5.1.4-Fabric",
 	"side": "universal",
 	"initializer": "com.therandomlabs.vanilladeathchest.VanillaDeathChest",
 	"requires": {

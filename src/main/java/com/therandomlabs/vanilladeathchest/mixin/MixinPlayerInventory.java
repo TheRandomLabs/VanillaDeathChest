@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MixinPlayerInventory {
 	@Shadow
 	public PlayerEntity player;
+
 	@Shadow
 	@Final
 	private List<DefaultedList<ItemStack>> field_7543;
@@ -59,8 +60,13 @@ public class MixinPlayerInventory {
 	}
 
 	private static ItemEntity dropItem(World world, PlayerEntity player, ItemStack stack) {
-		final double y = player.y - 0.30000001192092896 + player.getEyeHeight();
-		final ItemEntity item = new ItemEntity(world, player.x, y, player.z, stack);
+		final ItemEntity item = new ItemEntity(
+				world,
+				player.x,
+				player.y - 0.30000001192092896 + player.getEyeHeight(),
+				player.z,
+				stack
+		);
 
 		item.setPickupDelay(40);
 

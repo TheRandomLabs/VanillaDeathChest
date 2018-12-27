@@ -1,20 +1,19 @@
 package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
-import com.therandomlabs.vanilladeathchest.api.event.GameRuleEvent;
 import com.therandomlabs.vanilladeathchest.api.event.PlayerEvent;
 import com.therandomlabs.vanilladeathchest.command.CommandVDCReload;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestDropHandler;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestInteractionHandler;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestPlaceHandler;
-import com.therandomlabs.vanilladeathchest.handler.VDCGameRuleAdder;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.commands.CommandRegistry;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.fabricmc.fabric.events.TickEvent;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
+import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +26,13 @@ public final class VanillaDeathChest implements ModInitializer {
 		VDCConfig.reload();
 
 		if(!VDCConfig.misc.gameRuleName.isEmpty()) {
-			GameRuleEvent.MODIFY.register(new VDCGameRuleAdder());
+			GameRules.getKeys().put(
+					VDCConfig.misc.gameRuleName,
+					new GameRules.Key(
+							Boolean.toString(VDCConfig.misc.gameRuleDefaultValue),
+							GameRules.Type.BOOLEAN
+					)
+			);
 		}
 
 		if(VDCConfig.misc.vdcreload) {

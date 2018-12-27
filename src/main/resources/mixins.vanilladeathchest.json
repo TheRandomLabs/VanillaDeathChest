@@ -7,7 +7,6 @@
 	"refmap": "mixins.vanilladeathchest.refmap.json",
 	"mixins": [
 		"MixinBlock",
-		"MixinGameRules",
 		"MixinInventoryPlayer",
 		"MixinPlayerInteractionManager"
 	]

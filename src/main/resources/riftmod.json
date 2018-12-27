@@ -1,7 +1,7 @@
 {
 	"id": "vanilladeathchest",
 	"name": "VanillaDeathChest",
-	"version": "1.13.2-1.5.1.3-Rift",
+	"version": "1.13.2-1.5.1.4-Rift",
 	"authors": [
 		"TheRandomLabs"
 	],
@@ -10,8 +10,7 @@
 		"com.therandomlabs.vanilladeathchest.listener.DeathChestDropHandler",
 		"com.therandomlabs.vanilladeathchest.listener.DeathChestInteractionHandler",
 		"com.therandomlabs.vanilladeathchest.listener.DeathChestPlaceHandler",
-		"com.therandomlabs.vanilladeathchest.listener.VDCCommandRegistrar",
-		"com.therandomlabs.vanilladeathchest.listener.VDCGameRuleAdder"
+		"com.therandomlabs.vanilladeathchest.listener.VDCCommandRegistrar"
 	],
 	"url": "https://minecraft.curseforge.com/projects/vanilladeathchest",
 	"description": "Places chests (or shulker boxes) where players die that contain all of their items."

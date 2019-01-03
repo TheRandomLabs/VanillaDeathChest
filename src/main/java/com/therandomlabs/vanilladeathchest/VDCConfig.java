@@ -1,20 +1,18 @@
 package com.therandomlabs.vanilladeathchest;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import com.therandomlabs.vanilladeathchest.util.VDCUtils;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -76,7 +74,7 @@ public final class VDCConfig {
 				"120000 ticks is 5 in-game days.",
 				"Set this to 0 to protect death chests indefinitely."
 		})
-		public int period = 1203000;
+		public int period = 120000;
 	}
 
 	public static final class Spawning {
@@ -103,10 +101,6 @@ public final class VDCConfig {
 		public EnumDyeColor shulkerBoxColor = EnumDyeColor.WHITE;
 	}
 
-	private interface PropertyConsumer {
-		void accept(Property property) throws InvocationTargetException, IllegalAccessException;
-	}
-
 	@Config.LangKey("vanilladeathchest.config.misc")
 	@Config.Comment("Options that don't fit into any other categories.")
 	public static final Misc misc = new Misc();
@@ -123,7 +117,11 @@ public final class VDCConfig {
 			ConfigManager.class, "getConfiguration", "getConfiguration", String.class, String.class
 	);
 
-	private static final Map<Property, Object> defaultValues = new HashMap<>();
+	private static final Method SYNC = VDCUtils.findMethod(
+			ConfigManager.class, "sync", "sync", Configuration.class, Class.class, String.class,
+			String.class, boolean.class, Object.class
+	);
+
 	private static final Map<Property, String> comments = new HashMap<>();
 
 	private static boolean firstReload = true;
@@ -137,44 +135,76 @@ public final class VDCConfig {
 
 	public static void reload() {
 		try {
-			if(defaultValues.isEmpty()) {
-				forEachProperties(property -> {
-					if(property.isList()) {
-						defaultValues.put(property, property.getDefaults());
-					} else {
-						defaultValues.put(property, property.getDefault());
-					}
-				});
-			}
+			final Configuration config = (Configuration) GET_CONFIGURATION.invoke(
+					null, VanillaDeathChest.MOD_ID, VanillaDeathChest.MOD_ID
+			);
 
 			//reload() is only called by CommonProxy and VDCConfig
 			//Forge syncs the config during mod construction, so this first sync is not necessary
 			if(!firstReload) {
-				ConfigManager.sync(VanillaDeathChest.MOD_ID, Config.Type.INSTANCE);
+				SYNC.invoke(
+						null, config, VDCConfig.class, VanillaDeathChest.MOD_ID, "", false, null
+				);
 			}
 
 			firstReload = false;
 
-			modifyConfig();
-			ConfigManager.sync(VanillaDeathChest.MOD_ID, Config.Type.INSTANCE);
+			onReload();
 
-			//If Minecraft hasn't loaded yet and ConfigManager.sync is called, the default values
-			//are reset
-			if(!Loader.instance().hasReachedState(LoaderState.AVAILABLE)) {
-				for(Map.Entry<Property, Object> entry : defaultValues.entrySet()) {
-					final Property property = entry.getKey();
+			//Remove old elements
+			for(String name : config.getCategoryNames()) {
+				final ConfigCategory category = config.getCategory(name);
 
-					if(property.isList()) {
-						property.setDefaultValues((String[]) entry.getValue());
-					} else {
-						property.setDefaultValue((String) entry.getValue());
+				category.getValues().forEach((key, property) -> {
+					final String comment = property.getComment();
+
+					if(comment == null || comment.isEmpty()) {
+						category.remove(key);
+						return;
 					}
+
+					String newComment = comments.get(property);
+
+					if(newComment == null) {
+						newComment = comment + "\nDefault: " + property.getDefault();
+						comments.put(property, newComment);
+					}
+
+					property.setComment(newComment);
+				});
+
+				if(category.getValues().isEmpty() || category.getComment() == null) {
+					config.removeCategory(category);
 				}
 			}
 
-			modifyConfig();
+			SYNC.invoke(null, config, VDCConfig.class, VanillaDeathChest.MOD_ID, "", false, null);
+
+			config.save();
+
+			//Remove default values, min/max values and valid values from the comments so
+			//they don't show up twice in the configuration GUI
+			for(String name : config.getCategoryNames()) {
+				final ConfigCategory category = config.getCategory(name);
+
+				category.getValues().forEach((key, property) -> {
+					final String[] comment = property.getComment().split("\n");
+					final StringBuilder prunedComment = new StringBuilder();
+
+					for(String line : comment) {
+						if(line.startsWith("Default:") || line.startsWith("Min:")) {
+							break;
+						}
+
+						prunedComment.append(line).append("\n");
+					}
+
+					final String commentString = prunedComment.toString();
+					property.setComment(commentString.substring(0, commentString.length() - 1));
+				});
+			}
 		} catch(Exception ex) {
-			VDCUtils.crashReport("Error while modifying config", ex);
+			VanillaDeathChest.LOGGER.error("Error while modifying config", ex);
 		}
 	}
 
@@ -196,76 +226,14 @@ public final class VDCConfig {
 			}
 
 			reload();
+
+			MinecraftForge.EVENT_BUS.post(new ConfigChangedEvent.PostConfigChangedEvent(
+					VanillaDeathChest.MOD_ID, null, true, false
+			));
 		} catch(Exception ex) {
-			VDCUtils.crashReport("Error while modifying config", ex);
+			VanillaDeathChest.LOGGER.error("Error while modifying config", ex);
 		}
 	}
 
-	private static void forEachProperties(PropertyConsumer consumer)
-			throws InvocationTargetException, IllegalAccessException {
-		final Configuration config = (Configuration) GET_CONFIGURATION.invoke(
-				null, VanillaDeathChest.MOD_ID, VanillaDeathChest.MOD_ID
-		);
-
-		for(String name : config.getCategoryNames()) {
-			final Map<String, Property> properties = config.getCategory(name).getValues();
-
-			for(Property property : properties.values()) {
-				consumer.accept(property);
-			}
-		}
-	}
-
-	private static void modifyConfig() throws IllegalAccessException, InvocationTargetException {
-		final Configuration config = (Configuration) GET_CONFIGURATION.invoke(
-				null, VanillaDeathChest.MOD_ID, VanillaDeathChest.MOD_ID
-		);
-
-		//Remove old elements
-		for(String name : config.getCategoryNames()) {
-			final ConfigCategory category = config.getCategory(name);
-
-			category.getValues().forEach((key, property) -> {
-				final String comment = property.getComment();
-
-				if(comment == null || comment.isEmpty()) {
-					category.remove(key);
-					return;
-				}
-
-				String newComment = comments.get(property);
-
-				if(newComment == null) {
-					newComment = comment + "\nDefault: " + property.getDefault();
-					comments.put(property, newComment);
-				}
-
-				property.setComment(newComment);
-			});
-
-			if(category.getValues().isEmpty() || category.getComment() == null) {
-				config.removeCategory(category);
-			}
-		}
-
-		config.save();
-
-		//Remove default values, min/max values and valid values from the comments so
-		//they don't show up twice in the configuration GUI
-		forEachProperties(property -> {
-			final String[] comment = property.getComment().split("\n");
-			final StringBuilder prunedComment = new StringBuilder();
-
-			for(String line : comment) {
-				if(line.startsWith("Default:") || line.startsWith("Min:")) {
-					break;
-				}
-
-				prunedComment.append(line).append("\n");
-			}
-
-			final String commentString = prunedComment.toString();
-			property.setComment(commentString.substring(0, commentString.length() - 1));
-		});
-	}
+	private static void onReload() {}
 }

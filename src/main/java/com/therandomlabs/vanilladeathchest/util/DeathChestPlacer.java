@@ -23,10 +23,21 @@ import static com.therandomlabs.vanilladeathchest.VanillaDeathChest.LOGGER;
 
 public final class DeathChestPlacer {
 	public enum DeathChestType {
-		SINGLE_ONLY,
-		SINGLE_OR_DOUBLE,
-		SHULKER_BOX,
-		RANDOM_SHULKER_BOX_COLOR
+		SINGLE_ONLY("singleOnly"),
+		SINGLE_OR_DOUBLE("singleOrDouble"),
+		SHULKER_BOX("shulkerBox"),
+		RANDOM_SHULKER_BOX_COLOR("randomShulkerBoxColor");
+
+		private final String translationKey;
+
+		DeathChestType(String translationKey) {
+			this.translationKey = "vanilladeathchest.config.spawning.chestType." + translationKey;
+		}
+
+		@Override
+		public String toString() {
+			return translationKey;
+		}
 	}
 
 	private static final Random random = new Random();
@@ -96,7 +107,7 @@ public final class DeathChestPlacer {
 		final Block block;
 
 		if(type == DeathChestType.SHULKER_BOX) {
-			block = BlockShulkerBox.getBlockByColor(VDCConfig.spawning.shulkerBoxColor);
+			block = BlockShulkerBox.getBlockByColor(VDCConfig.spawning.shulkerBoxColor.get());
 		} else if(type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
 			block = BlockShulkerBox.getBlockByColor(EnumDyeColor.byMetadata(random.nextInt(16)));
 		} else {

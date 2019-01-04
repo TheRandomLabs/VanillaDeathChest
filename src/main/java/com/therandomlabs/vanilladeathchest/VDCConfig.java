@@ -3,9 +3,9 @@ package com.therandomlabs.vanilladeathchest;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import com.therandomlabs.vanilladeathchest.util.ColorConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import com.therandomlabs.vanilladeathchest.util.VDCUtils;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -98,7 +98,7 @@ public final class VDCConfig {
 
 		@Config.LangKey("vanilladeathchest.config.spawning.shulkerBoxColor")
 		@Config.Comment("The color of the shulker box if chestType is set to SHULKER_BOX.")
-		public EnumDyeColor shulkerBoxColor = EnumDyeColor.WHITE;
+		public ColorConfig shulkerBoxColor = ColorConfig.WHITE;
 	}
 
 	@Config.LangKey("vanilladeathchest.config.misc")

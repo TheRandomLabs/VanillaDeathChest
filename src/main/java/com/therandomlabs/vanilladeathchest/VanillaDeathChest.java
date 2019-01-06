@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.vanilladeathchest.command.CommandVDCReload;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
@@ -27,6 +28,8 @@ public final class VanillaDeathChest {
 	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
 
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+
+	public static final boolean CUBIC_CHUNKS_LOADED = Loader.isModLoaded("cubicchunks");
 
 	@SidedProxy(clientSide = "com.therandomlabs.vanilladeathchest.ClientProxy",
 			serverSide = "com.therandomlabs.vanilladeathchest.CommonProxy")

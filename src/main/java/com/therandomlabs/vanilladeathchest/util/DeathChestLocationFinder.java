@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,24 +16,24 @@ import net.minecraft.world.World;
 public class DeathChestLocationFinder {
 	private static class SearchOrder implements Iterable<BlockPos> {
 		public final int size;
-		private List<BlockPos> coordinates;
+		private List<BlockPos> translations;
 
 		public SearchOrder(int size) {
 			this.size = size;
 
-			coordinates = new ArrayList<>();
+			translations = new ArrayList<>();
 
 			for(int x = 0; x <= size; x++) {
 				add(x);
 				add(-x);
 			}
 
-			coordinates = ImmutableList.copyOf(coordinates);
+			translations = ImmutableList.copyOf(translations);
 		}
 
 		@Override
 		public Iterator<BlockPos> iterator() {
-			return coordinates.iterator();
+			return translations.iterator();
 		}
 
 		private void add(int x) {
@@ -44,8 +45,8 @@ public class DeathChestLocationFinder {
 
 		private void add(int x, int y) {
 			for(int z = 0; z <= size; z++) {
-				coordinates.add(new BlockPos(x, y, z));
-				coordinates.add(new BlockPos(x, y, -z));
+				translations.add(new BlockPos(x, y, z));
+				translations.add(new BlockPos(x, y, -z));
 			}
 		}
 	}
@@ -64,12 +65,14 @@ public class DeathChestLocationFinder {
 			boolean doubleChest) {
 		int y = pos.getY();
 
-		if(y < 1) {
-			y = 1;
-		}
+		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
+			if(y < 1) {
+				y = 1;
+			}
 
-		if(y > 256) {
-			y = 256;
+			if(y > 256) {
+				y = 256;
+			}
 		}
 
 		final BlockPos searchPos = new BlockPos(pos.getX(), y, pos.getZ());

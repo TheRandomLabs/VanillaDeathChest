@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.UUID;
 import com.mojang.authlib.GameProfile;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
@@ -19,7 +20,6 @@ import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import static com.therandomlabs.vanilladeathchest.VanillaDeathChest.LOGGER;
 
 public final class DeathChestPlacer {
 	public enum DeathChestType {
@@ -100,7 +100,7 @@ public final class DeathChestPlacer {
 		useDoubleChest = doubleChest.get();
 
 		if(pos == null) {
-			LOGGER.warn("No death chest location found for player at [%s]", pos);
+			VanillaDeathChest.LOGGER.warn("No death chest location found for player at [%s]", pos);
 			return;
 		}
 
@@ -128,7 +128,9 @@ public final class DeathChestPlacer {
 
 		if(!(tile instanceof TileEntityLockableLoot) ||
 				(useDoubleChest && !(tile2 instanceof TileEntityLockableLoot))) {
-			LOGGER.warn("Failed to place death chest at [%s] due to invalid tile entity", pos);
+			VanillaDeathChest.LOGGER.warn(
+					"Failed to place death chest at [%s] due to invalid tile entity", pos
+			);
 			return;
 		}
 
@@ -137,7 +139,7 @@ public final class DeathChestPlacer {
 
 		DeathChestManager.addDeathChest(world, playerID, creationTime, pos, useDoubleChest);
 
-		LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
+		VanillaDeathChest.LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
 
 		player.sendMessage(new TextComponentString(String.format(
 				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()

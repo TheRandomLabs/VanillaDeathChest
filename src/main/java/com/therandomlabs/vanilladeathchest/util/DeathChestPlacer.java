@@ -88,11 +88,16 @@ public final class DeathChestPlacer {
 
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = player.getPosition();
-		final boolean useDoubleChest =
+
+		boolean useDoubleChest =
 				type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
 
+		final BooleanWrapper doubleChest = new BooleanWrapper(useDoubleChest);
+
 		final BlockPos pos =
-				DeathChestLocationFinder.findLocation(world, player, playerPos, useDoubleChest);
+				DeathChestLocationFinder.findLocation(world, player, playerPos, doubleChest);
+
+		useDoubleChest = doubleChest.get();
 
 		if(pos == null) {
 			LOGGER.warn("No death chest location found for player at [%s]", pos);

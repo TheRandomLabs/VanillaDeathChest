@@ -62,7 +62,7 @@ public class DeathChestLocationFinder {
 	}
 
 	public static BlockPos findLocation(World world, EntityPlayer player, BlockPos pos,
-			boolean doubleChest) {
+			BooleanWrapper doubleChest) {
 		int y = pos.getY();
 
 		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
@@ -75,14 +75,16 @@ public class DeathChestLocationFinder {
 			}
 		}
 
+		final boolean isDoubleChest = doubleChest.get();
 		final BlockPos searchPos = new BlockPos(pos.getX(), y, pos.getZ());
+
 		BlockPos singleChestPos = null;
 
 		for(BlockPos translation : getSearchOrder(VDCConfig.spawning.locationSearchRadius)) {
 			final BlockPos potentialPos = searchPos.add(translation);
 
 			if(canPlace(world, player, potentialPos)) {
-				if(!doubleChest || canPlace(world, player, potentialPos.east())) {
+				if(!isDoubleChest || canPlace(world, player, potentialPos.east())) {
 					return potentialPos;
 				}
 
@@ -93,6 +95,7 @@ public class DeathChestLocationFinder {
 		}
 
 		if(singleChestPos != null) {
+			doubleChest.set(false);
 			return singleChestPos;
 		}
 

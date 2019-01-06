@@ -19,6 +19,8 @@ public final class VanillaDeathChest implements InitializationListener, ItemAdde
 
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
+	public static final boolean CUBIC_CHUNKS_LOADED = false;
+
 	@Override
 	public void onInitialization() {
 		if(!verifyFingerprint()) {

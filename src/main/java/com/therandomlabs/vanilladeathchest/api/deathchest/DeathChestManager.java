@@ -1,11 +1,11 @@
 package com.therandomlabs.vanilladeathchest.api.deathchest;
 
 import java.util.Map;
-import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.api.listener.DeathChestRemoveListener;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -14,11 +14,13 @@ import org.dimdev.riftloader.RiftLoader;
 public final class DeathChestManager {
 	private DeathChestManager() {}
 
-	public static void addDeathChest(World world, UUID playerID, long creationTime,
-			BlockPos pos, boolean isDoubleChest) {
+	public static void addDeathChest(World world, EntityPlayer player, BlockPos pos,
+			boolean isDoubleChest) {
 		final VDCSavedData data = VDCSavedData.get(world);
 		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
-		final DeathChest deathChest = new DeathChest(playerID, creationTime, pos, isDoubleChest);
+		final DeathChest deathChest = new DeathChest(
+				player.getUniqueID(), world.getTotalWorldTime(), pos, isDoubleChest
+		);
 
 		deathChests.put(pos, deathChest);
 

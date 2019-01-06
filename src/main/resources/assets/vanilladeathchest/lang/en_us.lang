@@ -37,6 +37,7 @@ vanilladeathchest.config.spawning.chestType.randomShulkerBoxColor.brown=Brown
 vanilladeathchest.config.spawning.chestType.randomShulkerBoxColor.green=Green
 vanilladeathchest.config.spawning.chestType.randomShulkerBoxColor.red=Red
 vanilladeathchest.config.spawning.chestType.randomShulkerBoxColor.black=Black
+vanilladeathchest.config.spawning.forcePlaceIfLocationNotFound=Force place if location not found
 vanilladeathchest.config.spawning.locationSearchRadius=Location search radius
 vanilladeathchest.config.spawning.shulkerBoxColor=Shulker box color
 

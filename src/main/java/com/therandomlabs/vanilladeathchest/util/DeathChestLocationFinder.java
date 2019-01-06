@@ -73,29 +73,39 @@ public class DeathChestLocationFinder {
 		}
 
 		final BlockPos searchPos = new BlockPos(pos.getX(), y, pos.getZ());
+		BlockPos singleChestPos = null;
 
-		for(BlockPos c : getSearchOrder(VDCConfig.spawning.locationSearchRadius)) {
-			final BlockPos potentialPos = searchPos.add(c);
+		for(BlockPos translation : getSearchOrder(VDCConfig.spawning.locationSearchRadius)) {
+			final BlockPos potentialPos = searchPos.add(translation);
 
-			if(canPlace(world, player, potentialPos, doubleChest)) {
-				return potentialPos;
+			if(canPlace(world, player, potentialPos)) {
+				if(!doubleChest || canPlace(world, player, potentialPos.east())) {
+					return potentialPos;
+				}
+
+				if(singleChestPos == null) {
+					singleChestPos = potentialPos;
+				}
 			}
 		}
 
-		return null;
+		if(singleChestPos != null) {
+			return singleChestPos;
+		}
+
+		return VDCConfig.spawning.forcePlaceIfLocationNotFound ? pos : null;
 	}
 
 	public static boolean canPlace(World world, EntityPlayer player, BlockPos pos,
 			boolean doubleChest) {
 		if(doubleChest) {
-			return canPlaceSingle(world, player, pos) &&
-					canPlaceSingle(world, player, pos.east());
+			return canPlace(world, player, pos) && canPlace(world, player, pos.east());
 		}
 
-		return canPlaceSingle(world, player, pos);
+		return canPlace(world, player, pos);
 	}
 
-	public static boolean canPlaceSingle(World world, EntityPlayer player, BlockPos pos) {
+	public static boolean canPlace(World world, EntityPlayer player, BlockPos pos) {
 		if(!world.isBlockLoaded(pos) || !world.isBlockModifiable(player, pos)) {
 			return false;
 		}

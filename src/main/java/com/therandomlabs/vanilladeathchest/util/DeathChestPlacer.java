@@ -96,11 +96,6 @@ public final class DeathChestPlacer {
 
 		if(pos == null) {
 			LOGGER.warn("No death chest location found for player at [%s]", pos);
-
-			for(EntityItem drop : drops) {
-				world.spawnEntity(drop);
-			}
-
 			return;
 		}
 

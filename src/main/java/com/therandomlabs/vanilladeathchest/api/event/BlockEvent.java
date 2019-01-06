@@ -1,6 +1,6 @@
 package com.therandomlabs.vanilladeathchest.api.event;
 
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -11,5 +11,5 @@ public final class BlockEvent {
 		ItemStack getDrop(World world, BlockPos pos, ItemStack drop);
 	}
 
-	public static final HandlerList<GetDrop> GET_DROP = new HandlerList<>(GetDrop.class);
+	public static final HandlerArray<GetDrop> GET_DROP = new HandlerArray<>(GetDrop.class);
 }

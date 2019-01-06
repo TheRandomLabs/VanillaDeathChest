@@ -1,23 +1,25 @@
 package com.therandomlabs.vanilladeathchest.api.deathchest;
 
 import java.util.Map;
-import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.api.event.DeathChestEvent;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public final class DeathChestManager {
 	private DeathChestManager() {}
 
-	public static void addDeathChest(World world, UUID playerID, long creationTime,
-			BlockPos pos, boolean isDoubleChest) {
+	public static void addDeathChest(World world, PlayerEntity player, BlockPos pos,
+			boolean isDoubleChest) {
 		final VDCSavedData data = VDCSavedData.get(world);
 		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
-		final DeathChest deathChest = new DeathChest(playerID, creationTime, pos, isDoubleChest);
+		final DeathChest deathChest = new DeathChest(
+				player.getUuid(), world.getTime(), pos, isDoubleChest
+		);
 
 		deathChests.put(pos, deathChest);
 

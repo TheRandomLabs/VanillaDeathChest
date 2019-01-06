@@ -46,7 +46,7 @@ public class DeathChest {
 			return true;
 		}
 
-		final OperatorEntry entry = player.getServer().getConfigurationManager().getOpList().
+		final OperatorEntry entry = player.getServer().getPlayerManager().getOpList().
 				get(player.getGameProfile());
 
 		if(entry == null ||

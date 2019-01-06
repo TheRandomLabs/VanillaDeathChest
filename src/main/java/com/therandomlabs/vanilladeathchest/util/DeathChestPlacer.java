@@ -3,8 +3,8 @@ package com.therandomlabs.vanilladeathchest.util;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import com.mojang.authlib.GameProfile;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.block.Block;
@@ -21,7 +21,6 @@ import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import static com.therandomlabs.vanilladeathchest.VanillaDeathChest.LOGGER;
 
 public final class DeathChestPlacer {
 	public enum DeathChestType {
@@ -79,19 +78,19 @@ public final class DeathChestPlacer {
 
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = player.getPos();
-		final boolean useDoubleChest =
+
+		boolean useDoubleChest =
 				type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
 
+		final BooleanWrapper doubleChest = new BooleanWrapper(useDoubleChest);
+
 		final BlockPos pos =
-				DeathChestLocationFinder.findLocation(world, player, playerPos, useDoubleChest);
+				DeathChestLocationFinder.findLocation(world, player, playerPos, doubleChest);
+
+		useDoubleChest = doubleChest.get();
 
 		if(pos == null) {
-			LOGGER.warn("No death chest location found for player at [%s]", pos);
-
-			for(ItemEntity drop : drops) {
-				world.spawnEntity(drop);
-			}
-
+			VanillaDeathChest.LOGGER.warn("No death chest location found for player at [%s]", pos);
 			return;
 		}
 
@@ -120,16 +119,15 @@ public final class DeathChestPlacer {
 
 		if(!(blockEntity instanceof LootableContainerBlockEntity) ||
 				(useDoubleChest && !(blockEntity2 instanceof LootableContainerBlockEntity))) {
-			LOGGER.warn("Failed to place death chest at [%s] due to invalid block entity", pos);
+			VanillaDeathChest.LOGGER.warn(
+					"Failed to place death chest at [%s] due to invalid block entity", pos
+			);
 			return;
 		}
 
-		final UUID playerID = player.getUuid();
-		final long creationTime = world.getTime();
+		DeathChestManager.addDeathChest(world, player, pos, useDoubleChest);
 
-		DeathChestManager.addDeathChest(world, playerID, creationTime, pos, useDoubleChest);
-
-		LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
+		VanillaDeathChest.LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
 
 		player.addChatMessage(new StringTextComponent(String.format(
 				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
@@ -150,11 +148,6 @@ public final class DeathChestPlacer {
 				chest.setInvStack(i, drops.get(0).getStack());
 				drops.remove(0);
 			}
-		}
-
-		//Drop any remaining items
-		for(ItemEntity drop : drops) {
-			world.spawnEntity(drop);
 		}
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -18,24 +19,24 @@ import net.minecraft.world.World;
 public class DeathChestLocationFinder {
 	private static class SearchOrder implements Iterable<BlockPos> {
 		public final int size;
-		private List<BlockPos> coordinates;
+		private List<BlockPos> translations;
 
 		public SearchOrder(int size) {
 			this.size = size;
 
-			coordinates = new ArrayList<>();
+			translations = new ArrayList<>();
 
 			for(int x = 0; x <= size; x++) {
 				add(x);
 				add(-x);
 			}
 
-			coordinates = ImmutableList.copyOf(coordinates);
+			translations = ImmutableList.copyOf(translations);
 		}
 
 		@Override
 		public Iterator<BlockPos> iterator() {
-			return coordinates.iterator();
+			return translations.iterator();
 		}
 
 		private void add(int x) {
@@ -47,8 +48,8 @@ public class DeathChestLocationFinder {
 
 		private void add(int x, int y) {
 			for(int z = 0; z <= size; z++) {
-				coordinates.add(new BlockPos(x, y, z));
-				coordinates.add(new BlockPos(x, y, -z));
+				translations.add(new BlockPos(x, y, z));
+				translations.add(new BlockPos(x, y, -z));
 			}
 		}
 	}
@@ -64,41 +65,56 @@ public class DeathChestLocationFinder {
 	}
 
 	public static BlockPos findLocation(World world, PlayerEntity player, BlockPos pos,
-			boolean doubleChest) {
+			BooleanWrapper doubleChest) {
 		int y = pos.getY();
 
-		if(y < 1) {
-			y = 1;
-		}
+		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
+			if(y < 1) {
+				y = 1;
+			}
 
-		if(y > 256) {
-			y = 256;
-		}
-
-		final BlockPos searchPos = new BlockPos(pos.getX(), y, pos.getZ());
-
-		for(BlockPos c : getSearchOrder(VDCConfig.spawning.locationSearchRadius)) {
-			final BlockPos potentialPos = searchPos.add(c);
-
-			if(canPlace(world, player, potentialPos, doubleChest)) {
-				return potentialPos;
+			if(y > 256) {
+				y = 256;
 			}
 		}
 
-		return null;
+		final boolean isDoubleChest = doubleChest.get();
+		final BlockPos searchPos = new BlockPos(pos.getX(), y, pos.getZ());
+
+		BlockPos singleChestPos = null;
+
+		for(BlockPos translation : getSearchOrder(VDCConfig.spawning.locationSearchRadius)) {
+			final BlockPos potentialPos = searchPos.add(translation);
+
+			if(canPlace(world, player, potentialPos)) {
+				if(!isDoubleChest || canPlace(world, player, potentialPos.east())) {
+					return potentialPos;
+				}
+
+				if(singleChestPos == null) {
+					singleChestPos = potentialPos;
+				}
+			}
+		}
+
+		if(singleChestPos != null) {
+			doubleChest.set(false);
+			return singleChestPos;
+		}
+
+		return VDCConfig.spawning.forcePlaceIfLocationNotFound ? pos : null;
 	}
 
 	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos,
 			boolean doubleChest) {
 		if(doubleChest) {
-			return canPlaceSingle(world, player, pos) &&
-					canPlaceSingle(world, player, pos.east());
+			return canPlace(world, player, pos) && canPlace(world, player, pos.east());
 		}
 
-		return canPlaceSingle(world, player, pos);
+		return canPlace(world, player, pos);
 	}
 
-	public static boolean canPlaceSingle(World world, PlayerEntity player, BlockPos pos) {
+	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos) {
 		if(!world.isBlockLoaded(pos) || !world.canPlayerModifyAt(player, pos)) {
 			return false;
 		}

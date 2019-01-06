@@ -21,6 +21,8 @@ public final class VanillaDeathChest implements ModInitializer {
 	public static final String MOD_ID = "vanilladeathchest";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
+	public static final boolean CUBIC_CHUNKS_LOADED = false;
+
 	@Override
 	public void onInitialize() {
 		VDCConfig.reload();

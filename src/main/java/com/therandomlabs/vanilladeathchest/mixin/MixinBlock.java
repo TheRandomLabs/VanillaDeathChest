@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 public class MixinBlock {
 	@Overwrite
 	public static void dropStack(World world, BlockPos pos, ItemStack stack) {
-		if(world.isRemote || stack.isEmpty() || !world.getGameRules().getBoolean("doTileDrops")) {
+		if(world.isClient || stack.isEmpty() || !world.getGameRules().getBoolean("doTileDrops")) {
 			return;
 		}
 

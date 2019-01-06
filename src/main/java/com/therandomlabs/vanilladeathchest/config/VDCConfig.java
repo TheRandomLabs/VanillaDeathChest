@@ -96,6 +96,13 @@ public final class VDCConfig {
 		public DeathChestPlacer.DeathChestType chestType =
 				DeathChestPlacer.DeathChestType.SINGLE_OR_DOUBLE;
 
+		@Config.LangKey("vanilladeathchest.config.spawning.forcePlaceIfLocationNotFound")
+		@Config.Comment(
+				"Whether to force place a death chest at the location of a player's death if no " +
+						"viable locations are found."
+		)
+		public boolean forcePlaceIfLocationNotFound;
+
 		@Config.RangeInt(min = 1)
 		@Config.LangKey("vanilladeathchest.config.spawning.locationSearchRadius")
 		@Config.Comment("The death chest location search radius.")

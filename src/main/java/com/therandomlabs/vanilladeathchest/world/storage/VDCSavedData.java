@@ -5,18 +5,18 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
-import net.minecraft.class_37;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.PersistedState;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.TagHelper;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.PersistentState;
+import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class VDCSavedData extends PersistedState {
+public class VDCSavedData extends PersistentState {
 	public static final int TAG_COMPOUND = ArrayUtils.indexOf(Tag.TYPES, "COMPOUND");
 
 	public static final String TAG_KEY = "DeathChests";
@@ -36,7 +36,7 @@ public class VDCSavedData extends PersistedState {
 	}
 
 	@Override
-	public void deserialize(CompoundTag nbt) {
+	public void fromTag(CompoundTag nbt) {
 		deathChests.clear();
 
 		final ListTag list = nbt.getList(TAG_KEY, TAG_COMPOUND);
@@ -54,7 +54,7 @@ public class VDCSavedData extends PersistedState {
 	}
 
 	@Override
-	public CompoundTag serialize(CompoundTag nbt) {
+	public CompoundTag toTag(CompoundTag nbt) {
 		final ListTag tagList = new ListTag();
 
 		for(Map.Entry<BlockPos, DeathChest> entry : deathChests.entrySet()) {
@@ -78,15 +78,15 @@ public class VDCSavedData extends PersistedState {
 	}
 
 	public static VDCSavedData get(World world) {
-		final class_37 storage = world.method_8646();
+		final PersistentStateManager stateManager = world.getPersistentStateManager();
 		final DimensionType dimensionType = world.getDimension().getType();
 
 		VDCSavedData instance =
-				storage.method_268(dimensionType, VDCSavedData::new, VanillaDeathChest.MOD_ID);
+				stateManager.create(dimensionType, VDCSavedData::new, VanillaDeathChest.MOD_ID);
 
 		if(instance == null) {
 			instance = new VDCSavedData();
-			storage.method_267(dimensionType, VanillaDeathChest.MOD_ID, instance);
+			stateManager.set(dimensionType, VanillaDeathChest.MOD_ID, instance);
 		}
 
 		return instance;

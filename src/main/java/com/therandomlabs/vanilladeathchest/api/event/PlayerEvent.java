@@ -1,7 +1,7 @@
 package com.therandomlabs.vanilladeathchest.api.event;
 
 import java.util.List;
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -13,6 +13,6 @@ public final class PlayerEvent {
 		ActionResult onPlayerDropAllItems(World world, PlayerEntity player, List<ItemEntity> drops);
 	}
 
-	public static final HandlerList<DropAllItems> DROP_ALL_ITEMS =
-			new HandlerList<>(DropAllItems.class);
+	public static final HandlerArray<DropAllItems> DROP_ALL_ITEMS =
+			new HandlerArray<>(DropAllItems.class);
 }

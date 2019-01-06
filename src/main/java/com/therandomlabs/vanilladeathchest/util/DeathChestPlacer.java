@@ -3,7 +3,6 @@ package com.therandomlabs.vanilladeathchest.util;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import com.mojang.authlib.GameProfile;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
@@ -134,10 +133,7 @@ public final class DeathChestPlacer {
 			return;
 		}
 
-		final UUID playerID = player.getUniqueID();
-		final long creationTime = world.getTotalWorldTime();
-
-		DeathChestManager.addDeathChest(world, playerID, creationTime, pos, useDoubleChest);
+		DeathChestManager.addDeathChest(world, player, pos, useDoubleChest);
 
 		VanillaDeathChest.LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
 

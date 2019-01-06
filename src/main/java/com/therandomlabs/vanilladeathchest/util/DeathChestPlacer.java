@@ -160,10 +160,5 @@ public final class DeathChestPlacer {
 				drops.remove(0);
 			}
 		}
-
-		//Drop any remaining items
-		for(EntityItem drop : drops) {
-			world.spawnEntity(drop);
-		}
 	}
 }

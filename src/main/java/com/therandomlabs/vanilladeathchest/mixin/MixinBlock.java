@@ -33,7 +33,7 @@ public class MixinBlock {
 				pos.getZ() + world.random.nextFloat() * 0.5 + 0.25,
 				stack
 		);
-		item.setPickupDelayDefault();
+		item.setPickupDelayInfinite();
 		world.spawnEntity(item);
 	}
 }

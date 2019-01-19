@@ -82,7 +82,7 @@ public class VDCSavedData extends PersistentState {
 		final DimensionType dimensionType = world.getDimension().getType();
 
 		VDCSavedData instance =
-				stateManager.create(dimensionType, VDCSavedData::new, VanillaDeathChest.MOD_ID);
+				stateManager.get(dimensionType, VDCSavedData::new, VanillaDeathChest.MOD_ID);
 
 		if(instance == null) {
 			instance = new VDCSavedData();

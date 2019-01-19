@@ -12,8 +12,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.util.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class DeathChestLocationFinder {
@@ -125,11 +127,12 @@ public class DeathChestLocationFinder {
 		final ItemPlacementContext context = new ItemPlacementContext(new ItemUsageContext(
 				player,
 				ItemStack.EMPTY,
-				pos,
-				Direction.DOWN,
-				0.0F,
-				0.0F,
-				0.0F
+				new BlockHitResult(
+						new Vec3d(0.0, 0.0, 0.0),
+						Direction.DOWN,
+						pos,
+						false
+				)
 		));
 
 		if((state.isAir() || state.method_11587(context)) &&

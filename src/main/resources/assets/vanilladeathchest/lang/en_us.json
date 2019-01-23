@@ -1,4 +1,3 @@
 {
-	"commands.vdcreloadclient.usage": "/vdcreloadclient",
 	"commands.vdcreloadclient.success": "VanillaDeathChest client-sided configuration reloaded!"
 }

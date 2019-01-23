@@ -2,7 +2,7 @@ package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
 import com.therandomlabs.vanilladeathchest.api.event.PlayerEvent;
-import com.therandomlabs.vanilladeathchest.command.CommandVDCReload;
+import com.therandomlabs.vanilladeathchest.command.VDCReloadCommand;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestDropHandler;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestInteractionHandler;
@@ -38,7 +38,7 @@ public final class VanillaDeathChest implements ModInitializer {
 		}
 
 		if(VDCConfig.misc.vdcreload) {
-			CommandRegistry.INSTANCE.register(false, CommandVDCReload::register);
+			CommandRegistry.INSTANCE.register(false, VDCReloadCommand::register);
 		}
 
 		final DeathChestPlaceHandler placeHandler = new DeathChestPlaceHandler();

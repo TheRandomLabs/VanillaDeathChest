@@ -49,16 +49,12 @@ repositories {
 	maven {
 		url "http://repo.strezz.org/artifactory/list/Strezz-Central"
 	}
-
-	ivy {
-		artifactPattern "https://endless.blue/files/ivy/[module]-[revision].[ext]"
-	}
 }
 
 dependencies {
 	implementation "com.github.Chocohead:Rift:jitpack-SNAPSHOT:dev"
-	shadow "blue.endless:Jankson:0.0.4"
-	compile "blue.endless:Jankson:0.0.4"
+	shadow "blue.endless:jankson:1.1.0"
+	compile "blue.endless:jankson:1.1.0"
 }
 
 shadowJar {

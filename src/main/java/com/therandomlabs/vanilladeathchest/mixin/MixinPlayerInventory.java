@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(PlayerInventory.class)
 public class MixinPlayerInventory {
 	@Shadow
+	@Final
 	public PlayerEntity player;
 
 	@Shadow

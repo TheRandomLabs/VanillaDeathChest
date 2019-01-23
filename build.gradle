@@ -30,19 +30,17 @@ archivesBaseName = "vanilladeathchest"
 sourceCompatibility = targetCompatibility = "1.8"
 
 repositories {
+	mavenCentral()
+
 	maven {
 		url "https://www.dimdev.org/maven/"
-	}
-
-	ivy {
-		artifactPattern "https://endless.blue/files/ivy/[module]-[revision].[ext]"
 	}
 }
 
 dependencies {
 	implementation "org.dimdev:rift:1.0.4-66:dev"
-	shadow "blue.endless:Jankson:0.0.4"
-	compile "blue.endless:Jankson:0.0.4"
+	shadow "blue.endless:jankson:1.1.0"
+	compile "blue.endless:jankson:1.1.0"
 }
 
 shadowJar {

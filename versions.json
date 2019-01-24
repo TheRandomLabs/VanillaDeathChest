@@ -1,6 +1,7 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/vanilladeathchest",
 	"1.12.2": {
+		"1.12.2-1.6.0.0": "Unlocker items and defense entities can now be configured.",
 		"1.12.2-1.5.1.6": "Improved death chest placement.",
 		"1.12.2-1.5.1.5": "On Minecraft Forge 1.12.2-14.23.5.2800 and higher, enum configuration properties are now localized.",
 		"1.12.2-1.5.1.4": "Improved the configuration.",
@@ -26,6 +27,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12.1": {
+		"1.12.2-1.6.0.0": "Unlocker items and defense entities can now be configured.",
 		"1.12.2-1.5.1.6": "Improved death chest placement.",
 		"1.12.2-1.5.1.5": "On Minecraft Forge 1.12.2-14.23.5.2800 and higher, enum configuration properties are now localized.",
 		"1.12.2-1.5.1.4": "Improved the configuration.",
@@ -51,6 +53,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12": {
+		"1.12.2-1.6.0.0": "Unlocker items and defense entities can now be configured.",
 		"1.12.2-1.5.1.6": "Improved death chest placement.",
 		"1.12.2-1.5.1.5": "On Minecraft Forge 1.12.2-14.23.5.2800 and higher, enum configuration properties are now localized.",
 		"1.12.2-1.5.1.4": "Improved the configuration.",
@@ -76,11 +79,11 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"promos": {
-		"1.12.2-latest": "1.12.2-1.5.1.6",
-		"1.12.2-recommended": "1.12.2-1.5.1.6",
-		"1.12.1-latest": "1.12.2-1.5.1.6",
-		"1.12.1-recommended": "1.12.2-1.5.1.6",
-		"1.12-latest": "1.12.2-1.5.1.6",
-		"1.12-recommended": "1.12.2-1.5.1.6"
+		"1.12.2-latest": "1.12.2-1.6.0.0",
+		"1.12.2-recommended": "1.12.2-1.6.0.0",
+		"1.12.1-latest": "1.12.2-1.6.0.0",
+		"1.12.1-recommended": "1.12.2-1.6.0.0",
+		"1.12-latest": "1.12.2-1.6.0.0",
+		"1.12-recommended": "1.12.2-1.6.0.0"
 	}
 }

@@ -1,7 +1,6 @@
 package com.therandomlabs.vanilladeathchest.api.deathchest;
 
 import java.util.Map;
-import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.api.listener.DeathChestRemoveListener;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.block.Block;
@@ -20,7 +19,7 @@ public final class DeathChestManager {
 		final VDCSavedData data = VDCSavedData.get(world);
 		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
 		final DeathChest deathChest = new DeathChest(
-				player.getUniqueID(), world.getGameTime(), pos, isDoubleChest
+				world, player.getUniqueID(), world.getGameTime(), pos, isDoubleChest, false
 		);
 
 		deathChests.put(pos, deathChest);

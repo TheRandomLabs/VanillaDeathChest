@@ -19,27 +19,35 @@ import org.apache.commons.lang3.ArrayUtils;
 public class VDCSavedData extends WorldSavedData {
 	public static final int TAG_COMPOUND = ArrayUtils.indexOf(INBTBase.NBT_TYPES, "COMPOUND");
 
-	public static final String TAG_KEY = "DeathChests";
+	public static final String ID = VanillaDeathChest.MOD_ID;
+
+	public static final String DEATH_CHESTS_KEY = "DeathChests";
+
 	public static final String UUID_KEY = "UUID";
 	public static final String CREATION_TIME_KEY = "CreationTime";
 	public static final String POS_KEY = "Pos";
 	public static final String IS_DOUBLE_CHEST_KEY = "IsDoubleChest";
+	public static final String UNLOCKED_KEY = "Unlocked";
 
+	private static World currentWorld;
+
+	private final World world;
 	private Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
 
 	public VDCSavedData() {
-		super(VanillaDeathChest.MOD_ID);
+		this(ID);
 	}
 
 	public VDCSavedData(String name) {
 		super(name);
+		world = currentWorld;
 	}
 
 	@Override
 	public void read(NBTTagCompound nbt) {
 		deathChests.clear();
 
-		final NBTTagList list = nbt.getList(TAG_KEY, TAG_COMPOUND);
+		final NBTTagList list = nbt.getList(DEATH_CHESTS_KEY, TAG_COMPOUND);
 
 		for(INBTBase tag : list) {
 			final NBTTagCompound compound = (NBTTagCompound) tag;
@@ -48,8 +56,11 @@ public class VDCSavedData extends WorldSavedData {
 			final long creationTime = compound.getLong(CREATION_TIME_KEY);
 			final BlockPos pos = NBTUtil.readBlockPos(compound.getCompound(POS_KEY));
 			final boolean isDoubleChest = compound.getBoolean(IS_DOUBLE_CHEST_KEY);
+			final boolean unlocked = compound.getBoolean(UNLOCKED_KEY);
 
-			deathChests.put(pos, new DeathChest(playerID, creationTime, pos, isDoubleChest));
+			deathChests.put(pos, new DeathChest(
+					world, playerID, creationTime, pos, isDoubleChest, unlocked
+			));
 		}
 	}
 
@@ -65,11 +76,12 @@ public class VDCSavedData extends WorldSavedData {
 			compound.putLong(CREATION_TIME_KEY, deathChest.getCreationTime());
 			compound.put(POS_KEY, NBTUtil.writeBlockPos(entry.getKey()));
 			compound.putBoolean(IS_DOUBLE_CHEST_KEY, deathChest.isDoubleChest());
+			compound.putBoolean(UNLOCKED_KEY, deathChest.isUnlocked());
 
 			tagList.add(compound);
 		}
 
-		nbt.put(TAG_KEY, tagList);
+		nbt.put(DEATH_CHESTS_KEY, tagList);
 		return nbt;
 	}
 
@@ -78,6 +90,8 @@ public class VDCSavedData extends WorldSavedData {
 	}
 
 	public static VDCSavedData get(World world) {
+		currentWorld = world;
+
 		final WorldSavedDataStorage storage = world.getSavedDataStorage();
 		final DimensionType dimensionType = world.getDimension().getType();
 
@@ -86,8 +100,10 @@ public class VDCSavedData extends WorldSavedData {
 
 		if(instance == null) {
 			instance = new VDCSavedData();
-			storage.set(dimensionType, VanillaDeathChest.MOD_ID, instance);
+			storage.set(dimensionType, ID, instance);
 		}
+
+		currentWorld = null;
 
 		return instance;
 	}

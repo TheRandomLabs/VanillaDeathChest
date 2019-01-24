@@ -21,10 +21,83 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 import org.apache.commons.lang3.StringUtils;
 
 public final class VDCConfig {
+	public static final class Defense {
+		@Config.LangKey("vanilladeathchest.config.defense.damageUnlockerInsteadOfConsume")
+		@Config.Comment("Whether the unlocker should be damaged rather than consumed.")
+		public boolean damageUnlockerInsteadOfConsume;
+
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityRegistryName")
+		@Config.Comment({
+				"The registry name of the defense entity.",
+				"If the defense entity is a living entity, it will not automatically despawn.",
+				"If the defense entity can have a revenge target, then the revenge target will " +
+						"be set to the player that died."
+		})
+		public String defenseEntityRegistryName = "";
+
+		@Config.RangeInt(min = 1)
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntitySpawnCount")
+		@Config.Comment("The number of defense entities to spawn.")
+		public int defenseEntitySpawnCount = 3;
+
+		@Config.RangeInt(min = 0, max = Short.MAX_VALUE)
+		@Config.LangKey("vanilladeathchest.config.defense.unlockerConsumeAmount")
+		@Config.Comment({
+				"How many times the unlocker should be consumed or damaged.",
+				"If the unlocker cannot be consumed or damage this many times, the death chest " +
+						"will not be unlocked.",
+				"Note that only the stack that the player is holding will be consumed, and that " +
+						"players in creative mode will not have their unlocker item consumed."
+		})
+		public int unlockerConsumeAmount = 1;
+
+		@Config.LangKey("vanilladeathchest.config.defense.unlockerRegistryName")
+		@Config.Comment("The registry name of the unlocker.")
+		public String unlockerRegistryName = "";
+
+		@Config.Ignore
+		public EntityType defenseEntity;
+
+		@Config.Ignore
+		public Item unlocker;
+
+		private void reload(JsonObject object) {
+			defenseEntity =
+					IRegistry.ENTITY_TYPE.get(new ResourceLocation(defenseEntityRegistryName));
+			defenseEntityRegistryName = defenseEntity == null ?
+					"" : IRegistry.ENTITY_TYPE.getKey(defenseEntity).toString();
+
+			unlocker = IRegistry.ITEM.get(new ResourceLocation(unlockerRegistryName));
+
+			if(unlocker != null) {
+				if(unlocker == Items.AIR) {
+					unlocker = null;
+					unlockerRegistryName = "";
+				} else {
+					unlockerRegistryName = IRegistry.ITEM.getKey(unlocker).toString();
+				}
+			}
+
+			final JsonObject category = object.getAsJsonObject("defense");
+
+			category.getAsJsonObject("defenseEntityRegistryName").addProperty(
+					"value", defenseEntityRegistryName
+			);
+			category.getAsJsonObject("unlockerRegistryName").addProperty(
+					"value", unlockerRegistryName
+			);
+		}
+	}
+
 	public static final class Misc {
 		@Config.LangKey("vanilladeathchest.config.misc.dropDeathChests")
 		@Config.Comment({
@@ -37,7 +110,7 @@ public final class VDCConfig {
 		@Config.Comment("The default value of the spawnDeathChests gamerule.")
 		public boolean gameRuleDefaultValue = true;
 
-		@Config.LangKey("vanilladeathchest.config.misc.gameruleName")
+		@Config.LangKey("vanilladeathchest.config.misc.gameRuleName")
 		@Config.Comment({
 				"The name of the spawnDeathChests gamerule.",
 				"Set this to an empty string to disable the gamerule."
@@ -57,14 +130,16 @@ public final class VDCConfig {
 
 	public static final class Protection {
 		@Config.LangKey("vanilladeathchest.config.protection.bypassIfCreative")
-		@Config.Comment("Whether players in creative mode should be able to bypass death chest " +
-				"protection.")
+		@Config.Comment(
+				"Whether players in creative mode should be able to bypass death chest " +
+						"protection."
+		)
 		public boolean bypassIfCreative = true;
 
 		@Config.RangeInt(min = 0)
 		@Config.LangKey("vanilladeathchest.config.protection.bypassPermissionLevel")
 		@Config.Comment("The required permission level to bypass death chest proteciton.")
-		public int bypassPermissionLevel = 4;
+		public int bypassPermissionLevel = 3;
 
 		@Config.LangKey("vanilladeathchest.config.protection.enabled")
 		@Config.Comment({
@@ -117,6 +192,10 @@ public final class VDCConfig {
 	@Config.Ignore
 	public static final Path PATH =
 			Paths.get("config", VanillaDeathChest.MOD_ID + ".json").toAbsolutePath();
+
+	@Config.LangKey("vanilladeathchest.config.defense")
+	@Config.Comment("Options related to death chest defense.")
+	public static final Defense defense = new Defense();
 
 	@Config.LangKey("vanilladeathchest.config.misc")
 	@Config.Comment("Options that don't fit into any other categories.")
@@ -199,6 +278,8 @@ public final class VDCConfig {
 		for(String key : toRemove) {
 			config.remove(key);
 		}
+
+		onReload(config);
 
 		//Write JSON
 
@@ -360,5 +441,9 @@ public final class VDCConfig {
 		final JsonObject newObject = new JsonObject();
 		object.add(key, newObject);
 		return newObject;
+	}
+
+	private static void onReload(JsonObject object) {
+		defense.reload(object);
 	}
 }

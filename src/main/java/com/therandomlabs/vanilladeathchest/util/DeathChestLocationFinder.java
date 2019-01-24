@@ -6,8 +6,6 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -70,8 +68,10 @@ public class DeathChestLocationFinder {
 				y = 1;
 			}
 
-			if(y > 256) {
-				y = 256;
+			final int actualHeight = world.getActualHeight();
+
+			if(y > actualHeight) {
+				y = actualHeight;
 			}
 		}
 
@@ -116,20 +116,24 @@ public class DeathChestLocationFinder {
 			return false;
 		}
 
-		final IBlockState state = world.getBlockState(pos);
-		final Block block = state.getBlock();
-
-		final BlockPos pos2 = pos.up();
-		final IBlockState state2 = world.getBlockState(pos2);
-		final Block block2 = state2.getBlock();
-
-		if((block.isAir(state, world, pos) || block.isReplaceable(world, pos)) &&
-				(block2.isAir(state2, world, pos2) || block2.isReplaceable(world, pos2))) {
+		if(isReplaceable(world, pos) && isReplaceable(world, pos.up())) {
 			return isNotChest(world, pos.north()) && isNotChest(world, pos.east()) &&
 					isNotChest(world, pos.south()) && isNotChest(world, pos.west());
 		}
 
 		return false;
+	}
+
+	private static boolean isReplaceable(World world, BlockPos pos) {
+		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
+			final int y = pos.getY();
+
+			if(y < 1 || y > world.getActualHeight()) {
+				return false;
+			}
+		}
+
+		return world.getBlockState(pos).getBlock().isReplaceable(world, pos);
 	}
 
 	private static boolean isNotChest(World world, BlockPos pos) {

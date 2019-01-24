@@ -29,14 +29,13 @@ public final class VanillaDeathChest implements InitializationListener, ItemAdde
 
 		MixinBootstrap.init();
 		Mixins.addConfiguration("mixins." + MOD_ID + ".json");
-
-		VDCConfig.reload();
 	}
 
-	//Registering the gamerule in onInitialization apparently causes MinecraftServer to initialize
-	//too early
+	//Doing this in onInitialization causes classes to initialize too early
 	@Override
 	public void registerItems() {
+		VDCConfig.reload();
+
 		if(!VDCConfig.misc.gameRuleName.isEmpty()) {
 			GameRules.getDefinitions().put(
 					VDCConfig.misc.gameRuleName,

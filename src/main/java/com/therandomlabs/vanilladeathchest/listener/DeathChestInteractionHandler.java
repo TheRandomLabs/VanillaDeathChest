@@ -4,6 +4,7 @@ import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.api.listener.BlockHarvestListener;
 import com.therandomlabs.vanilladeathchest.api.listener.RightClickBlockListener;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -50,10 +51,41 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 			return EnumActionResult.FAIL;
 		}
 
-		if(deathChest.canInteract(player)) {
+		if(!deathChest.canInteract(player)) {
+			return EnumActionResult.PASS;
+		}
+
+		if(VDCConfig.defense.unlocker == null || deathChest.isUnlocked()) {
 			return EnumActionResult.SUCCESS;
 		}
 
-		return EnumActionResult.PASS;
+		final ItemStack stack = player.getHeldItem(player.getActiveHand());
+
+		if(stack.getItem() != VDCConfig.defense.unlocker) {
+			return EnumActionResult.PASS;
+		}
+
+		final int amount = VDCConfig.defense.unlockerConsumeAmount;
+
+		if(amount != 0 && !player.capabilities.isCreativeMode) {
+			if(VDCConfig.defense.damageUnlockerInsteadOfConsume) {
+				if(stack.isDamageable()) {
+					if(stack.getDamage() + amount >= stack.getMaxDamage()) {
+						return EnumActionResult.PASS;
+					}
+
+					stack.damageItem(amount, player);
+				}
+			} else {
+				if(stack.getCount() < amount) {
+					return EnumActionResult.PASS;
+				}
+
+				stack.shrink(amount);
+			}
+		}
+
+		deathChest.setUnlocked(true);
+		return EnumActionResult.SUCCESS;
 	}
 }

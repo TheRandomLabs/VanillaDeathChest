@@ -16,7 +16,9 @@ public class Category {
 		final List<Property> propertyList = new ArrayList<>();
 
 		for(Field property : properties) {
-			propertyList.add(new Property(property, property.get(object)));
+			if(property.getAnnotation(Config.Ignore.class) == null) {
+				propertyList.add(new Property(property, property.get(object)));
+			}
 		}
 
 		this.properties = ImmutableList.copyOf(propertyList);

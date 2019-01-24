@@ -14,12 +14,12 @@ import net.minecraftforge.common.MinecraftForge;
 public final class DeathChestManager {
 	private DeathChestManager() {}
 
-	public static void addDeathChest(World world, EntityPlayer player,
-			BlockPos pos, boolean isDoubleChest) {
+	public static void addDeathChest(World world, EntityPlayer player, BlockPos pos,
+			boolean isDoubleChest) {
 		final VDCSavedData data = VDCSavedData.get(world);
 		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
 		final DeathChest deathChest = new DeathChest(
-				player.getUniqueID(), world.getTotalWorldTime(), pos, isDoubleChest
+				world, player.getUniqueID(), world.getTotalWorldTime(), pos, isDoubleChest, false
 		);
 
 		deathChests.put(pos, deathChest);

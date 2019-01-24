@@ -10,12 +10,16 @@ import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityLockableLoot;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -133,14 +137,6 @@ public final class DeathChestPlacer {
 			return;
 		}
 
-		DeathChestManager.addDeathChest(world, player, pos, useDoubleChest);
-
-		VanillaDeathChest.LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
-
-		player.sendMessage(new TextComponentString(String.format(
-				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
-		)));
-
 		TileEntityLockableLoot chest = (TileEntityLockableLoot) tile;
 
 		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
@@ -156,5 +152,38 @@ public final class DeathChestPlacer {
 				drops.remove(0);
 			}
 		}
+
+		if(VDCConfig.defense.defenseEntity != null) {
+			final double x = pos.getX() + 0.5;
+			final double y = pos.getY() + 1.0;
+			final double z = pos.getZ() + 0.5;
+
+			for(int i = 0; i < VDCConfig.defense.defenseEntitySpawnCount; i++) {
+				final Entity entity =
+						EntityList.createEntityByIDFromName(VDCConfig.defense.defenseEntity, world);
+				entity.setPosition(x, y, z);
+
+				if(entity instanceof EntityLiving) {
+					final EntityLiving living = (EntityLiving) entity;
+
+					living.enablePersistence();
+					living.onInitialSpawn(world.getDifficultyForLocation(pos), null);
+
+					//If the entity has an anger mechanism, e.g. zombie pigmen, this should
+					//trigger it
+					living.attackEntityFrom(DamageSource.causePlayerDamage(player), 0.0F);
+				}
+
+				world.spawnEntity(entity);
+			}
+		}
+
+		DeathChestManager.addDeathChest(world, player, pos, useDoubleChest);
+
+		VanillaDeathChest.LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
+
+		player.sendMessage(new TextComponentString(String.format(
+				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
+		)));
 	}
 }

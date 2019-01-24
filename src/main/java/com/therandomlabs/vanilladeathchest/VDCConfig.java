@@ -6,6 +6,10 @@ import java.util.Map;
 import com.therandomlabs.vanilladeathchest.util.ColorConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import com.therandomlabs.vanilladeathchest.util.VDCUtils;
+import net.minecraft.entity.EntityList;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -15,10 +19,85 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistry;
+import org.apache.commons.lang3.ArrayUtils;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 @Config(modid = VanillaDeathChest.MOD_ID, name = VanillaDeathChest.MOD_ID, category = "")
 public final class VDCConfig {
+	public static final class Defense {
+		@Config.LangKey("vanilladeathchest.config.defense.damageUnlockerInsteadOfConsume")
+		@Config.Comment("Whether the unlocker should be damaged rather than consumed.")
+		public boolean damageUnlockerInsteadOfConsume;
+
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityRegistryName")
+		@Config.Comment({
+				"The registry name of the defense entity.",
+				"If the defense entity is a living entity, it will not automatically despawn."
+		})
+		public String defenseEntityRegistryName = "";
+
+		@Config.RangeInt(min = 1)
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntitySpawnCount")
+		@Config.Comment("The number of defense entities to spawn.")
+		public int defenseEntitySpawnCount = 3;
+
+		@Config.RangeInt(min = 0, max = Short.MAX_VALUE)
+		@Config.LangKey("vanilladeathchest.config.defense.unlockerConsumeAmount")
+		@Config.Comment({
+				"How many times the unlocker should be consumed or damaged.",
+				"If the unlocker cannot be consumed or damage this many times, the death chest " +
+						"will not be unlocked.",
+				"Note that only the stack that the player is holding will be consumed, and that " +
+						"players in creative mode will not have their unlocker item consumed."
+		})
+		public int unlockerConsumeAmount = 1;
+
+		@Config.RangeInt(min = 0, max = Short.MAX_VALUE)
+		@Config.LangKey("vanilladeathchest.config.defense.unlockerMeta")
+		@Config.Comment("The meta value of the unlocker.")
+		public int unlockerMeta = OreDictionary.WILDCARD_VALUE;
+
+		@Config.LangKey("vanilladeathchest.config.defense.unlockerRegistryName")
+		@Config.Comment("The registry name of the unlocker.")
+		public String unlockerRegistryName = "";
+
+		@Config.Ignore
+		public ResourceLocation defenseEntity;
+
+		@Config.Ignore
+		public Item unlocker;
+
+		private void reload() {
+			final ResourceLocation[] entityNames =
+					EntityList.getEntityNameList().toArray(new ResourceLocation[0]);
+			final int index = ArrayUtils.indexOf(
+					entityNames, new ResourceLocation(defenseEntityRegistryName)
+			);
+
+			if(index == ArrayUtils.INDEX_NOT_FOUND) {
+				defenseEntity = null;
+				defenseEntityRegistryName = "";
+			} else {
+				defenseEntity = entityNames[index];
+				defenseEntityRegistryName = defenseEntity.toString();
+			}
+
+			unlocker = ITEM_REGISTRY.getValue(new ResourceLocation(unlockerRegistryName));
+
+			if(unlocker != null) {
+				if(unlocker == Items.AIR) {
+					unlocker = null;
+					unlockerRegistryName = "";
+				} else {
+					unlockerRegistryName = unlocker.getRegistryName().toString();
+				}
+			}
+		}
+	}
+
 	public static final class Misc {
 		@Config.LangKey("vanilladeathchest.config.misc.dropDeathChests")
 		@Config.Comment({
@@ -51,8 +130,10 @@ public final class VDCConfig {
 
 	public static final class Protection {
 		@Config.LangKey("vanilladeathchest.config.protection.bypassIfCreative")
-		@Config.Comment("Whether players in creative mode should be able to bypass death chest " +
-				"protection.")
+		@Config.Comment(
+				"Whether players in creative mode should be able to bypass death chest " +
+						"protection."
+		)
 		public boolean bypassIfCreative = true;
 
 		@Config.RangeInt(min = 0)
@@ -108,6 +189,10 @@ public final class VDCConfig {
 		public ColorConfig shulkerBoxColor = ColorConfig.WHITE;
 	}
 
+	@Config.LangKey("vanilladeathchest.config.defense")
+	@Config.Comment("Options related to death chest defense.")
+	public static final Defense defense = new Defense();
+
 	@Config.LangKey("vanilladeathchest.config.misc")
 	@Config.Comment("Options that don't fit into any other categories.")
 	public static final Misc misc = new Misc();
@@ -119,6 +204,9 @@ public final class VDCConfig {
 	@Config.LangKey("vanilladeathchest.config.spawning")
 	@Config.Comment("Options related to death chest spawning.")
 	public static final Spawning spawning = new Spawning();
+
+	private static final IForgeRegistry<Item> ITEM_REGISTRY =
+			GameRegistry.findRegistry(Item.class);
 
 	private static final Method GET_CONFIGURATION = VDCUtils.findMethod(
 			ConfigManager.class, "getConfiguration", "getConfiguration", String.class, String.class
@@ -242,5 +330,7 @@ public final class VDCConfig {
 		}
 	}
 
-	private static void onReload() {}
+	private static void onReload() {
+		defense.reload();
+	}
 }

@@ -2,21 +2,32 @@ package com.therandomlabs.vanilladeathchest.api.deathchest;
 
 import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class DeathChest {
+	private final World world;
 	private final UUID playerID;
 	private final long creationTime;
 	private final BlockPos pos;
 	private final boolean isDoubleChest;
+	private boolean unlocked;
 
-	public DeathChest(UUID playerID, long creationTime, BlockPos pos, boolean isDoubleChest) {
+	public DeathChest(World world, UUID playerID, long creationTime, BlockPos pos,
+			boolean isDoubleChest, boolean unlocked) {
+		this.world = world;
 		this.playerID = playerID;
 		this.creationTime = creationTime;
 		this.pos = pos;
 		this.isDoubleChest = isDoubleChest;
+		this.unlocked = unlocked;
+	}
+
+	public World getWorld() {
+		return world;
 	}
 
 	public UUID getPlayerID() {
@@ -33,6 +44,15 @@ public class DeathChest {
 
 	public boolean isDoubleChest() {
 		return isDoubleChest;
+	}
+
+	public boolean isUnlocked() {
+		return unlocked;
+	}
+
+	public void setUnlocked(boolean flag) {
+		unlocked = flag;
+		VDCSavedData.get(world).markDirty();
 	}
 
 	public boolean canInteract(EntityPlayer player) {

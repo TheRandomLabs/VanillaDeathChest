@@ -2,8 +2,10 @@ package com.therandomlabs.vanilladeathchest.handler;
 
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -53,10 +55,41 @@ public class DeathChestInteractionHandler implements PlayerInteractionEvent.Bloc
 			return ActionResult.FAILURE;
 		}
 
-		if(deathChest.canInteract(player)) {
+		if(!deathChest.canInteract(player)) {
+			return ActionResult.PASS;
+		}
+
+		if(VDCConfig.defense.unlocker == null || deathChest.isUnlocked()) {
 			return ActionResult.SUCCESS;
 		}
 
-		return ActionResult.PASS;
+		final ItemStack stack = player.getStackInHand(player.getActiveHand());
+
+		if(stack.getItem() != VDCConfig.defense.unlocker) {
+			return ActionResult.PASS;
+		}
+
+		final int amount = VDCConfig.defense.unlockerConsumeAmount;
+
+		if(amount != 0 && !player.abilities.creativeMode) {
+			if(VDCConfig.defense.damageUnlockerInsteadOfConsume) {
+				if(stack.hasDurability()) {
+					if(stack.getDamage() + amount >= stack.getDurability()) {
+						return ActionResult.PASS;
+					}
+
+					stack.applyDamage(amount, player);
+				}
+			} else {
+				if(stack.getAmount() < amount) {
+					return ActionResult.PASS;
+				}
+
+				stack.subtractAmount(amount);
+			}
+		}
+
+		deathChest.setUnlocked(true);
+		return ActionResult.SUCCESS;
 	}
 }

@@ -18,7 +18,7 @@ public final class DeathChestManager {
 		final VDCSavedData data = VDCSavedData.get(world);
 		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
 		final DeathChest deathChest = new DeathChest(
-				player.getUuid(), world.getTime(), pos, isDoubleChest
+				world, player.getUuid(), world.getTime(), pos, isDoubleChest, false
 		);
 
 		deathChests.put(pos, deathChest);

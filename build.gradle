@@ -19,7 +19,7 @@ apply plugin: "fabric-loom"
 apply plugin: "com.github.johnrengelman.shadow"
 
 archivesBaseName = "vanilladeathchest"
-version = "1.14-1.5.1.8-fabric"
+version = "1.14-1.6.0.1-fabric"
 
 sourceCompatibility = targetCompatibility = "1.8"
 

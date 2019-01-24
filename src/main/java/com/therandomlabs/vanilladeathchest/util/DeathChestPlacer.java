@@ -15,7 +15,11 @@ import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.block.enums.ChestType;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.SpawnType;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.DyeColor;
@@ -125,14 +129,6 @@ public final class DeathChestPlacer {
 			return;
 		}
 
-		DeathChestManager.addDeathChest(world, player, pos, useDoubleChest);
-
-		VanillaDeathChest.LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
-
-		player.addChatMessage(new StringTextComponent(String.format(
-				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
-		)), false);
-
 		LootableContainerBlockEntity chest =
 				(LootableContainerBlockEntity) (useDoubleChest ? blockEntity2 : blockEntity);
 
@@ -149,5 +145,39 @@ public final class DeathChestPlacer {
 				drops.remove(0);
 			}
 		}
+
+		if(VDCConfig.defense.defenseEntity != null) {
+			final double x = pos.getX() + 0.5;
+			final double y = pos.getY() + 1.0;
+			final double z = pos.getZ() + 0.5;
+
+			for(int i = 0; i < VDCConfig.defense.defenseEntitySpawnCount; i++) {
+				final Entity entity = VDCConfig.defense.defenseEntity.create(world);
+				entity.setPosition(x, y, z);
+
+				if(entity instanceof MobEntity) {
+					final MobEntity living = (MobEntity) entity;
+
+					living.setPersistent();
+					living.prepareEntityData(
+							world, world.getLocalDifficulty(pos), SpawnType.EVENT, null, null
+					);
+
+					//If the entity has an anger mechanism, e.g. zombie pigmen, this should
+					//trigger it
+					living.damage(DamageSource.player(player), 0.0F);
+				}
+
+				world.spawnEntity(entity);
+			}
+		}
+
+		DeathChestManager.addDeathChest(world, player, pos, useDoubleChest);
+
+		VanillaDeathChest.LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
+
+		player.addChatMessage(new StringTextComponent(String.format(
+				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
+		)), false);
 	}
 }

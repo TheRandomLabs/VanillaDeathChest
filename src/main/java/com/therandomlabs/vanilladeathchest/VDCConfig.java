@@ -35,7 +35,9 @@ public final class VDCConfig {
 		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityRegistryName")
 		@Config.Comment({
 				"The registry name of the defense entity.",
-				"If the defense entity is a living entity, it will not automatically despawn."
+				"If the defense entity is a living entity, it will not automatically despawn.",
+				"If the defense entity can have a revenge target, then the revenge target will " +
+						"be set to the player that died."
 		})
 		public String defenseEntityRegistryName = "";
 
@@ -110,7 +112,7 @@ public final class VDCConfig {
 		@Config.Comment("The default value of the spawnDeathChests gamerule.")
 		public boolean gameRuleDefaultValue = true;
 
-		@Config.LangKey("vanilladeathchest.config.misc.gameruleName")
+		@Config.LangKey("vanilladeathchest.config.misc.gameRuleName")
 		@Config.Comment({
 				"The name of the spawnDeathChests gamerule.",
 				"Set this to an empty string to disable the gamerule."

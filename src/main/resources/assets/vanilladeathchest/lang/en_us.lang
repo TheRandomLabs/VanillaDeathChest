@@ -10,8 +10,8 @@ vanilladeathchest.config.defense.unlockerRegistryName=Unlocker registry name
 vanilladeathchest.config.misc=Miscellaneous
 vanilladeathchest.config.misc.tooltip=Options that don't fit into any other categories.
 vanilladeathchest.config.misc.dropDeathChests=Drop death chests
-vanilladeathchest.config.misc.gameruleDefaultValue=Gamerule default value
-vanilladeathchest.config.misc.gameruleName=Gamerule name
+vanilladeathchest.config.misc.gameRuleDefaultValue=Gamerule default value
+vanilladeathchest.config.misc.gameRuleName=Gamerule name
 vanilladeathchest.config.misc.vdcreload=/vdcreload
 vanilladeathchest.config.misc.vdcreloadclient=/vdcreloadclient
 

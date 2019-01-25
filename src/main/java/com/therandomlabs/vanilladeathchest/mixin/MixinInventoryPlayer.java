@@ -8,7 +8,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -45,9 +44,7 @@ public class MixinInventoryPlayer {
 
 		for(PlayerDropAllItemsListener listener :
 				RiftLoader.instance.getListeners(PlayerDropAllItemsListener.class)) {
-			final EnumActionResult result = listener.onPlayerDropAllItems(world, player, drops);
-
-			if(result == EnumActionResult.PASS) {
+			if(!listener.onPlayerDropAllItems(world, player, drops)) {
 				return;
 			}
 		}

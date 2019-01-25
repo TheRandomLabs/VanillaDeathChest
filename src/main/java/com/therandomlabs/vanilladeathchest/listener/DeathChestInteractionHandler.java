@@ -8,7 +8,6 @@ import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -18,51 +17,56 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 	private static BlockPos harvesting;
 
 	@Override
-	public EnumActionResult onBlockHarvest(World world, EntityPlayerMP player, BlockPos pos) {
+	public boolean onBlockHarvest(World world, EntityPlayerMP player, BlockPos pos) {
 		if(harvesting == pos) {
-			return EnumActionResult.SUCCESS;
+			return true;
 		}
 
-		final EnumActionResult result = onBlockInteract(world, player, pos);
-
-		if(result == EnumActionResult.SUCCESS) {
-			final DeathChest chest = DeathChestManager.removeDeathChest(world, pos);
-
-			if(chest.isDoubleChest()) {
-				harvesting = chest.getPos().equals(pos) ? pos.east() : pos.west();
-				player.interactionManager.tryHarvestBlock(harvesting);
-			}
-		}
-
-		return result;
-	}
-
-	@Override
-	public EnumActionResult onRightClickBlock(World world, EntityPlayerMP player, ItemStack stack,
-			EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		return onBlockInteract(world, player, pos);
-	}
-
-	public static EnumActionResult onBlockInteract(World world, EntityPlayer player,
-			BlockPos pos) {
 		final DeathChest deathChest = DeathChestManager.getDeathChest(world, pos);
 
 		if(deathChest == null) {
-			return EnumActionResult.FAIL;
+			return true;
 		}
 
+		if(!canInteract(player, deathChest)) {
+			return false;
+		}
+
+		final DeathChest chest = DeathChestManager.removeDeathChest(world, pos);
+
+		if(chest.isDoubleChest()) {
+			harvesting = chest.getPos().equals(pos) ? pos.east() : pos.west();
+			player.interactionManager.tryHarvestBlock(harvesting);
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean onRightClickBlock(World world, EntityPlayerMP player, ItemStack stack,
+			EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		final DeathChest deathChest = DeathChestManager.getDeathChest(world, pos);
+
+		if(deathChest == null) {
+			return true;
+		}
+
+		return canInteract(player, deathChest);
+	}
+
+	public static boolean canInteract(EntityPlayer player, DeathChest deathChest) {
 		if(!deathChest.canInteract(player)) {
-			return EnumActionResult.PASS;
+			return false;
 		}
 
 		if(VDCConfig.defense.unlocker == null || deathChest.isUnlocked()) {
-			return EnumActionResult.SUCCESS;
+			return true;
 		}
 
 		final ItemStack stack = player.getHeldItem(player.getActiveHand());
 
 		if(stack.getItem() != VDCConfig.defense.unlocker) {
-			return EnumActionResult.PASS;
+			return false;
 		}
 
 		final int amount = VDCConfig.defense.unlockerConsumeAmount;
@@ -71,14 +75,14 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 			if(VDCConfig.defense.damageUnlockerInsteadOfConsume) {
 				if(stack.isDamageable()) {
 					if(stack.getDamage() + amount >= stack.getMaxDamage()) {
-						return EnumActionResult.PASS;
+						return false;
 					}
 
 					stack.damageItem(amount, player);
 				}
 			} else {
 				if(stack.getCount() < amount) {
-					return EnumActionResult.PASS;
+					return false;
 				}
 
 				stack.shrink(amount);
@@ -86,6 +90,6 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 		}
 
 		deathChest.setUnlocked(true);
-		return EnumActionResult.SUCCESS;
+		return true;
 	}
 }

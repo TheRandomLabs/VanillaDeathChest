@@ -93,7 +93,9 @@ public final class DeathChestPlacer {
 		useDoubleChest = doubleChest.get();
 
 		if(pos == null) {
-			VanillaDeathChest.LOGGER.warn("No death chest location found for player at [%s]", pos);
+			VanillaDeathChest.LOGGER.warn(
+					"No death chest location found for player at " + playerPos
+			);
 			return;
 		}
 
@@ -123,7 +125,7 @@ public final class DeathChestPlacer {
 		if(!(tile instanceof TileEntityLockableLoot) ||
 				(useDoubleChest && !(tile2 instanceof TileEntityLockableLoot))) {
 			VanillaDeathChest.LOGGER.warn(
-					"Failed to place death chest at [%s] due to invalid tile entity", pos
+					"Failed to place death chest at %s due to invalid tile entity", pos
 			);
 			return;
 		}

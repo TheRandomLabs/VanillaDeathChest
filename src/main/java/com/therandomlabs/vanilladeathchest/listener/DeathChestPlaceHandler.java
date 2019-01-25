@@ -12,7 +12,6 @@ import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -22,27 +21,22 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsListener, Serve
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
 
 	@Override
-	public EnumActionResult onPlayerDropAllItems(World world, EntityPlayer player,
-			List<EntityItem> drops) {
+	public boolean onPlayerDropAllItems(World world, EntityPlayer player, List<EntityItem> drops) {
 		if(drops.isEmpty()) {
-			return EnumActionResult.SUCCESS;
+			return true;
 		}
 
 		final GameRules gameRules = world.getGameRules();
 
-		if(gameRules.getBoolean("keepInventory")) {
-			return EnumActionResult.SUCCESS;
-		}
-
-		if(!(VDCConfig.misc.gameRuleName.isEmpty() ||
-				gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {
-			return EnumActionResult.SUCCESS;
+		if(gameRules.getBoolean("keepInventory") || (!VDCConfig.misc.gameRuleName.isEmpty() &&
+				!gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {
+			return true;
 		}
 
 		final Queue<DeathChestPlacer> placers = getPlacers(world);
 		placers.add(new DeathChestPlacer(world, player, drops));
 
-		return EnumActionResult.PASS;
+		return false;
 	}
 
 	@Override

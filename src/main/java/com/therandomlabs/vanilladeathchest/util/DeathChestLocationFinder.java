@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.BlockItemUseContext;
@@ -145,7 +146,8 @@ public class DeathChestLocationFinder {
 			}
 		}
 
-		return world.getBlockState(pos).isReplaceable(context);
+		final IBlockState state = world.getBlockState(pos);
+		return state.isAir() || state.isReplaceable(context);
 	}
 
 	private static boolean isNotChest(World world, BlockPos pos) {

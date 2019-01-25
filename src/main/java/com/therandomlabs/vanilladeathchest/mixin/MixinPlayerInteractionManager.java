@@ -32,19 +32,9 @@ public class MixinPlayerInteractionManager {
 			float hitY, float hitZ, CallbackInfoReturnable<EnumActionResult> callback) {
 		for(RightClickBlockListener listener :
 				RiftLoader.instance.getListeners(RightClickBlockListener.class)) {
-			final EnumActionResult result = listener.onRightClickBlock(
-					world,
-					(EntityPlayerMP) player,
-					stack,
-					hand,
-					pos,
-					facing,
-					hitX,
-					hitY,
-					hitZ
-			);
-
-			if(result == EnumActionResult.PASS) {
+			if(!listener.onRightClickBlock(
+					world, (EntityPlayerMP) player, stack, hand, pos, facing, hitX, hitY, hitZ
+			)) {
 				callback.setReturnValue(EnumActionResult.PASS);
 				callback.cancel();
 				return;
@@ -56,9 +46,7 @@ public class MixinPlayerInteractionManager {
 	public void tryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> callback) {
 		for(BlockHarvestListener listener :
 				RiftLoader.instance.getListeners(BlockHarvestListener.class)) {
-			final EnumActionResult result = listener.onBlockHarvest(world, player, pos);
-
-			if(result == EnumActionResult.PASS) {
+			if(!listener.onBlockHarvest(world, player, pos)) {
 				callback.setReturnValue(false);
 				callback.cancel();
 				return;

@@ -8,7 +8,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -29,7 +29,7 @@ public class MixinPlayerInventory {
 
 	@Overwrite
 	public void dropAll() {
-		final World world = player.getEntityWorld();
+		final ServerWorld world = (ServerWorld) player.getEntityWorld();
 		final List<ItemEntity> drops = new ArrayList<>();
 
 		for(List<ItemStack> stacks : field_7543) {
@@ -44,11 +44,8 @@ public class MixinPlayerInventory {
 			}
 		}
 
-		for(PlayerEvent.DropAllItems event :
-				PlayerEvent.DROP_ALL_ITEMS.getBackingArray()) {
-			final ActionResult result = event.onPlayerDropAllItems(world, player, drops);
-
-			if(result == ActionResult.PASS) {
+		for(PlayerEvent.DropAllItems event : PlayerEvent.DROP_ALL_ITEMS.getBackingArray()) {
+			if(!event.onPlayerDropAllItems(world, player, drops)) {
 				return;
 			}
 		}

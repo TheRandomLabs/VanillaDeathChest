@@ -5,18 +5,18 @@ import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.config.OperatorEntry;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class DeathChest {
-	private final World world;
+	private final ServerWorld world;
 	private final UUID playerID;
 	private final long creationTime;
 	private final BlockPos pos;
 	private final boolean isDoubleChest;
 	private boolean unlocked;
 
-	public DeathChest(World world, UUID playerID, long creationTime, BlockPos pos,
+	public DeathChest(ServerWorld world, UUID playerID, long creationTime, BlockPos pos,
 			boolean isDoubleChest, boolean unlocked) {
 		this.world = world;
 		this.playerID = playerID;
@@ -26,7 +26,7 @@ public class DeathChest {
 		this.unlocked = unlocked;
 	}
 
-	public World getWorld() {
+	public ServerWorld getWorld() {
 		return world;
 	}
 

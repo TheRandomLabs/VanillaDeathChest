@@ -21,10 +21,10 @@ import net.minecraft.entity.SpawnType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public final class DeathChestPlacer {
 	public enum DeathChestType {
@@ -36,13 +36,13 @@ public final class DeathChestPlacer {
 
 	private static final Random random = new Random();
 
-	private final WeakReference<World> world;
+	private final WeakReference<ServerWorld> world;
 	private final WeakReference<PlayerEntity> player;
 	private final List<ItemEntity> drops;
 
 	private boolean alreadyCalled;
 
-	public DeathChestPlacer(World world, PlayerEntity player, List<ItemEntity> drops) {
+	public DeathChestPlacer(ServerWorld world, PlayerEntity player, List<ItemEntity> drops) {
 		this.world = new WeakReference<>(world);
 		this.player = new WeakReference<>(player);
 		this.drops = drops;
@@ -55,7 +55,7 @@ public final class DeathChestPlacer {
 			return false;
 		}
 
-		final World world = this.world.get();
+		final ServerWorld world = this.world.get();
 
 		if(world == null) {
 			return true;
@@ -77,7 +77,7 @@ public final class DeathChestPlacer {
 		return true;
 	}
 
-	private void place(World world, PlayerEntity player) {
+	private void place(ServerWorld world, PlayerEntity player) {
 		final DeathChestType type = VDCConfig.spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
@@ -112,8 +112,8 @@ public final class DeathChestPlacer {
 		final BlockPos east = pos.east();
 
 		if(useDoubleChest) {
-			world.setBlockState(pos, state.with(ChestBlock.field_10770, ChestType.LEFT));
-			world.setBlockState(east, state.with(ChestBlock.field_10770, ChestType.RIGHT));
+			world.setBlockState(pos, state.with(ChestBlock.CHEST_TYPE, ChestType.LEFT));
+			world.setBlockState(east, state.with(ChestBlock.CHEST_TYPE, ChestType.RIGHT));
 		} else {
 			world.setBlockState(pos, state);
 		}

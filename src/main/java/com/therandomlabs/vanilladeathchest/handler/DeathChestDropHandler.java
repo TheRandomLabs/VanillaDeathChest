@@ -12,8 +12,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class DeathChestDropHandler implements
-		DeathChestEvent.Remove, BlockEvent.GetDrop, Consumer<MinecraftServer> {
+public class DeathChestDropHandler
+		implements DeathChestEvent.Remove, BlockEvent.GetDrop, Consumer<MinecraftServer> {
 	private static final List<BlockPos> justRemoved = new ArrayList<>();
 
 	@Override

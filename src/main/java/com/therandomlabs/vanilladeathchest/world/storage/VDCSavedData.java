@@ -8,12 +8,11 @@ import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.TagHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
-import net.minecraft.world.PersistentStateManager;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.dimension.DimensionalPersistentStateManager;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class VDCSavedData extends PersistentState {
@@ -29,9 +28,9 @@ public class VDCSavedData extends PersistentState {
 	public static final String IS_DOUBLE_CHEST_KEY = "IsDoubleChest";
 	public static final String UNLOCKED_KEY = "Unlocked";
 
-	private static World currentWorld;
+	private static ServerWorld currentWorld;
 
-	private final World world;
+	private final ServerWorld world;
 	private Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
 
 	public VDCSavedData() {
@@ -89,17 +88,15 @@ public class VDCSavedData extends PersistentState {
 		return deathChests;
 	}
 
-	public static VDCSavedData get(World world) {
+	public static VDCSavedData get(ServerWorld world) {
 		currentWorld = world;
 
-		final PersistentStateManager stateManager = world.getPersistentStateManager();
-		final DimensionType dimensionType = world.getDimension().getType();
-
-		VDCSavedData instance = stateManager.get(dimensionType, VDCSavedData::new, ID);
+		final DimensionalPersistentStateManager stateManager = world.method_17983();
+		VDCSavedData instance = stateManager.get(VDCSavedData::new, ID);
 
 		if(instance == null) {
 			instance = new VDCSavedData();
-			stateManager.set(dimensionType, ID, instance);
+			stateManager.set(instance);
 		}
 
 		currentWorld = null;

@@ -7,13 +7,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public final class DeathChestManager {
 	private DeathChestManager() {}
 
-	public static void addDeathChest(World world, PlayerEntity player, BlockPos pos,
+	public static void addDeathChest(ServerWorld world, PlayerEntity player, BlockPos pos,
 			boolean isDoubleChest) {
 		final VDCSavedData data = VDCSavedData.get(world);
 		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
@@ -30,11 +30,11 @@ public final class DeathChestManager {
 		data.markDirty();
 	}
 
-	public static boolean isDeathChest(World world, BlockPos pos) {
+	public static boolean isDeathChest(ServerWorld world, BlockPos pos) {
 		return getDeathChest(world, pos) != null;
 	}
 
-	public static DeathChest getDeathChest(World world, BlockPos pos) {
+	public static DeathChest getDeathChest(ServerWorld world, BlockPos pos) {
 		final Block block = world.getBlockState(pos).getBlock();
 
 		if(block != Blocks.CHEST && !(block instanceof ShulkerBoxBlock)) {
@@ -51,7 +51,7 @@ public final class DeathChestManager {
 		return deathChest;
 	}
 
-	public static DeathChest removeDeathChest(World world, BlockPos pos) {
+	public static DeathChest removeDeathChest(ServerWorld world, BlockPos pos) {
 		final Map<BlockPos, DeathChest> deathChests = VDCSavedData.get(world).getDeathChests();
 		final DeathChest chest = deathChests.remove(pos);
 

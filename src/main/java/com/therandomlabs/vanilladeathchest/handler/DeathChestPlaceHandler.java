@@ -13,7 +13,7 @@ import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ActionResult;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -22,27 +22,27 @@ public class DeathChestPlaceHandler implements PlayerEvent.DropAllItems, Consume
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
 
 	@Override
-	public ActionResult onPlayerDropAllItems(World world, PlayerEntity player,
+	public boolean onPlayerDropAllItems(ServerWorld world, PlayerEntity player,
 			List<ItemEntity> drops) {
 		if(drops.isEmpty()) {
-			return ActionResult.SUCCESS;
+			return true;
 		}
 
 		final GameRules gameRules = world.getGameRules();
 
 		if(gameRules.getBoolean("keepInventory")) {
-			return ActionResult.SUCCESS;
+			return true;
 		}
 
 		if(!(VDCConfig.misc.gameRuleName.isEmpty() ||
 				gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {
-			return ActionResult.SUCCESS;
+			return true;
 		}
 
 		final Queue<DeathChestPlacer> placers = getPlacers(world);
 		placers.add(new DeathChestPlacer(world, player, drops));
 
-		return ActionResult.PASS;
+		return false;
 	}
 
 	@Override

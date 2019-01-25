@@ -121,9 +121,6 @@ public class DeathChestLocationFinder {
 			return false;
 		}
 
-		final BlockState state = world.getBlockState(pos);
-		final BlockState state2 = world.getBlockState(pos.up());
-
 		final ItemPlacementContext context = new ItemPlacementContext(new ItemUsageContext(
 				player,
 				ItemStack.EMPTY,
@@ -135,13 +132,25 @@ public class DeathChestLocationFinder {
 				)
 		));
 
-		if((state.isAir() || state.method_11587(context)) &&
-				(state2.isAir() || state2.method_11587(context))) {
+		if(isReplaceable(world, pos, context) && isReplaceable(world, pos.up(), context)) {
 			return isNotChest(world, pos.north()) && isNotChest(world, pos.east()) &&
 					isNotChest(world, pos.south()) && isNotChest(world, pos.west());
 		}
 
 		return false;
+	}
+
+	private static boolean isReplaceable(World world, BlockPos pos, ItemPlacementContext context) {
+		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
+			final int y = pos.getY();
+
+			if(y < 1 || y > world.getEffectiveHeight()) {
+				return false;
+			}
+		}
+
+		final BlockState state = world.getBlockState(pos);
+		return state.isAir() || state.method_11587(context);
 	}
 
 	private static boolean isNotChest(World world, BlockPos pos) {

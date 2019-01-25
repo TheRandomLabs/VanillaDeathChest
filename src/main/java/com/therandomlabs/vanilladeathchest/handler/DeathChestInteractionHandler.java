@@ -2,6 +2,7 @@ package com.therandomlabs.vanilladeathchest.handler;
 
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
+import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,36 +16,33 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class DeathChestInteractionHandler
-		implements PlayerInteractionEvent.Block, PlayerInteractionEvent.BlockPositioned {
+		implements BlockEvent.Break, PlayerInteractionEvent.BlockPositioned {
 	private static BlockPos harvesting;
 
-	//onBreakBlock (PlayerInteractionEvent.Block)
 	@Override
-	public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos,
-			Direction direction) {
-		if(world.isClient || harvesting == pos) {
-			return ActionResult.PASS;
+	public boolean breakBlock(ServerWorld world, ServerPlayerEntity player, BlockPos pos) {
+		if(harvesting == pos) {
+			return true;
 		}
 
-		final ServerWorld serverWorld = (ServerWorld) world;
-		final DeathChest deathChest = DeathChestManager.getDeathChest(serverWorld, pos);
+		final DeathChest deathChest = DeathChestManager.getDeathChest(world, pos);
 
 		if(deathChest == null) {
-			return ActionResult.PASS;
+			return true;
 		}
 
 		if(!canInteract(player, deathChest)) {
-			return ActionResult.SUCCESS;
+			return false;
 		}
 
-		final DeathChest chest = DeathChestManager.removeDeathChest(serverWorld, pos);
+		final DeathChest chest = DeathChestManager.removeDeathChest(world, pos);
 
 		if(chest.isDoubleChest()) {
 			harvesting = chest.getPos().equals(pos) ? pos.east() : pos.west();
-			((ServerPlayerEntity) player).interactionManager.tryBreakBlock(harvesting);
+			player.interactionManager.tryBreakBlock(harvesting);
 		}
 
-		return ActionResult.PASS;
+		return true;
 	}
 
 	//onRightClickBlock (PlayerInteractionEvent.BlockPositioned)

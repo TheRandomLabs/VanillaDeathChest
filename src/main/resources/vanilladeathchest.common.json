@@ -4,7 +4,8 @@
 	"package": "com.therandomlabs.vanilladeathchest.mixin",
 	"mixins": [
 		"MixinBlock",
-		"MixinPlayerInventory"
+		"MixinPlayerInventory",
+		"MixinServerPlayerInteractionManager"
 	],
 	"injectors": {
 		"defaultRequire": 1

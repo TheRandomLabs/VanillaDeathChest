@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
+import com.therandomlabs.vanilladeathchest.api.event.DeathChestEvent;
 import com.therandomlabs.vanilladeathchest.api.event.PlayerEvent;
 import com.therandomlabs.vanilladeathchest.command.VDCReloadCommand;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
@@ -48,13 +49,14 @@ public final class VanillaDeathChest implements ModInitializer {
 
 		final DeathChestInteractionHandler interactionHandler = new DeathChestInteractionHandler();
 
-		PlayerInteractionEvent.ATTACK_BLOCK.register(interactionHandler);
+		BlockEvent.BREAK.register(interactionHandler);
 		PlayerInteractionEvent.INTERACT_BLOCK.register(interactionHandler);
 
 		final DeathChestDropHandler dropHandler = new DeathChestDropHandler();
 
 		BlockEvent.GET_DROP.register(dropHandler);
 		TickEvent.SERVER.register(dropHandler);
+		DeathChestEvent.REMOVE.register(dropHandler);
 	}
 
 	public static void crashReport(String message, Throwable throwable) {

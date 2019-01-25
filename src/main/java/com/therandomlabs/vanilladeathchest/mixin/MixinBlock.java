@@ -1,5 +1,7 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
+import java.util.Collections;
+import java.util.List;
 import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ItemEntity;
@@ -17,23 +19,31 @@ public class MixinBlock {
 			return;
 		}
 
-		for(BlockEvent.GetDrop event : BlockEvent.GET_DROP.getBackingArray()) {
-			final ItemStack newStack = event.getDrop(world, pos, stack);
+		List<ItemStack> drops = Collections.singletonList(stack);
 
-			if(newStack != null) {
-				stack = newStack;
+		for(BlockEvent.GetDrop event : BlockEvent.GET_DROP.getBackingArray()) {
+			final List<ItemStack> newDrops = event.getDrop(world, pos, stack);
+
+			if(newDrops != null) {
+				drops = newDrops;
 				break;
 			}
 		}
 
-		final ItemEntity item = new ItemEntity(
-				world,
-				pos.getX() + world.random.nextFloat() * 0.5 + 0.25,
-				pos.getY() + world.random.nextFloat() * 0.5 + 0.25,
-				pos.getZ() + world.random.nextFloat() * 0.5 + 0.25,
-				stack
-		);
-		item.setToDefaultPickupDelay();
-		world.spawnEntity(item);
+		for(ItemStack drop : drops) {
+			if(drop.isEmpty()) {
+				continue;
+			}
+
+			final ItemEntity item = new ItemEntity(
+					world,
+					pos.getX() + world.random.nextFloat() * 0.5 + 0.25,
+					pos.getY() + world.random.nextFloat() * 0.5 + 0.25,
+					pos.getZ() + world.random.nextFloat() * 0.5 + 0.25,
+					drop
+			);
+			item.setToDefaultPickupDelay();
+			world.spawnEntity(item);
+		}
 	}
 }

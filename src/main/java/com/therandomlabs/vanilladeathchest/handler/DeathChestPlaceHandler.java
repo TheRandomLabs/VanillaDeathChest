@@ -30,12 +30,8 @@ public class DeathChestPlaceHandler implements PlayerEvent.DropAllItems, Consume
 
 		final GameRules gameRules = world.getGameRules();
 
-		if(gameRules.getBoolean("keepInventory")) {
-			return true;
-		}
-
-		if(!(VDCConfig.misc.gameRuleName.isEmpty() ||
-				gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {
+		if(gameRules.getBoolean("keepInventory") || (!VDCConfig.misc.gameRuleName.isEmpty() &&
+				!gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {
 			return true;
 		}
 

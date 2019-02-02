@@ -1,6 +1,11 @@
 vanilladeathchest.config.defense=Defense
 vanilladeathchest.config.defense.tooltip=Options related to death chest defense.
 vanilladeathchest.config.defense.damageUnlockerInsteadOfConsume=Damage unlocker instead of consume
+vanilladeathchest.config.defense.defenseEntityDropsExperience=Defense entity drops experience
+vanilladeathchest.config.defense.defenseEntityDropsItems=Defense entity drops items
+vanilladeathchest.config.defense.defenseEntityMaxDistanceSquared=Defense entity max distance squared
+vanilladeathchest.config.defense.defenseEntityMaxDistanceSquaredFromPlayer=Defense entity max distance squared from player
+vanilladeathchest.config.defense.defenseEntityNBT=Defense entity NBT
 vanilladeathchest.config.defense.defenseEntityRegistryName=Defense entity registry name
 vanilladeathchest.config.defense.defenseEntitySpawnCount=Defense entity spawn count
 vanilladeathchest.config.defense.unlockerConsumeAmount=Unlocker consume amount

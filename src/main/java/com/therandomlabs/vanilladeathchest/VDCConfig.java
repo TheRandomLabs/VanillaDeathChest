@@ -3,12 +3,15 @@ package com.therandomlabs.vanilladeathchest;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import com.therandomlabs.vanilladeathchest.gamestages.DeathChestStageInfo;
 import com.therandomlabs.vanilladeathchest.util.ColorConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import com.therandomlabs.vanilladeathchest.util.VDCUtils;
 import net.minecraft.entity.EntityList;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
@@ -19,9 +22,7 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.ArrayUtils;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
@@ -31,6 +32,35 @@ public final class VDCConfig {
 		@Config.LangKey("vanilladeathchest.config.defense.damageUnlockerInsteadOfConsume")
 		@Config.Comment("Whether the unlocker should be damaged rather than consumed.")
 		public boolean damageUnlockerInsteadOfConsume;
+
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityDropsExperience")
+		@Config.Comment("Whether defense entities drop experience.")
+		public boolean defenseEntityDropsExperience;
+
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityDropsItems")
+		@Config.Comment("Whether defense entities drop items.")
+		public boolean defenseEntityDropsItems;
+
+		@Config.RangeDouble(min = 0.0)
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityMaxDistanceSquared")
+		@Config.Comment(
+				"The maximum distance squared that a defense entity can be from its chest."
+		)
+		public double defenseEntityMaxDistanceSquared = 64.0;
+
+		@Config.RangeDouble(min = 0.0)
+		@Config.LangKey(
+				"vanilladeathchest.config.defense.defenseEntityMaxDistanceSquaredFromPlayer"
+		)
+		@Config.Comment(
+				"The maximum distance squared that a defense entity can be from its player if it " +
+						"is too far away from its chest."
+		)
+		public double defenseEntityMaxDistanceSquaredFromPlayer = 64.0;
+
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityNBT")
+		@Config.Comment("The defense entity NBT data.")
+		public String defenseEntityNBT = "{}";
 
 		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityRegistryName")
 		@Config.Comment({
@@ -72,7 +102,14 @@ public final class VDCConfig {
 		@Config.Ignore
 		public Item unlocker;
 
+		@SuppressWarnings("Duplicates")
 		private void reload() {
+			try {
+				JsonToNBT.getTagFromJson(defenseEntityNBT);
+			} catch(NBTException ex) {
+				defenseEntityNBT = "{}";
+			}
+
 			final ResourceLocation[] entityNames =
 					EntityList.getEntityNameList().toArray(new ResourceLocation[0]);
 			final int index = ArrayUtils.indexOf(
@@ -87,7 +124,9 @@ public final class VDCConfig {
 				defenseEntityRegistryName = defenseEntity.toString();
 			}
 
-			unlocker = ITEM_REGISTRY.getValue(new ResourceLocation(unlockerRegistryName));
+			unlocker = VanillaDeathChest.ITEM_REGISTRY.getValue(
+					new ResourceLocation(unlockerRegistryName)
+			);
 
 			if(unlocker != null) {
 				if(unlocker == Items.AIR) {
@@ -207,9 +246,6 @@ public final class VDCConfig {
 	@Config.Comment("Options related to death chest spawning.")
 	public static final Spawning spawning = new Spawning();
 
-	private static final IForgeRegistry<Item> ITEM_REGISTRY =
-			GameRegistry.findRegistry(Item.class);
-
 	private static final Method GET_CONFIGURATION = VDCUtils.findMethod(
 			ConfigManager.class, "getConfiguration", "getConfiguration", String.class, String.class
 	);
@@ -303,6 +339,8 @@ public final class VDCConfig {
 		} catch(Exception ex) {
 			VanillaDeathChest.LOGGER.error("Error while modifying config", ex);
 		}
+
+		DeathChestStageInfo.reloadDefault();
 	}
 
 	public static void reloadFromDisk() {

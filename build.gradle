@@ -14,11 +14,27 @@ buildscript {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-version = "1.12.2-1.6.2.0"
+version = "1.12.2-1.7.0.0"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 
 sourceCompatibility = targetCompatibility = "1.8"
+
+repositories {
+	maven {
+		url "https://maven.mcmoddev.com"
+	}
+
+	maven {
+		url "http://maven.blamejared.com"
+	}
+}
+
+dependencies {
+	compile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.574"
+	compile "net.darkhax.gamestages:GameStages-1.12.2:2.0.112"
+	compile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
+}
 
 minecraft {
 	version = "1.12.2-latest"

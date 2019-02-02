@@ -1,11 +1,12 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
-import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
+import com.therandomlabs.vanilladeathchest.gamestages.DeathChestStageInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -78,20 +79,23 @@ public final class DeathChestInteractionHandler {
 			return false;
 		}
 
-		if(VDCConfig.defense.unlocker == null || deathChest.isUnlocked()) {
+		final DeathChestStageInfo info = DeathChestStageInfo.get(player);
+		final Item unlocker = info.getUnlocker();
+
+		if(unlocker == null || deathChest.isUnlocked()) {
 			return true;
 		}
 
 		final ItemStack stack = player.getHeldItem(player.getActiveHand());
 
-		if(stack.getItem() != VDCConfig.defense.unlocker) {
+		if(stack.getItem() != unlocker) {
 			return false;
 		}
 
-		final int amount = VDCConfig.defense.unlockerConsumeAmount;
+		final int amount = info.getUnlockerConsumeAmount();
 
 		if(amount != 0 && !player.capabilities.isCreativeMode) {
-			if(VDCConfig.defense.damageUnlockerInsteadOfConsume) {
+			if(info.damageUnlockerInsteadOfConsume()) {
 				if(stack.isItemStackDamageable()) {
 					if(stack.getItemDamage() + amount >= stack.getMaxDamage()) {
 						return false;

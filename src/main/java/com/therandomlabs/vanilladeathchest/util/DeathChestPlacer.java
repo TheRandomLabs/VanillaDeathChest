@@ -205,8 +205,8 @@ public final class DeathChestPlacer {
 
 					final NBTTagCompound data = living.getEntityData();
 
-					data.setTag("DeathChestPos", NBTUtil.createPosTag(pos));
 					data.setTag("DeathChestPlayer", NBTUtil.createUUIDTag(player.getUniqueID()));
+					data.setTag("DeathChestPos", NBTUtil.createPosTag(pos));
 				}
 			}
 		}

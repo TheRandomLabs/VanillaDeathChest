@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
@@ -20,6 +21,12 @@ public final class DefenseEntityHandler {
 	@SubscribeEvent
 	public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		final EntityLivingBase entity = event.getEntityLiving();
+		final World world = entity.getEntityWorld();
+
+		if(world.isRemote) {
+			return;
+		}
+
 		final NBTTagCompound data = entity.getEntityData();
 
 		if(!data.hasKey("DeathChestPlayer")) {
@@ -27,7 +34,7 @@ public final class DefenseEntityHandler {
 		}
 
 		final UUID playerUUID = NBTUtil.getUUIDFromTag(data.getCompoundTag("DeathChestPlayer"));
-		final EntityPlayer player = entity.getEntityWorld().getPlayerEntityByUUID(playerUUID);
+		final EntityPlayer player = world.getPlayerEntityByUUID(playerUUID);
 
 		if(player != null) {
 			entity.setRevengeTarget(player);

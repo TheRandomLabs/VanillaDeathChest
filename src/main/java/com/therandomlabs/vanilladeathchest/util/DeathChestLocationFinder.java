@@ -8,6 +8,7 @@ import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -84,7 +85,8 @@ public class DeathChestLocationFinder {
 			final BlockPos potentialPos = searchPos.add(translation);
 
 			if(canPlace(world, player, potentialPos)) {
-				if(!isDoubleChest || canPlace(world, player, potentialPos.east())) {
+				if((!isDoubleChest || canPlace(world, player, potentialPos.east())) &&
+						isOnSolidBlocks(world, potentialPos, isDoubleChest)) {
 					return potentialPos;
 				}
 
@@ -138,5 +140,19 @@ public class DeathChestLocationFinder {
 
 	private static boolean isNotChest(World world, BlockPos pos) {
 		return world.getBlockState(pos).getBlock() != Blocks.CHEST;
+	}
+
+	private static boolean isOnSolidBlocks(World world, BlockPos pos, boolean isDoubleChest) {
+		if(!VDCConfig.spawning.mustBeOnSolidBlocks) {
+			return true;
+		}
+
+		final BlockPos down = pos.down();
+
+		if(!world.isSideSolid(down, EnumFacing.UP)) {
+			return false;
+		}
+
+		return !isDoubleChest || world.isSideSolid(down.east(), EnumFacing.UP);
 	}
 }

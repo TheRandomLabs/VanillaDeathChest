@@ -225,6 +225,10 @@ public final class VDCConfig {
 		@Config.Comment("The death chest location search radius.")
 		public int locationSearchRadius = 8;
 
+		@Config.LangKey("vanilladeathchest.config.spawning.mustBeOnSolidBlocks")
+		@Config.Comment("Whether death chests can only spwan on solid blocks.")
+		public boolean mustBeOnSolidBlocks;
+
 		@Config.LangKey("vanilladeathchest.config.spawning.shulkerBoxColor")
 		@Config.Comment("The color of the shulker box if chestType is set to SHULKER_BOX.")
 		public ColorConfig shulkerBoxColor = ColorConfig.WHITE;

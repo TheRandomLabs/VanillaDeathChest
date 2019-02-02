@@ -4,7 +4,10 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.api.IAngerable;
+import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.block.Block;
@@ -14,16 +17,19 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityLockableLoot;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 
 public final class DeathChestPlacer {
 	public enum DeathChestType {
@@ -93,7 +99,7 @@ public final class DeathChestPlacer {
 		useDoubleChest = doubleChest.get();
 
 		if(pos == null) {
-			VanillaDeathChest.LOGGER.warn("No death chest location found for player at [%s]", pos);
+			VanillaDeathChest.LOGGER.warn("No death chest location found for player at [{}]", pos);
 			return;
 		}
 
@@ -111,8 +117,8 @@ public final class DeathChestPlacer {
 		final BlockPos east = pos.east();
 
 		if(useDoubleChest) {
-			world.setBlockState(pos, state.with(BlockChest.TYPE, ChestType.LEFT));
-			world.setBlockState(east, state.with(BlockChest.TYPE, ChestType.RIGHT));
+			world.setBlockState(pos, state.withProperty(BlockChest.TYPE, ChestType.LEFT));
+			world.setBlockState(east, state.withProperty(BlockChest.TYPE, ChestType.RIGHT));
 		} else {
 			world.setBlockState(pos, state);
 		}
@@ -123,7 +129,7 @@ public final class DeathChestPlacer {
 		if(!(tile instanceof TileEntityLockableLoot) ||
 				(useDoubleChest && !(tile2 instanceof TileEntityLockableLoot))) {
 			VanillaDeathChest.LOGGER.warn(
-					"Failed to place death chest at [%s] due to invalid tile entity", pos
+					"Failed to place death chest at [{}] due to invalid tile entity", pos
 			);
 			return;
 		}
@@ -150,8 +156,16 @@ public final class DeathChestPlacer {
 			final double z = pos.getZ() + 0.5;
 
 			for(int i = 0; i < VDCConfig.defense.defenseEntitySpawnCount; i++) {
-				final Entity entity = VDCConfig.defense.defenseEntity.create(world);
-				entity.setPosition(x, y, z);
+				NBTTagCompound compound = null;
+
+				try {
+					compound = JsonToNBT.getTagFromJson(VDCConfig.defense.defenseEntityNBT);
+				} catch(CommandSyntaxException ignored) {}
+
+				compound.setString("id", VDCConfig.defense.defenseEntityRegistryName);
+
+				final Entity entity =
+						AnvilChunkLoader.readWorldEntityPos(compound, world, x, y, z, true);
 
 				if(entity instanceof EntityLiving) {
 					final EntityLiving living = (EntityLiving) entity;
@@ -159,9 +173,14 @@ public final class DeathChestPlacer {
 					living.enablePersistence();
 					living.onInitialSpawn(world.getDifficultyForLocation(pos), null, null);
 
-					//If the entity has an anger mechanism, e.g. zombie pigmen, this should
-					//trigger it
-					living.attackEntityFrom(DamageSource.causePlayerDamage(player), 0.0F);
+					if(living instanceof EntityPigZombie) {
+						((IAngerable) living).makeAngryAt(player);
+					}
+
+					final DeathChestDefenseEntity defenseEntity = (DeathChestDefenseEntity) living;
+
+					defenseEntity.setDeathChestPlayer(player.getUniqueID());
+					defenseEntity.setDeathChestPos(pos);
 				}
 
 				world.spawnEntity(entity);
@@ -170,7 +189,7 @@ public final class DeathChestPlacer {
 
 		DeathChestManager.addDeathChest(world, player, pos, useDoubleChest);
 
-		VanillaDeathChest.LOGGER.info("Death chest for %s spawned at [%s]", profile.getName(), pos);
+		VanillaDeathChest.LOGGER.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
 
 		player.sendMessage(new TextComponentString(String.format(
 				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()

@@ -34,6 +34,35 @@ public final class VDCConfig {
 		@Config.Comment("Whether the unlocker should be damaged rather than consumed.")
 		public boolean damageUnlockerInsteadOfConsume;
 
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityDropsExperience")
+		@Config.Comment("Whether defense entities drop experience.")
+		public boolean defenseEntityDropsExperience;
+
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityDropsItems")
+		@Config.Comment("Whether defense entities drop items.")
+		public boolean defenseEntityDropsItems;
+
+		@Config.RangeDouble(min = 0.0)
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityMaxDistanceSquared")
+		@Config.Comment(
+				"The maximum distance squared that a defense entity can be from its chest."
+		)
+		public double defenseEntityMaxDistanceSquared = 64.0;
+
+		@Config.RangeDouble(min = 0.0)
+		@Config.LangKey(
+				"vanilladeathchest.config.defense.defenseEntityMaxDistanceSquaredFromPlayer"
+		)
+		@Config.Comment(
+				"The maximum distance squared that a defense entity can be from its player if it " +
+						"is too far away from its chest."
+		)
+		public double defenseEntityMaxDistanceSquaredFromPlayer = 64.0;
+
+		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityNBT")
+		@Config.Comment("The defense entity NBT data.")
+		public String defenseEntityNBT = "{}";
+
 		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityRegistryName")
 		@Config.Comment({
 				"The registry name of the defense entity.",
@@ -182,6 +211,10 @@ public final class VDCConfig {
 		@Config.LangKey("vanilladeathchest.config.spawning.locationSearchRadius")
 		@Config.Comment("The death chest location search radius.")
 		public int locationSearchRadius = 8;
+
+		@Config.LangKey("vanilladeathchest.config.spawning.mustBeOnSolidBlocks")
+		@Config.Comment("Whether death chests can only spwan on solid blocks.")
+		public boolean mustBeOnSolidBlocks;
 
 		@Config.LangKey("vanilladeathchest.config.spawning.shulkerBoxColor")
 		@Config.Comment("The color of the shulker box if chestType is set to SHULKER_BOX.")
@@ -334,6 +367,7 @@ public final class VDCConfig {
 		}
 	}
 
+	@SuppressWarnings("Duplicates")
 	private static void loadProperty(Object categoryObject, JsonObject object, Property property)
 			throws IllegalAccessException {
 		addDescription(object, property.getDescription());
@@ -395,8 +429,8 @@ public final class VDCConfig {
 				if(primitive.isNumber()) {
 					int number = primitive.getAsInt();
 
-					final int min = property.getMin();
-					final int max = property.getMax();
+					final int min = property.getMinInt();
+					final int max = property.getMaxInt();
 
 					if(number < min) {
 						number = min;
@@ -414,6 +448,33 @@ public final class VDCConfig {
 
 			if(newValue == null) {
 				object.addProperty("value", (Integer) defaultValue);
+			}
+		} else if(type == double.class) {
+			if(value != null && value.isJsonPrimitive()) {
+				final JsonPrimitive primitive = value.getAsJsonPrimitive();
+
+				if(primitive.isNumber()) {
+					double number = primitive.getAsDouble();
+
+					final double min = property.getMinDouble();
+					final double max = property.getMaxDouble();
+
+					if(number < min) {
+						number = min;
+						object.addProperty("value", number);
+					}
+
+					if(number > max) {
+						number = max;
+						object.addProperty("value", number);
+					}
+
+					newValue = number;
+				}
+			}
+
+			if(newValue == null) {
+				object.addProperty("value", (Double) defaultValue);
 			}
 		}
 

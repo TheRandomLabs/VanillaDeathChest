@@ -73,8 +73,8 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 
 		if(amount != 0 && !player.capabilities.isCreativeMode) {
 			if(VDCConfig.defense.damageUnlockerInsteadOfConsume) {
-				if(stack.isDamageable()) {
-					if(stack.getDamage() + amount >= stack.getMaxDamage()) {
+				if(stack.isItemStackDamageable()) {
+					if(stack.getItemDamage() + amount >= stack.getMaxDamage()) {
 						return false;
 					}
 

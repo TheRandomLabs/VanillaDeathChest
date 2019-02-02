@@ -23,7 +23,7 @@ apply plugin: "org.spongepowered.mixin"
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "java"
 
-version = "1.13-1.6.2.0-rift"
+version = "1.13-1.7.0.0-rift"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 
@@ -69,7 +69,7 @@ mixin {
 minecraft {
 	version = "1.13"
 	runDir = "run"
-	mappings = "snapshot_20180908"
+	mappings = "snapshot_20180823"
 	tweakClass = "org.dimdev.riftloader.launch.RiftLoaderClientTweaker"
 
 	replace "@FINGERPRINT@", project.findProperty("signSHA1")

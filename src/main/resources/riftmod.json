@@ -1,7 +1,7 @@
 {
 	"id": "vanilladeathchest",
 	"name": "VanillaDeathChest",
-	"version": "1.13-1.6.0.1-Rift",
+	"version": "1.13-1.7.0.0-Rift",
 	"authors": [
 		"TheRandomLabs"
 	],
@@ -10,6 +10,7 @@
 		"com.therandomlabs.vanilladeathchest.listener.DeathChestDropHandler",
 		"com.therandomlabs.vanilladeathchest.listener.DeathChestInteractionHandler",
 		"com.therandomlabs.vanilladeathchest.listener.DeathChestPlaceHandler",
+		"com.therandomlabs.vanilladeathchest.listener.DefenseEntityHandler",
 		"com.therandomlabs.vanilladeathchest.listener.VDCCommandRegistrar"
 	],
 	"url": "https://minecraft.curseforge.com/projects/vanilladeathchest",

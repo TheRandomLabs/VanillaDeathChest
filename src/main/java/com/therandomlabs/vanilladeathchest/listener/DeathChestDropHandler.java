@@ -47,7 +47,9 @@ public class DeathChestDropHandler implements
 
 		if(Block.getBlockFromItem(drop.getItem()) instanceof BlockShulkerBox) {
 			final NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
-			ItemStackHelper.loadAllItems(drop.getTag().getCompoundTag("BlockEntityTag"), inventory);
+			ItemStackHelper.loadAllItems(
+					drop.getTagCompound().getCompoundTag("BlockEntityTag"), inventory
+			);
 			return inventory;
 		}
 

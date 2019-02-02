@@ -1,6 +1,8 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/vanilladeathchest",
 	"1.12.2": {
+		"1.12.2-1.7.0.0": "Added Game Stages/CraftTweaker support for unlocker items and defense entities.\nDefense entities no longer drop items or experience by default.\nDefense entities no longer stray away from their death chests.\nAdded an option to set the defense entity NBT data.\nDefense entities' revenge targets are now set every tick.\nAdded an option to make death chests only spawn on solid blocks.",
+		"1.12.2-1.6.2.0": "Improved the death chest/shulker box drop logic.",
 		"1.12.2-1.6.0.1": "Improved the death chest location search logic.",
 		"1.12.2-1.6.0.0": "Unlocker items and defense entities can now be configured.",
 		"1.12.2-1.5.1.6": "Improved death chest placement.",
@@ -28,6 +30,8 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12.1": {
+		"1.12.2-1.7.0.0": "Added Game Stages/CraftTweaker support for unlocker items and defense entities.\nDefense entities no longer drop items or experience by default.\nDefense entities no longer stray away from their death chests.\nAdded an option to set the defense entity NBT data.\nDefense entities' revenge targets are now set every tick.\nAdded an option to make death chests only spawn on solid blocks.",
+		"1.12.2-1.6.2.0": "Improved the death chest/shulker box drop logic.",
 		"1.12.2-1.6.0.1": "Improved the death chest location search logic.",
 		"1.12.2-1.6.0.0": "Unlocker items and defense entities can now be configured.",
 		"1.12.2-1.5.1.6": "Improved death chest placement.",
@@ -55,6 +59,8 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12": {
+		"1.12.2-1.7.0.0": "Added Game Stages/CraftTweaker support for unlocker items and defense entities.\nDefense entities no longer drop items or experience by default.\nDefense entities no longer stray away from their death chests.\nAdded an option to set the defense entity NBT data.\nDefense entities' revenge targets are now set every tick.\nAdded an option to make death chests only spawn on solid blocks.",
+		"1.12.2-1.6.2.0": "Improved the death chest/shulker box drop logic.",
 		"1.12.2-1.6.0.1": "Improved the death chest location search logic.",
 		"1.12.2-1.6.0.0": "Unlocker items and defense entities can now be configured.",
 		"1.12.2-1.5.1.6": "Improved death chest placement.",
@@ -82,11 +88,11 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"promos": {
-		"1.12.2-latest": "1.12.2-1.6.0.1",
-		"1.12.2-recommended": "1.12.2-1.6.0.1",
-		"1.12.1-latest": "1.12.2-1.6.0.1",
-		"1.12.1-recommended": "1.12.2-1.6.0.1",
-		"1.12-latest": "1.12.2-1.6.0.1",
-		"1.12-recommended": "1.12.2-1.6.0.1"
+		"1.12.2-latest": "1.12.2-1.7.0.0",
+		"1.12.2-recommended": "1.12.2-1.7.0.0",
+		"1.12.1-latest": "1.12.2-1.7.0.0",
+		"1.12.1-recommended": "1.12.2-1.7.0.0",
+		"1.12-latest": "1.12.2-1.7.0.0",
+		"1.12-recommended": "1.12.2-1.7.0.0"
 	}
 }

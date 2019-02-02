@@ -25,6 +25,13 @@ public class Config {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
+	public @interface RangeDouble {
+		double min() default Double.MIN_VALUE;
+
+		double max() default Double.MAX_VALUE;
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
 	public @interface RequiresMcRestart {}
 
 	@Retention(RetentionPolicy.RUNTIME)

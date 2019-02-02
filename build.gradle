@@ -18,7 +18,7 @@ buildscript {
 	}
 
 	dependencies {
-		classpath "com.github.Chocohead:ForgeGradle:moderniser-SNAPSHOT"
+		classpath "com.github.Chocohead:ForgeGradle:jitpack-SNAPSHOT"
 		classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
 		classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
 	}
@@ -29,7 +29,7 @@ apply plugin: "org.spongepowered.mixin"
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "java"
 
-version = "1.13.2-1.6.2.0-rift"
+version = "1.13.2-1.7.0.0-rift"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 

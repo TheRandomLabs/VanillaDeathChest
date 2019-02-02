@@ -12,8 +12,11 @@ public class Property {
 	private final Object defaultValue;
 	private final String[] description;
 
-	private final int min;
-	private final int max;
+	private final int minInt;
+	private final int maxInt;
+
+	private final double minDouble;
+	private final double maxDouble;
 
 	public Property(Field field, Object defaultValue) {
 		key = field.getName();
@@ -31,14 +34,27 @@ public class Property {
 		final Config.RangeInt rangeInt = field.getAnnotation(Config.RangeInt.class);
 
 		if(rangeInt == null) {
-			min = Integer.MIN_VALUE;
-			max = Integer.MAX_VALUE;
+			minInt = Integer.MIN_VALUE;
+			maxInt = Integer.MAX_VALUE;
 		} else {
-			min = rangeInt.min();
-			max = rangeInt.max();
+			minInt = rangeInt.min();
+			maxInt = rangeInt.max();
 
-			description.add("Min: " + min);
-			description.add("Max: " + max);
+			description.add("Min: " + minInt);
+			description.add("Max: " + maxInt);
+		}
+
+		final Config.RangeDouble rangeDouble = field.getAnnotation(Config.RangeDouble.class);
+
+		if(rangeDouble == null) {
+			minDouble = Double.MIN_VALUE;
+			maxDouble = Double.MAX_VALUE;
+		} else {
+			minDouble = rangeDouble.min();
+			maxDouble = rangeDouble.max();
+
+			description.add("Min: " + minDouble);
+			description.add("Max: " + maxDouble);
 		}
 
 		if(isEnum) {
@@ -74,11 +90,19 @@ public class Property {
 		return description.clone();
 	}
 
-	public int getMin() {
-		return min;
+	public int getMinInt() {
+		return minInt;
 	}
 
-	public int getMax() {
-		return max;
+	public int getMaxInt() {
+		return maxInt;
+	}
+
+	public double getMinDouble() {
+		return minDouble;
+	}
+
+	public double getMaxDouble() {
+		return maxDouble;
 	}
 }

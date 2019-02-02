@@ -87,7 +87,8 @@ public class DeathChestLocationFinder {
 			final BlockPos potentialPos = searchPos.add(translation);
 
 			if(canPlace(world, player, potentialPos)) {
-				if(!isDoubleChest || canPlace(world, player, potentialPos.east())) {
+				if((!isDoubleChest || canPlace(world, player, potentialPos.east())) &&
+						isOnSolidBlocks(world, potentialPos, isDoubleChest)) {
 					return potentialPos;
 				}
 
@@ -152,5 +153,19 @@ public class DeathChestLocationFinder {
 
 	private static boolean isNotChest(World world, BlockPos pos) {
 		return world.getBlockState(pos).getBlock() != Blocks.CHEST;
+	}
+
+	private static boolean isOnSolidBlocks(World world, BlockPos pos, boolean isDoubleChest) {
+		if(!VDCConfig.spawning.mustBeOnSolidBlocks) {
+			return true;
+		}
+
+		final BlockPos down = pos.down();
+
+		if(!world.isTopSolid(down)) {
+			return false;
+		}
+
+		return !isDoubleChest || world.isTopSolid(down.east());
 	}
 }

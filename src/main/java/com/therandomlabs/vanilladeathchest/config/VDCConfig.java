@@ -149,11 +149,6 @@ public final class VDCConfig {
 		@Config.LangKey("vanilladeathchest.config.misc.vdcreload")
 		@Config.Comment("Whether to enable the /vdcreload command.")
 		public boolean vdcreload = true;
-
-		@Config.RequiresMcRestart
-		@Config.LangKey("vanilladeathchest.config.misc.vdcreloadclient")
-		@Config.Comment("Whether to enable the /vdcreloadclient command.")
-		public boolean vdcreloadclient = true;
 	}
 
 	public static final class Protection {

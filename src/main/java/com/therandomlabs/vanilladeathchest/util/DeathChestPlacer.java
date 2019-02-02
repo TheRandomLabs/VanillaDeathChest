@@ -99,7 +99,9 @@ public final class DeathChestPlacer {
 		useDoubleChest = doubleChest.get();
 
 		if(pos == null) {
-			VanillaDeathChest.LOGGER.warn("No death chest location found for player at [{}]", pos);
+			VanillaDeathChest.LOGGER.warn(
+					"No death chest location found for player at [{}]", playerPos
+			);
 			return;
 		}
 

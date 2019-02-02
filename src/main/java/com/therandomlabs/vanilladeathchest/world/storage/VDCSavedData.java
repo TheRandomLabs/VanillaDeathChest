@@ -91,7 +91,8 @@ public class VDCSavedData extends PersistentState {
 	public static VDCSavedData get(ServerWorld world) {
 		currentWorld = world;
 
-		final DimensionalPersistentStateManager stateManager = world.method_17983();
+		final DimensionalPersistentStateManager stateManager =
+				world.getDimensionalPersistentStateManager();
 		VDCSavedData instance = stateManager.get(VDCSavedData::new, ID);
 
 		if(instance == null) {

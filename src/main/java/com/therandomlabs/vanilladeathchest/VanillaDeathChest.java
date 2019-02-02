@@ -2,12 +2,14 @@ package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
 import com.therandomlabs.vanilladeathchest.api.event.DeathChestEvent;
+import com.therandomlabs.vanilladeathchest.api.event.LivingEntityEvent;
 import com.therandomlabs.vanilladeathchest.api.event.PlayerEvent;
 import com.therandomlabs.vanilladeathchest.command.VDCReloadCommand;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestDropHandler;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestInteractionHandler;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestPlaceHandler;
+import com.therandomlabs.vanilladeathchest.handler.DefenseEntityHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.commands.CommandRegistry;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
@@ -57,6 +59,12 @@ public final class VanillaDeathChest implements ModInitializer {
 		BlockEvent.GET_DROP.register(dropHandler);
 		TickEvent.SERVER.register(dropHandler);
 		DeathChestEvent.REMOVE.register(dropHandler);
+
+		final DefenseEntityHandler defenseEntityHandler = new DefenseEntityHandler();
+
+		LivingEntityEvent.DROP.register(defenseEntityHandler);
+		LivingEntityEvent.DROP_EXPERIENCE.register(defenseEntityHandler);
+		LivingEntityEvent.TICK.register(defenseEntityHandler);
 	}
 
 	public static void crashReport(String message, Throwable throwable) {

@@ -1,13 +1,16 @@
 package com.therandomlabs.vanilladeathchest.gamestages;
 
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import crafttweaker.CraftTweakerAPI;
+import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+@ModOnly("gamestages")
 @ZenRegister
-@ZenClass("mods.VanillaDeathChest")
-public final class DeathChestCrT {
+@ZenClass("mods." + VanillaDeathChest.MOD_ID + ".DeathChestDefense")
+public final class DeathChestDefense {
 	@ZenMethod
 	public static void setDamageUnlockerInsteadOfConsume(String stage, boolean flag) {
 		CraftTweakerAPI.apply(new ActionSetDamageUnlocker(stage, flag));

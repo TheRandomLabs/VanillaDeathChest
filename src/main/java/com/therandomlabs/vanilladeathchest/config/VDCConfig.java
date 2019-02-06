@@ -93,6 +93,21 @@ public final class VDCConfig {
 		@Config.Comment("The registry name of the unlocker.")
 		public String unlockerRegistryName = "";
 
+		@Config.LangKey("vanilladeathchest.config.defense.unlockFailedMessage")
+		@Config.Comment({
+				"The message that is sent to the player when they fail to unlock a death chest.",
+				"This string takes the required amount and display name of the item as arguments."
+		})
+		public String unlockFailedMessage =
+				"You need %s of the following item to retrieve your items: %s";
+
+		@Config.LangKey("vanilladeathchest.config.defense.unlockFailedStatusMessage")
+		@Config.Comment(
+				"Whether the unlock failed message should be a status message rather than a " +
+						"chat message."
+		)
+		public boolean unlockFailedStatusMessage = true;
+
 		@Config.Ignore
 		public EntityType defenseEntity;
 

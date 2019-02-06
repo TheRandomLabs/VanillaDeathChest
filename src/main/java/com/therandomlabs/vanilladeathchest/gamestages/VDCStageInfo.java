@@ -97,7 +97,7 @@ public class VDCStageInfo {
 	}
 
 	public void setUnlockerConsumeAmount(int amount) {
-		unlockerConsumeAmount = MathHelper.clamp(amount, -126, 127);
+		unlockerConsumeAmount = MathHelper.clamp(amount, 0, Short.MAX_VALUE);
 	}
 
 	public int getUnlockerMeta() {

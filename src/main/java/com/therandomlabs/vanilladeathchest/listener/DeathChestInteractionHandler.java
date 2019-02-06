@@ -101,7 +101,7 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 					message,
 					amount,
 					new TextComponentTranslation(
-							VDCConfig.defense.unlocker.getTranslationKey() + ".name"
+							VDCConfig.defense.unlocker.getTranslationKey()
 					).getFormattedText().trim()
 			));
 

@@ -9,6 +9,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sortme.ChatMessageType;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -59,10 +62,11 @@ public class DeathChestInteractionHandler
 			return ActionResult.PASS;
 		}
 
-		return canInteract(player, deathChest) ? ActionResult.PASS : ActionResult.SUCCESS;
+		return canInteract((ServerPlayerEntity) player, deathChest) ?
+				ActionResult.PASS : ActionResult.SUCCESS;
 	}
 
-	public static boolean canInteract(PlayerEntity player, DeathChest deathChest) {
+	private static boolean canInteract(ServerPlayerEntity player, DeathChest deathChest) {
 		if(!deathChest.canInteract(player)) {
 			return false;
 		}
@@ -72,32 +76,51 @@ public class DeathChestInteractionHandler
 		}
 
 		final ItemStack stack = player.getStackInHand(player.getActiveHand());
-
-		if(stack.getItem() != VDCConfig.defense.unlocker) {
-			return false;
-		}
-
 		final int amount = VDCConfig.defense.unlockerConsumeAmount;
 
-		if(amount != 0 && !player.abilities.creativeMode) {
+		if(stack.getItem() == VDCConfig.defense.unlocker) {
+			if(amount == 0) {
+				deathChest.setUnlocked(true);
+				return true;
+			}
+
 			if(VDCConfig.defense.damageUnlockerInsteadOfConsume) {
-				if(stack.hasDurability()) {
-					if(stack.getDamage() + amount >= stack.getDurability()) {
-						return false;
+				if(stack.hasDurability() && stack.getDamage() + amount < stack.getDurability()) {
+					if(!player.abilities.creativeMode) {
+						stack.applyDamage(amount, player);
 					}
 
-					stack.applyDamage(amount, player);
+					deathChest.setUnlocked(true);
+					return true;
 				}
-			} else {
-				if(stack.getAmount() < amount) {
-					return false;
+			} else if(stack.getAmount() >= amount) {
+				if(!player.abilities.creativeMode) {
+					stack.subtractAmount(amount);
 				}
 
-				stack.subtractAmount(amount);
+				deathChest.setUnlocked(true);
+				return true;
 			}
 		}
 
-		deathChest.setUnlocked(true);
-		return true;
+		final String message = VDCConfig.defense.unlockFailedMessage;
+
+		if(!message.isEmpty()) {
+			final StringTextComponent component = new StringTextComponent(String.format(
+					message,
+					amount,
+					new TranslatableTextComponent(
+							VDCConfig.defense.unlocker.getTranslationKey()
+					).getFormattedText().trim()
+			));
+
+			if(VDCConfig.defense.unlockFailedStatusMessage) {
+				player.addChatMessage(component, true);
+			} else {
+				player.sendChatMessage(component, ChatMessageType.CHAT);
+			}
+		}
+
+		return false;
 	}
 }

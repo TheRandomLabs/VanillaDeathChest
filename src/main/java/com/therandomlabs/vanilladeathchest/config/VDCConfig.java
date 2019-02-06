@@ -77,7 +77,7 @@ public final class VDCConfig {
 		@Config.Comment("The number of defense entities to spawn.")
 		public int defenseEntitySpawnCount = 3;
 
-		@Config.RangeInt(min = -126, max = 127)
+		@Config.RangeInt(min = 0, max = Short.MAX_VALUE)
 		@Config.LangKey("vanilladeathchest.config.defense.unlockerConsumeAmount")
 		@Config.Comment({
 				"How many times the unlocker should be consumed or damaged.",

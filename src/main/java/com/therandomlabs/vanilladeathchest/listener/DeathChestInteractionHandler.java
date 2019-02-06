@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 public class DeathChestInteractionHandler implements BlockHarvestListener, RightClickBlockListener {
@@ -54,7 +56,7 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 		return canInteract(player, deathChest);
 	}
 
-	public static boolean canInteract(EntityPlayer player, DeathChest deathChest) {
+	private static boolean canInteract(EntityPlayer player, DeathChest deathChest) {
 		if(!deathChest.canInteract(player)) {
 			return false;
 		}
@@ -64,32 +66,52 @@ public class DeathChestInteractionHandler implements BlockHarvestListener, Right
 		}
 
 		final ItemStack stack = player.getHeldItem(player.getActiveHand());
-
-		if(stack.getItem() != VDCConfig.defense.unlocker) {
-			return false;
-		}
-
 		final int amount = VDCConfig.defense.unlockerConsumeAmount;
 
-		if(amount != 0 && !player.capabilities.isCreativeMode) {
+		if(stack.getItem() == VDCConfig.defense.unlocker) {
+			if(amount == 0) {
+				deathChest.setUnlocked(true);
+				return true;
+			}
+
 			if(VDCConfig.defense.damageUnlockerInsteadOfConsume) {
-				if(stack.isItemStackDamageable()) {
-					if(stack.getItemDamage() + amount >= stack.getMaxDamage()) {
-						return false;
+				if(stack.isItemStackDamageable() &&
+						stack.getItemDamage() + amount < stack.getMaxDamage()) {
+					if(!player.capabilities.isCreativeMode) {
+						stack.damageItem(amount, player);
 					}
 
-					stack.damageItem(amount, player);
+					deathChest.setUnlocked(true);
+					return true;
 				}
-			} else {
-				if(stack.getCount() < amount) {
-					return false;
+			} else if(stack.getCount() >= amount) {
+				if(!player.capabilities.isCreativeMode) {
+					stack.shrink(amount);
 				}
 
-				stack.shrink(amount);
+				deathChest.setUnlocked(true);
+				return true;
 			}
 		}
 
-		deathChest.setUnlocked(true);
-		return true;
+		final String message = VDCConfig.defense.unlockFailedMessage;
+
+		if(!message.isEmpty()) {
+			final TextComponentString component = new TextComponentString(String.format(
+					message,
+					amount,
+					new TextComponentTranslation(
+							VDCConfig.defense.unlocker.getTranslationKey() + ".name"
+					).getFormattedText().trim()
+			));
+
+			if(VDCConfig.defense.unlockFailedStatusMessage) {
+				player.sendStatusMessage(component, true);
+			} else {
+				player.sendMessage(component);
+			}
+		}
+
+		return false;
 	}
 }

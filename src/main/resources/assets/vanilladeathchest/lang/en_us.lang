@@ -11,6 +11,8 @@ vanilladeathchest.config.defense.defenseEntitySpawnCount=Defense entity spawn co
 vanilladeathchest.config.defense.unlockerConsumeAmount=Unlocker consume amount
 vanilladeathchest.config.defense.unlockerMeta=Unlocker meta
 vanilladeathchest.config.defense.unlockerRegistryName=Unlocker registry name
+vanilladeathchest.config.defense.unlockFailedMessage=Unlock failed message
+vanilladeathchest.config.defense.unlockFailedStatusMessage=Unlock failed status message
 
 vanilladeathchest.config.misc=Miscellaneous
 vanilladeathchest.config.misc.tooltip=Options that don't fit into any other categories.

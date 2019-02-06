@@ -3,12 +3,12 @@ package com.therandomlabs.vanilladeathchest.gamestages;
 import java.util.function.Consumer;
 import crafttweaker.IAction;
 
-public abstract class DeathChestAction implements IAction {
+public abstract class VDCAction implements IAction {
 	private final String stage;
-	private final Consumer<DeathChestStageInfo> action;
+	private final Consumer<VDCStageInfo> action;
 	private final String description;
 
-	protected DeathChestAction(String stage, Consumer<DeathChestStageInfo> action,
+	protected VDCAction(String stage, Consumer<VDCStageInfo> action,
 			String description) {
 		this.stage = stage;
 		this.action = action;
@@ -18,7 +18,7 @@ public abstract class DeathChestAction implements IAction {
 	@Override
 	public final void apply() {
 		action.accept(
-				DeathChestStageInfo.STAGES.computeIfAbsent(stage, key -> new DeathChestStageInfo())
+				VDCStageInfo.STAGES.computeIfAbsent(stage, key -> new VDCStageInfo())
 		);
 	}
 

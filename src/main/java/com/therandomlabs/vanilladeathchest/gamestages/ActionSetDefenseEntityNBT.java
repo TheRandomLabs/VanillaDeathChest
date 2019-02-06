@@ -1,11 +1,13 @@
 package com.therandomlabs.vanilladeathchest.gamestages;
 
-public class ActionSetDefenseEntityNBT extends DeathChestAction {
-	public ActionSetDefenseEntityNBT(String stage, String nbt) {
+import crafttweaker.api.data.DataMap;
+
+public class ActionSetDefenseEntityNBT extends VDCAction {
+	public ActionSetDefenseEntityNBT(String stage, DataMap nbt) {
 		super(
 				stage,
-				info -> info.setDefenseEntityNBT(nbt),
-				"Attempting to set defense entity NBT to " + nbt
+				info -> info.setDefenseEntityNBT(nbt.toString()),
+				"Setting defense entity NBT to " + nbt
 		);
 	}
 }

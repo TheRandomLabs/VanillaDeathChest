@@ -9,7 +9,7 @@ import com.mojang.authlib.GameProfile;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
-import com.therandomlabs.vanilladeathchest.gamestages.DeathChestStageInfo;
+import com.therandomlabs.vanilladeathchest.gamestages.VDCStageInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
@@ -166,7 +166,7 @@ public final class DeathChestPlacer {
 			}
 		}
 
-		final DeathChestStageInfo info = DeathChestStageInfo.get(player);
+		final VDCStageInfo info = VDCStageInfo.get(player);
 
 		if(info.getDefenseEntity() != null) {
 			final double x = pos.getX() + 0.5;
@@ -217,8 +217,12 @@ public final class DeathChestPlacer {
 
 		VanillaDeathChest.LOGGER.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
 
-		player.sendMessage(new TextComponentString(String.format(
-				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
-		)));
+		final String chatMessage = info.getChatMessage();
+
+		if(!chatMessage.isEmpty()) {
+			player.sendMessage(new TextComponentString(String.format(
+					chatMessage, pos.getX(), pos.getY(), pos.getZ()
+			)));
+		}
 	}
 }

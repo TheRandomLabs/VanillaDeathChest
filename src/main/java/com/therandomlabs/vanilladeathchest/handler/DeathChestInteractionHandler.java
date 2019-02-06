@@ -1,14 +1,17 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
-import com.therandomlabs.vanilladeathchest.gamestages.DeathChestStageInfo;
+import com.therandomlabs.vanilladeathchest.gamestages.VDCStageInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -74,12 +77,12 @@ public final class DeathChestInteractionHandler {
 		}
 	}
 
-	public static boolean canInteract(EntityPlayer player, DeathChest deathChest) {
+	private static boolean canInteract(EntityPlayer player, DeathChest deathChest) {
 		if(!deathChest.canInteract(player)) {
 			return false;
 		}
 
-		final DeathChestStageInfo info = DeathChestStageInfo.get(player);
+		final VDCStageInfo info = VDCStageInfo.get(player);
 		final Item unlocker = info.getUnlocker();
 
 		if(unlocker == null || deathChest.isUnlocked()) {
@@ -87,32 +90,52 @@ public final class DeathChestInteractionHandler {
 		}
 
 		final ItemStack stack = player.getHeldItem(player.getActiveHand());
-
-		if(stack.getItem() != unlocker) {
-			return false;
-		}
-
 		final int amount = info.getUnlockerConsumeAmount();
 
-		if(amount != 0 && !player.capabilities.isCreativeMode) {
+		if(stack.getItem() == unlocker) {
+			if(amount == 0) {
+				deathChest.setUnlocked(true);
+				return true;
+			}
+
 			if(info.damageUnlockerInsteadOfConsume()) {
-				if(stack.isItemStackDamageable()) {
-					if(stack.getItemDamage() + amount >= stack.getMaxDamage()) {
-						return false;
+				if(stack.isItemStackDamageable() &&
+						stack.getItemDamage() + amount < stack.getMaxDamage()) {
+					if(!player.capabilities.isCreativeMode) {
+						stack.damageItem(amount, player);
 					}
 
-					stack.damageItem(amount, player);
+					deathChest.setUnlocked(true);
+					return true;
 				}
-			} else {
-				if(stack.getCount() < amount) {
-					return false;
+			} else if(stack.getCount() >= amount) {
+				if(!player.capabilities.isCreativeMode) {
+					stack.shrink(amount);
 				}
 
-				stack.shrink(amount);
+				deathChest.setUnlocked(true);
+				return true;
 			}
 		}
 
-		deathChest.setUnlocked(true);
-		return true;
+		final String message = info.getUnlockFailedMessage();
+
+		if(!message.isEmpty()) {
+			final TextComponentString component = new TextComponentString(String.format(
+					message,
+					amount,
+					new TextComponentTranslation(
+							unlocker.getTranslationKey() + ".name"
+					).getFormattedText().trim()
+			));
+
+			if(VDCConfig.defense.unlockFailedStatusMessage) {
+				player.sendStatusMessage(component, true);
+			} else {
+				player.sendMessage(component);
+			}
+		}
+
+		return false;
 	}
 }

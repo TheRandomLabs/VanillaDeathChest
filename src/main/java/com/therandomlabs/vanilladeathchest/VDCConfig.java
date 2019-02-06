@@ -3,7 +3,6 @@ package com.therandomlabs.vanilladeathchest;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import com.therandomlabs.vanilladeathchest.gamestages.DeathChestStageInfo;
 import com.therandomlabs.vanilladeathchest.util.ColorConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import com.therandomlabs.vanilladeathchest.util.VDCUtils;
@@ -76,7 +75,7 @@ public final class VDCConfig {
 		@Config.Comment("The number of defense entities to spawn.")
 		public int defenseEntitySpawnCount = 3;
 
-		@Config.RangeInt(min = 0, max = Short.MAX_VALUE)
+		@Config.RangeInt(min = -126, max = 127)
 		@Config.LangKey("vanilladeathchest.config.defense.unlockerConsumeAmount")
 		@Config.Comment({
 				"How many times the unlocker should be consumed or damaged.",
@@ -95,6 +94,21 @@ public final class VDCConfig {
 		@Config.LangKey("vanilladeathchest.config.defense.unlockerRegistryName")
 		@Config.Comment("The registry name of the unlocker.")
 		public String unlockerRegistryName = "";
+
+		@Config.LangKey("vanilladeathchest.config.defense.unlockFailedMessage")
+		@Config.Comment({
+				"The message that is sent to the player when they fail to unlock a death chest.",
+				"This string takes the required amount and display name of the item as arguments."
+		})
+		public String unlockFailedMessage =
+				"You need %s of the following item to retrieve your items: %s";
+
+		@Config.LangKey("vanilladeathchest.config.defense.unlockFailedStatusMessage")
+		@Config.Comment(
+				"Whether the unlock failed message should be a status message rather than a " +
+						"chat message."
+		)
+		public boolean unlockFailedStatusMessage = true;
 
 		@Config.Ignore
 		public ResourceLocation defenseEntity;
@@ -206,7 +220,7 @@ public final class VDCConfig {
 				"%d refers to the X, Y and Z coordinates.",
 				"Set this to an empty string to disable the message."
 		})
-		public String chatMessage = "Death chest spawned at [%d, %d, %d]";
+		public String chatMessage = "Death chest spawned at [%s, %s, %s]";
 
 		@Config.LangKey("vanilladeathchest.config.spawning.chestType")
 		@Config.Comment("The type of death chest that should be placed.")
@@ -343,8 +357,6 @@ public final class VDCConfig {
 		} catch(Exception ex) {
 			VanillaDeathChest.LOGGER.error("Error while modifying config", ex);
 		}
-
-		DeathChestStageInfo.reloadDefault();
 	}
 
 	public static void reloadFromDisk() {

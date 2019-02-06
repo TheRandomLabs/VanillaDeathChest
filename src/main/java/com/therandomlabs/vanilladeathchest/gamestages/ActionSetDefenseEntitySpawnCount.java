@@ -1,11 +1,11 @@
 package com.therandomlabs.vanilladeathchest.gamestages;
 
-public class ActionSetDefenseEntitySpawnCount extends DeathChestAction {
+public class ActionSetDefenseEntitySpawnCount extends VDCAction {
 	public ActionSetDefenseEntitySpawnCount(String stage, int count) {
 		super(
 				stage,
 				info -> info.setDefenseEntitySpawnCount(count),
-				"Attempting to set defense entity spawn count to " + count
+				"Setting defense entity spawn count to " + count
 		);
 	}
 }

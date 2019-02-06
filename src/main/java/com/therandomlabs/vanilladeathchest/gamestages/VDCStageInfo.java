@@ -12,35 +12,39 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class DeathChestStageInfo {
-	public static final Map<String, DeathChestStageInfo> STAGES = new LinkedHashMap<>();
+public class VDCStageInfo {
+	public static final Map<String, VDCStageInfo> STAGES = new LinkedHashMap<>();
 
-	private static DeathChestStageInfo defaultInfo;
+	private boolean damageUnlockerSet;
+	private boolean damageUnlockerInsteadOfConsume;
+	private String defenseEntityNBT;
+	private String defenseEntityRegistryName;
+	private int defenseEntitySpawnCount;
+	private int unlockerConsumeAmount = Integer.MAX_VALUE;
+	private int unlockerMeta = -1;
+	private String unlockerRegistryName;
+	private String unlockFailedMessage;
 
-	private boolean damageUnlockerInsteadOfConsume =
-			VDCConfig.defense.damageUnlockerInsteadOfConsume;
-	private String defenseEntityNBT = VDCConfig.defense.defenseEntityNBT;
-	private String defenseEntityRegistryName = VDCConfig.defense.defenseEntityRegistryName;
-	private int defenseEntitySpawnCount = VDCConfig.defense.defenseEntitySpawnCount;
-	private int unlockerConsumeAmount = VDCConfig.defense.unlockerConsumeAmount;
-	private int unlockerMeta = VDCConfig.defense.unlockerMeta;
-	private String unlockerRegistryName = VDCConfig.defense.unlockerRegistryName;
+	private ResourceLocation defenseEntity;
+	private Item unlocker;
 
-	private ResourceLocation defenseEntity = VDCConfig.defense.defenseEntity;
-	private Item unlocker = VDCConfig.defense.unlocker;
+	private String chatMessage;
 
 	public boolean damageUnlockerInsteadOfConsume() {
-		return damageUnlockerInsteadOfConsume;
+		return damageUnlockerSet ?
+				damageUnlockerInsteadOfConsume : VDCConfig.defense.damageUnlockerInsteadOfConsume;
 	}
 
 	public void setDamageUnlockerInsteadOfConsume(boolean flag) {
+		damageUnlockerSet = true;
 		damageUnlockerInsteadOfConsume = flag;
 	}
 
 	public String getDefenseEntityNBT() {
-		return defenseEntityNBT;
+		return defenseEntityNBT == null ? VDCConfig.defense.defenseEntityNBT : defenseEntityNBT;
 	}
 
 	public void setDefenseEntityNBT(String nbt) {
@@ -53,7 +57,8 @@ public class DeathChestStageInfo {
 	}
 
 	public String getDefenseEntityRegistryName() {
-		return defenseEntityRegistryName;
+		return defenseEntityRegistryName == null ?
+				VDCConfig.defense.defenseEntityRegistryName : defenseEntityRegistryName;
 	}
 
 	@SuppressWarnings("Duplicates")
@@ -74,7 +79,8 @@ public class DeathChestStageInfo {
 	}
 
 	public int getDefenseEntitySpawnCount() {
-		return defenseEntitySpawnCount;
+		return defenseEntitySpawnCount == 0 ?
+				VDCConfig.defense.defenseEntitySpawnCount : defenseEntitySpawnCount;
 	}
 
 	public void setDefenseEntitySpawnCount(int count) {
@@ -82,27 +88,29 @@ public class DeathChestStageInfo {
 	}
 
 	public ResourceLocation getDefenseEntity() {
-		return defenseEntity;
+		return defenseEntity == null ? VDCConfig.defense.defenseEntity : defenseEntity;
 	}
 
 	public int getUnlockerConsumeAmount() {
-		return unlockerConsumeAmount;
+		return unlockerConsumeAmount == Integer.MAX_VALUE ?
+				VDCConfig.defense.unlockerConsumeAmount : unlockerConsumeAmount;
 	}
 
-	public void setUnlockerConsumeAmount(short amount) {
-		unlockerConsumeAmount = amount < 0 ? 0 : amount;
+	public void setUnlockerConsumeAmount(int amount) {
+		unlockerConsumeAmount = MathHelper.clamp(amount, -126, 127);
 	}
 
 	public int getUnlockerMeta() {
-		return unlockerMeta;
+		return unlockerMeta == -1 ? VDCConfig.defense.unlockerMeta : unlockerMeta;
 	}
 
-	public void setUnlockerMeta(short meta) {
-		unlockerMeta = meta < 0 ? 0 : meta;
+	public void setUnlockerMeta(int meta) {
+		unlockerMeta = MathHelper.clamp(meta, 0, Short.MAX_VALUE);
 	}
 
 	public String getUnlockerRegistryName() {
-		return unlockerRegistryName;
+		return unlockerRegistryName == null ?
+				VDCConfig.defense.unlockerRegistryName : unlockerRegistryName;
 	}
 
 	@SuppressWarnings("Duplicates")
@@ -122,26 +130,39 @@ public class DeathChestStageInfo {
 	}
 
 	public Item getUnlocker() {
-		return unlocker;
+		return unlocker == null ? VDCConfig.defense.unlocker : unlocker;
 	}
 
-	public static DeathChestStageInfo get(EntityPlayer player) {
+	public String getChatMessage() {
+		return chatMessage == null ? VDCConfig.spawning.chatMessage : chatMessage;
+	}
+
+	public void setChatMessage(String message) {
+		chatMessage = message;
+	}
+
+	public String getUnlockFailedMessage() {
+		return unlockFailedMessage == null ?
+				VDCConfig.defense.unlockFailedMessage : unlockFailedMessage;
+	}
+
+	public void setUnlockFailedMessage(String message) {
+		unlockFailedMessage = message;
+	}
+
+	public static VDCStageInfo get(EntityPlayer player) {
 		if(!VanillaDeathChest.GAME_STAGES_LOADED) {
-			return defaultInfo;
+			return new VDCStageInfo();
 		}
 
-		DeathChestStageInfo info = defaultInfo;
+		VDCStageInfo info = null;
 
-		for(Map.Entry<String, DeathChestStageInfo> entry : STAGES.entrySet()) {
+		for(Map.Entry<String, VDCStageInfo> entry : STAGES.entrySet()) {
 			if(GameStageHelper.hasStage(player, entry.getKey())) {
 				info = entry.getValue();
 			}
 		}
 
-		return info;
-	}
-
-	public static void reloadDefault() {
-		defaultInfo = new DeathChestStageInfo();
+		return info == null ? new VDCStageInfo() : info;
 	}
 }

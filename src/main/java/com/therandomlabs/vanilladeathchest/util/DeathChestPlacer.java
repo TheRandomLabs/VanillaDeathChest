@@ -171,8 +171,11 @@ public final class DeathChestPlacer {
 
 				compound.putString("id", VDCConfig.defense.defenseEntityRegistryName);
 
-				final Entity entity = EntityType.loadEntityWithPassengersAtPosition(
-						compound, world, x, y, z, true
+				final Entity entity = EntityType.loadEntityWithPassengers(
+						compound, world, spawnedEntity -> {
+							spawnedEntity.setPosition(x, y, z);
+							return !world.method_18197(spawnedEntity, true) ? null : spawnedEntity;
+						}
 				);
 
 				if(entity instanceof MobEntity) {

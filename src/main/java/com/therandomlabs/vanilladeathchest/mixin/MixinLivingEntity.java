@@ -3,7 +3,9 @@ package com.therandomlabs.vanilladeathchest.mixin;
 import java.util.Random;
 import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
-import com.therandomlabs.vanilladeathchest.api.event.LivingEntityEvent;
+import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
+import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
+import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityTickCallback;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -53,9 +55,9 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	@Inject(method = "update", at = @At("HEAD"))
 	public void update(CallbackInfo callback) {
 		if((Object) this instanceof MobEntity) {
-			for(LivingEntityEvent.Tick event : LivingEntityEvent.TICK.getBackingArray()) {
-				event.onLivingEntityTick((MobEntity) (Object) this, this);
-			}
+			LivingEntityTickCallback.EVENT.invoker().onLivingEntityTick(
+					(MobEntity) (Object) this, this
+			);
 		}
 	}
 
@@ -83,10 +85,10 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 			return;
 		}
 
-		for(LivingEntityEvent.Drop listener : LivingEntityEvent.DROP.getBackingArray()) {
-			if(!listener.onLivingEntityDrop((MobEntity) object, this, recentlyHit, 0, source)) {
-				callback.cancel();
-			}
+		if(!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
+				(MobEntity) object, this, recentlyHit, 0, source
+		)) {
+			callback.cancel();
 		}
 	}
 
@@ -99,12 +101,10 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 			return;
 		}
 
-		for(LivingEntityEvent.Drop listener : LivingEntityEvent.DROP.getBackingArray()) {
-			if(!listener.onLivingEntityDrop(
-					(MobEntity) object, this, recentlyHit, lootingModifier, source
-			)) {
-				callback.cancel();
-			}
+		if(!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
+				(MobEntity) object, this, recentlyHit, lootingModifier, source
+		)) {
+			callback.cancel();
 		}
 	}
 
@@ -123,12 +123,8 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 			int experience = getCurrentExperience(field_6258);
 
 			if((Object) this instanceof MobEntity) {
-				for(LivingEntityEvent.DropExperience event :
-						LivingEntityEvent.DROP_EXPERIENCE.getBackingArray()) {
-					experience = event.onLivingEntityDropExperience(
-							(MobEntity) (Object) this, this, experience
-					);
-				}
+				experience = LivingEntityDropExperienceCallback.EVENT.invoker().
+						onLivingEntityDropExperience((MobEntity) (Object) this, this, experience);
 			}
 
 			while(experience > 0) {

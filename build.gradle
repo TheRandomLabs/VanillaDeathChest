@@ -19,7 +19,7 @@ apply plugin: "fabric-loom"
 apply plugin: "com.github.johnrengelman.shadow"
 
 archivesBaseName = "vanilladeathchest"
-version = "1.14-1.8.0.0-fabric"
+version = "1.14-1.8.0.1-fabric"
 
 sourceCompatibility = targetCompatibility = "1.8"
 
@@ -28,10 +28,10 @@ repositories {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:19w05a"
-	mappings "net.fabricmc:yarn:19w05a.6"
+	minecraft "com.mojang:minecraft:19w06a"
+	mappings "net.fabricmc:yarn:19w06a.3"
 	modCompile "net.fabricmc:fabric-loader:0.3.5.106"
-	modCompile "net.fabricmc:fabric:0.1.5.88"
+	modCompile "net.fabricmc:fabric:0.2.0.91"
 
 	shadow "blue.endless:jankson:1.1.0"
 	compile "blue.endless:jankson:1.1.0"

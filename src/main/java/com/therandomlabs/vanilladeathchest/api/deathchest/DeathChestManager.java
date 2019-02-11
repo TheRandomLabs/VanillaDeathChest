@@ -1,7 +1,7 @@
 package com.therandomlabs.vanilladeathchest.api.deathchest;
 
 import java.util.Map;
-import com.therandomlabs.vanilladeathchest.api.event.DeathChestEvent;
+import com.therandomlabs.vanilladeathchest.api.event.deathchest.DeathChestRemoveCallback;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -42,13 +42,7 @@ public final class DeathChestManager {
 		}
 
 		final Map<BlockPos, DeathChest> deathChests = VDCSavedData.get(world).getDeathChests();
-		DeathChest deathChest = deathChests.get(pos);
-
-		if(deathChest == null) {
-			return null;
-		}
-
-		return deathChest;
+		return deathChests.get(pos);
 	}
 
 	public static DeathChest removeDeathChest(ServerWorld world, BlockPos pos) {
@@ -75,10 +69,7 @@ public final class DeathChestManager {
 			east = null;
 		}
 
-		for(DeathChestEvent.Remove event : DeathChestEvent.REMOVE.getBackingArray()) {
-			event.onRemove(chest, west, east);
-		}
-
+		DeathChestRemoveCallback.EVENT.invoker().onRemove(chest, west, east);
 		return chest;
 	}
 }

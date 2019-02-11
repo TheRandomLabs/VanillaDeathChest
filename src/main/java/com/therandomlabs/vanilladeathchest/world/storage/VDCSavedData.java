@@ -12,7 +12,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.TagHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
-import net.minecraft.world.dimension.DimensionalPersistentStateManager;
+import net.minecraft.world.PersistentStateManager;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class VDCSavedData extends PersistentState {
@@ -91,8 +91,7 @@ public class VDCSavedData extends PersistentState {
 	public static VDCSavedData get(ServerWorld world) {
 		currentWorld = world;
 
-		final DimensionalPersistentStateManager stateManager =
-				world.getDimensionalPersistentStateManager();
+		final PersistentStateManager stateManager = world.getPersistentStateManager();
 		VDCSavedData instance = stateManager.get(VDCSavedData::new, ID);
 
 		if(instance == null) {

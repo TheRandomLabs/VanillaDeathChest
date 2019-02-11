@@ -1,9 +1,12 @@
 package com.therandomlabs.vanilladeathchest;
 
-import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
-import com.therandomlabs.vanilladeathchest.api.event.DeathChestEvent;
-import com.therandomlabs.vanilladeathchest.api.event.LivingEntityEvent;
-import com.therandomlabs.vanilladeathchest.api.event.PlayerEvent;
+import com.therandomlabs.vanilladeathchest.api.event.block.BreakBlockCallback;
+import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
+import com.therandomlabs.vanilladeathchest.api.event.deathchest.DeathChestRemoveCallback;
+import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
+import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
+import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityTickCallback;
+import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
 import com.therandomlabs.vanilladeathchest.command.VDCReloadCommand;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestDropHandler;
@@ -11,9 +14,9 @@ import com.therandomlabs.vanilladeathchest.handler.DeathChestInteractionHandler;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestPlaceHandler;
 import com.therandomlabs.vanilladeathchest.handler.DefenseEntityHandler;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.commands.CommandRegistry;
-import net.fabricmc.fabric.events.PlayerInteractionEvent;
-import net.fabricmc.fabric.events.TickEvent;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.world.GameRules;
@@ -46,25 +49,25 @@ public final class VanillaDeathChest implements ModInitializer {
 
 		final DeathChestPlaceHandler placeHandler = new DeathChestPlaceHandler();
 
-		PlayerEvent.DROP_ALL_ITEMS.register(placeHandler);
-		TickEvent.SERVER.register(placeHandler);
+		PlayerDropAllItemsCallback.EVENT.register(placeHandler);
+		ServerTickCallback.EVENT.register(placeHandler);
 
 		final DeathChestInteractionHandler interactionHandler = new DeathChestInteractionHandler();
 
-		BlockEvent.BREAK.register(interactionHandler);
-		PlayerInteractionEvent.INTERACT_BLOCK.register(interactionHandler);
+		BreakBlockCallback.EVENT.register(interactionHandler);
+		UseBlockCallback.EVENT.register(interactionHandler);
 
 		final DeathChestDropHandler dropHandler = new DeathChestDropHandler();
 
-		BlockEvent.GET_DROP.register(dropHandler);
-		TickEvent.SERVER.register(dropHandler);
-		DeathChestEvent.REMOVE.register(dropHandler);
+		GetBlockDropCallback.EVENT.register(dropHandler);
+		ServerTickCallback.EVENT.register(dropHandler);
+		DeathChestRemoveCallback.EVENT.register(dropHandler);
 
 		final DefenseEntityHandler defenseEntityHandler = new DefenseEntityHandler();
 
-		LivingEntityEvent.DROP.register(defenseEntityHandler);
-		LivingEntityEvent.DROP_EXPERIENCE.register(defenseEntityHandler);
-		LivingEntityEvent.TICK.register(defenseEntityHandler);
+		LivingEntityDropCallback.EVENT.register(defenseEntityHandler);
+		LivingEntityDropExperienceCallback.EVENT.register(defenseEntityHandler);
+		LivingEntityTickCallback.EVENT.register(defenseEntityHandler);
 	}
 
 	public static void crashReport(String message, Throwable throwable) {

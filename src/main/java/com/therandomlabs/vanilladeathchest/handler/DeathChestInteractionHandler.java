@@ -2,9 +2,9 @@ package com.therandomlabs.vanilladeathchest.handler;
 
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
-import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
+import com.therandomlabs.vanilladeathchest.api.event.block.BreakBlockCallback;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
-import net.fabricmc.fabric.events.PlayerInteractionEvent;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,12 +14,11 @@ import net.minecraft.text.StringTextComponent;
 import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public class DeathChestInteractionHandler
-		implements BlockEvent.Break, PlayerInteractionEvent.BlockPositioned {
+public class DeathChestInteractionHandler implements BreakBlockCallback, UseBlockCallback {
 	private static BlockPos harvesting;
 
 	@Override
@@ -48,15 +47,16 @@ public class DeathChestInteractionHandler
 		return true;
 	}
 
-	//onRightClickBlock (PlayerInteractionEvent.BlockPositioned)
+	//onRightClickBlock (UseBlockCallback)
 	@Override
-	public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos,
-			Direction direction, float hitX, float hitY, float hitZ) {
+	public ActionResult interact(PlayerEntity player, World world, Hand hand,
+			BlockHitResult result) {
 		if(world.isClient) {
 			return ActionResult.PASS;
 		}
 
-		final DeathChest deathChest = DeathChestManager.getDeathChest((ServerWorld) world, pos);
+		final DeathChest deathChest =
+				DeathChestManager.getDeathChest((ServerWorld) world, result.getBlockPos());
 
 		if(deathChest == null) {
 			return ActionResult.PASS;

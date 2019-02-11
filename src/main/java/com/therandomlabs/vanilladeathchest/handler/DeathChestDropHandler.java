@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
-import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
-import com.therandomlabs.vanilladeathchest.api.event.DeathChestEvent;
+import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
+import com.therandomlabs.vanilladeathchest.api.event.deathchest.DeathChestRemoveCallback;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.item.ItemStack;
@@ -18,8 +18,8 @@ import net.minecraft.util.InventoryUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class DeathChestDropHandler
-		implements DeathChestEvent.Remove, BlockEvent.GetDrop, Consumer<MinecraftServer> {
+public class DeathChestDropHandler implements
+		DeathChestRemoveCallback, GetBlockDropCallback, ServerTickCallback {
 	private static final Set<BlockPos> justRemoved = new HashSet<>();
 
 	@Override
@@ -55,7 +55,7 @@ public class DeathChestDropHandler
 	}
 
 	@Override
-	public void accept(MinecraftServer server) {
+	public void tick(MinecraftServer server) {
 		justRemoved.clear();
 	}
 }

@@ -21,15 +21,17 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.StringUtils;
 
-public final class VDCConfig {
+public final class VDCConfig implements ServerTickCallback {
 	public static final class Defense {
 		@Config.LangKey("vanilladeathchest.config.defense.damageUnlockerInsteadOfConsume")
 		@Config.Comment("Whether the unlocker should be damaged rather than consumed.")
@@ -264,6 +266,9 @@ public final class VDCConfig {
 
 	private static final Map<String, Category> CATEGORIES = new HashMap<>();
 
+	private static boolean firstReload = true;
+	private static boolean reloadedFirstServerTick;
+
 	static {
 		try {
 			for(Field field : VDCConfig.class.getDeclaredFields()) {
@@ -285,6 +290,15 @@ public final class VDCConfig {
 			}
 		} catch(Exception ex) {
 			VanillaDeathChest.crashReport("Error while getting config properties", ex);
+		}
+	}
+
+	@Override
+	public void tick(MinecraftServer server) {
+		if(!reloadedFirstServerTick) {
+			//Validate registry names
+			reload();
+			reloadedFirstServerTick = true;
 		}
 	}
 
@@ -333,6 +347,8 @@ public final class VDCConfig {
 		}
 
 		onReload(config);
+
+		firstReload = false;
 
 		//Write JSON
 
@@ -525,6 +541,8 @@ public final class VDCConfig {
 	}
 
 	private static void onReload(JsonObject object) {
-		defense.reload(object);
+		if(!firstReload) {
+			defense.reload(object);
+		}
 	}
 }

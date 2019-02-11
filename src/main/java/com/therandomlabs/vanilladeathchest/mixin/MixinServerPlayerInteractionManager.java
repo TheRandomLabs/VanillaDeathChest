@@ -1,8 +1,7 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
-import com.therandomlabs.vanilladeathchest.api.event.BlockEvent;
+import com.therandomlabs.vanilladeathchest.api.event.block.BreakBlockCallback;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,12 +15,9 @@ public class MixinServerPlayerInteractionManager {
 		final ServerPlayerInteractionManager manager =
 				(ServerPlayerInteractionManager) (Object) this;
 
-		for(BlockEvent.Break event : BlockEvent.BREAK.getBackingArray()) {
-			if(!event.breakBlock((ServerWorld) manager.world, manager.player, pos)) {
-				callback.setReturnValue(false);
-				callback.cancel();
-				return;
-			}
+		if(!BreakBlockCallback.EVENT.invoker().breakBlock(manager.world, manager.player, pos)) {
+			callback.setReturnValue(false);
+			callback.cancel();
 		}
 	}
 }

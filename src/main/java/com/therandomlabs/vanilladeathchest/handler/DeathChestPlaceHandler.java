@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.function.Consumer;
 import com.google.common.collect.Queues;
-import com.therandomlabs.vanilladeathchest.api.event.PlayerEvent;
+import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -18,7 +18,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
-public class DeathChestPlaceHandler implements PlayerEvent.DropAllItems, Consumer<MinecraftServer> {
+public class DeathChestPlaceHandler implements PlayerDropAllItemsCallback, ServerTickCallback {
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
 
 	@Override
@@ -42,7 +42,7 @@ public class DeathChestPlaceHandler implements PlayerEvent.DropAllItems, Consume
 	}
 
 	@Override
-	public void accept(MinecraftServer server) {
+	public void tick(MinecraftServer server) {
 		for(World world : server.getWorlds()) {
 			worldTick(world);
 		}

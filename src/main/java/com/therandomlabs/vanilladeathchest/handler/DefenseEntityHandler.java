@@ -2,7 +2,9 @@ package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
-import com.therandomlabs.vanilladeathchest.api.event.LivingEntityEvent;
+import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
+import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
+import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityTickCallback;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
@@ -11,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class DefenseEntityHandler implements
-		LivingEntityEvent.Tick, LivingEntityEvent.Drop, LivingEntityEvent.DropExperience {
+		LivingEntityTickCallback, LivingEntityDropCallback, LivingEntityDropExperienceCallback {
 	@Override
 	public void onLivingEntityTick(MobEntity entity, DeathChestDefenseEntity defenseEntity) {
 		final World world = entity.getEntityWorld();

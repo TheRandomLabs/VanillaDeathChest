@@ -3,7 +3,7 @@ package com.therandomlabs.vanilladeathchest.mixin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import com.therandomlabs.vanilladeathchest.api.event.PlayerEvent;
+import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -44,10 +44,8 @@ public class MixinPlayerInventory {
 			}
 		}
 
-		for(PlayerEvent.DropAllItems event : PlayerEvent.DROP_ALL_ITEMS.getBackingArray()) {
-			if(!event.onPlayerDropAllItems(world, player, drops)) {
-				return;
-			}
+		if(!PlayerDropAllItemsCallback.EVENT.invoker().onPlayerDropAllItems(world, player, drops)) {
+			return;
 		}
 
 		if(!drops.isEmpty()) {

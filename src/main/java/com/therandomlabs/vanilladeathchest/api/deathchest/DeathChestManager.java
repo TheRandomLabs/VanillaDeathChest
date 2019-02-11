@@ -43,13 +43,7 @@ public final class DeathChestManager {
 		}
 
 		final Map<BlockPos, DeathChest> deathChests = VDCSavedData.get(world).getDeathChests();
-		DeathChest deathChest = deathChests.get(pos);
-
-		if(deathChest == null) {
-			return null;
-		}
-
-		return deathChest;
+		return deathChests.get(pos);
 	}
 
 	public static DeathChest removeDeathChest(World world, BlockPos pos) {

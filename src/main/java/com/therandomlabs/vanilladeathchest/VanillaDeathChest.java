@@ -8,12 +8,12 @@ import net.minecraft.crash.ReportedException;
 import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.rift.listener.ItemAdder;
+import org.dimdev.rift.listener.ParticleTypeAdder;
 import org.dimdev.riftloader.listener.InitializationListener;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
 
-public final class VanillaDeathChest implements InitializationListener, ItemAdder {
+public final class VanillaDeathChest implements InitializationListener, ParticleTypeAdder {
 	public static final String MOD_ID = "vanilladeathchest";
 	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
 
@@ -33,7 +33,7 @@ public final class VanillaDeathChest implements InitializationListener, ItemAdde
 
 	//Doing this in onInitialization causes classes to initialize too early
 	@Override
-	public void registerItems() {
+	public void registerParticles() {
 		VDCConfig.reload();
 
 		if(!VDCConfig.misc.gameRuleName.isEmpty()) {

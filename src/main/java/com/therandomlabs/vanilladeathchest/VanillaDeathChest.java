@@ -68,6 +68,8 @@ public final class VanillaDeathChest implements ModInitializer {
 		LivingEntityDropCallback.EVENT.register(defenseEntityHandler);
 		LivingEntityDropExperienceCallback.EVENT.register(defenseEntityHandler);
 		LivingEntityTickCallback.EVENT.register(defenseEntityHandler);
+
+		ServerTickCallback.EVENT.register(new VDCConfig());
 	}
 
 	public static void crashReport(String message, Throwable throwable) {

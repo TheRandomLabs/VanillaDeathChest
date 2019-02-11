@@ -386,7 +386,7 @@ public final class VDCConfig {
 		}
 	}
 
-	public static void onReload() {
+	private static void onReload() {
 		if(!firstReload) {
 			defense.reload();
 		}

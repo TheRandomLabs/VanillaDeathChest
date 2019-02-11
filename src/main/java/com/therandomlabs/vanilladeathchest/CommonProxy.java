@@ -6,4 +6,9 @@ public class CommonProxy {
 	}
 
 	public void preInit() {}
+
+	public void init() {
+		//Validate registry names
+		VDCConfig.onReload();
+	}
 }

@@ -298,9 +298,9 @@ public final class VDCConfig {
 				);
 			}
 
-			firstReload = false;
-
 			onReload();
+
+			firstReload = false;
 
 			//Remove old elements
 			for(String name : config.getCategoryNames()) {
@@ -386,7 +386,9 @@ public final class VDCConfig {
 		}
 	}
 
-	private static void onReload() {
-		defense.reload();
+	public static void onReload() {
+		if(!firstReload) {
+			defense.reload();
+		}
 	}
 }

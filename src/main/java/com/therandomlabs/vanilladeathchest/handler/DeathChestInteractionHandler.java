@@ -81,7 +81,7 @@ public final class DeathChestInteractionHandler {
 	@SubscribeEvent
 	public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
 		final World world = event.getWorld();
-		event.getAffectedBlocks().removeIf(blockPos -> DeathChestManager.isLocked(world, blockPos));
+		event.getAffectedBlocks().removeIf(pos -> DeathChestManager.isLocked(world, pos));
 	}
 
 	private static boolean canInteract(EntityPlayer player, DeathChest deathChest) {

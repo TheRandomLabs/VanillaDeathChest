@@ -35,6 +35,11 @@ public final class DeathChestManager {
 		return getDeathChest(world, pos) != null;
 	}
 
+	public static boolean isLocked(World world, BlockPos pos) {
+		final DeathChest deathChest = getDeathChest(world, pos);
+		return deathChest != null && !deathChest.isUnlocked();
+	}
+
 	public static DeathChest getDeathChest(World world, BlockPos pos) {
 		final Block block = world.getBlockState(pos).getBlock();
 

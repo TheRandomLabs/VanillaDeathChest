@@ -15,6 +15,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -75,6 +76,12 @@ public final class DeathChestInteractionHandler {
 		if(!canInteract(event.getEntityPlayer(), deathChest)) {
 			event.setCanceled(true);
 		}
+	}
+
+	@SubscribeEvent
+	public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
+		final World world = event.getWorld();
+		event.getAffectedBlocks().removeIf(blockPos -> DeathChestManager.isLocked(world, blockPos));
 	}
 
 	private static boolean canInteract(EntityPlayer player, DeathChest deathChest) {

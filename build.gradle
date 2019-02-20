@@ -14,7 +14,7 @@ buildscript {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-version = "1.12.2-1.8.0.1"
+version = "1.12.2-1.8.0.2"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 
@@ -37,7 +37,7 @@ dependencies {
 }
 
 minecraft {
-	version = "1.12.2-latest"
+	version = "1.12.2-14.23.5.2815"
 	runDir = "run"
 	mappings = "stable_39"
 

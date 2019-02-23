@@ -9,6 +9,7 @@
 		"MixinBlock",
 		"MixinEntityLivingBase",
 		"MixinEntityPigZombie",
+		"MixinExplosion",
 		"MixinInventoryPlayer",
 		"MixinPlayerInteractionManager"
 	]

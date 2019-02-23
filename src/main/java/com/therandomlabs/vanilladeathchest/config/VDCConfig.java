@@ -119,7 +119,7 @@ public final class VDCConfig implements ServerTickCallback {
 		private void reload(JsonObject object) {
 			final Identifier entityIdentifier = new Identifier(defenseEntityRegistryName);
 
-			if(Registry.ENTITY_TYPE.contains(entityIdentifier)) {
+			if(Registry.ENTITY_TYPE.containsId(entityIdentifier)) {
 				defenseEntity = Registry.ENTITY_TYPE.get(entityIdentifier);
 				defenseEntityRegistryName = Registry.ENTITY_TYPE.getId(defenseEntity).toString();
 			} else {
@@ -129,7 +129,7 @@ public final class VDCConfig implements ServerTickCallback {
 
 			final Identifier itemIdentifier = new Identifier(unlockerRegistryName);
 
-			if(Registry.ITEM.contains(itemIdentifier)) {
+			if(Registry.ITEM.containsId(itemIdentifier)) {
 				unlocker = Registry.ITEM.get(itemIdentifier);
 
 				if(unlocker == Items.AIR) {

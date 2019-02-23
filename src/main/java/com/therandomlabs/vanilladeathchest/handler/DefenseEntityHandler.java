@@ -28,7 +28,7 @@ public class DefenseEntityHandler implements
 			return;
 		}
 
-		final PlayerEntity player = world.getPlayerByUuid(playerUUID);
+		final PlayerEntity player = world.method_18470(playerUUID);
 
 		if(player != null) {
 			entity.setTarget(player);

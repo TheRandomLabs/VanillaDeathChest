@@ -3,6 +3,7 @@ package com.therandomlabs.vanilladeathchest.handler;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.api.event.block.BreakBlockCallback;
+import com.therandomlabs.vanilladeathchest.api.event.block.ExplosionDetonationCallback;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,8 +18,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 
-public class DeathChestInteractionHandler implements BreakBlockCallback, UseBlockCallback {
+public class DeathChestInteractionHandler implements
+		BreakBlockCallback, UseBlockCallback, ExplosionDetonationCallback {
 	private static BlockPos harvesting;
 
 	@Override
@@ -64,6 +67,13 @@ public class DeathChestInteractionHandler implements BreakBlockCallback, UseBloc
 
 		return canInteract((ServerPlayerEntity) player, deathChest) ?
 				ActionResult.PASS : ActionResult.SUCCESS;
+	}
+
+	@Override
+	public void onExplosionDetonate(ServerWorld world, Explosion explosion) {
+	//	explosion.getAffectedBlocks().removeIf(
+	//			pos -> DeathChestManager.isLocked(world, pos)
+	//	);
 	}
 
 	private static boolean canInteract(ServerPlayerEntity player, DeathChest deathChest) {

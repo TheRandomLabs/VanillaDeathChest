@@ -59,7 +59,7 @@ public class MixinPlayerInventory {
 		final ItemEntity item = new ItemEntity(
 				world,
 				player.x,
-				player.y - 0.30000001192092896 + player.getEyeHeight(),
+				player.y - 0.30000001192092896 + player.getStandingEyeHeight(),
 				player.z,
 				stack
 		);
@@ -71,9 +71,11 @@ public class MixinPlayerInventory {
 		final float value1 = random.nextFloat() * 0.5F;
 		final float value2 = random.nextFloat() * 6.2831855F;
 
-		item.velocityX = -MathHelper.sin(value2) * value1;
-		item.velocityY = 0.20000000298023224;
-		item.velocityZ = MathHelper.cos(value2) * value1;
+		item.setVelocity(
+				-MathHelper.sin(value2) * value1,
+				0.20000000298023224,
+				MathHelper.cos(value2) * value1
+		);
 
 		return item;
 	}

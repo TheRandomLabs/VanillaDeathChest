@@ -17,7 +17,6 @@ public class MixinServerPlayerInteractionManager {
 
 		if(!BreakBlockCallback.EVENT.invoker().breakBlock(manager.world, manager.player, pos)) {
 			callback.setReturnValue(false);
-			callback.cancel();
 		}
 	}
 }

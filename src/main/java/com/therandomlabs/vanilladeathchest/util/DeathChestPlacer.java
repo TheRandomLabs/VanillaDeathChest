@@ -174,7 +174,7 @@ public final class DeathChestPlacer {
 				final Entity entity = EntityType.loadEntityWithPassengers(
 						compound, world, spawnedEntity -> {
 							spawnedEntity.setPosition(x, y, z);
-							return !world.method_18197(spawnedEntity, true) ? null : spawnedEntity;
+							return !world.method_18768(spawnedEntity) ? null : spawnedEntity;
 						}
 				);
 

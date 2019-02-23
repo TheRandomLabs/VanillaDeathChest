@@ -4,6 +4,7 @@
 	"package": "com.therandomlabs.vanilladeathchest.mixin",
 	"mixins": [
 		"MixinBlock",
+		"MixinExplosion",
 		"MixinLivingEntity",
 		"MixinPigZombieEntity",
 		"MixinPlayerInventory",

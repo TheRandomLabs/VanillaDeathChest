@@ -48,7 +48,6 @@ public class MixinPlayerInteractionManager {
 				RiftLoader.instance.getListeners(BlockHarvestListener.class)) {
 			if(!listener.onBlockHarvest(world, player, pos)) {
 				callback.setReturnValue(false);
-				callback.cancel();
 				return;
 			}
 		}

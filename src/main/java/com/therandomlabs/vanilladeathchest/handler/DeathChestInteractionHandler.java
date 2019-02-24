@@ -71,9 +71,7 @@ public class DeathChestInteractionHandler implements
 
 	@Override
 	public void onExplosionDetonate(ServerWorld world, Explosion explosion) {
-		explosion.getAffectedBlocks().removeIf(
-				pos -> DeathChestManager.isLocked(world, pos)
-		);
+		explosion.getAffectedBlocks().removeIf(pos -> DeathChestManager.isLocked(world, pos));
 	}
 
 	private static boolean canInteract(ServerPlayerEntity player, DeathChest deathChest) {

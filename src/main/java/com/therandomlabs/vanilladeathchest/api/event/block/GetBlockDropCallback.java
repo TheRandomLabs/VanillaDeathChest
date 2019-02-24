@@ -1,6 +1,5 @@
 package com.therandomlabs.vanilladeathchest.api.event.block;
 
-import java.util.Collections;
 import java.util.List;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -20,7 +19,7 @@ public interface GetBlockDropCallback {
 					}
 				}
 
-				return Collections.singletonList(drop);
+				return null;
 			}
 	);
 

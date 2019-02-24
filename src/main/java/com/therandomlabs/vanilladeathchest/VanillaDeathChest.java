@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.vanilladeathchest.api.event.block.BreakBlockCallback;
+import com.therandomlabs.vanilladeathchest.api.event.block.ExplosionDetonationCallback;
 import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.deathchest.DeathChestRemoveCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
@@ -56,6 +57,7 @@ public final class VanillaDeathChest implements ModInitializer {
 
 		BreakBlockCallback.EVENT.register(interactionHandler);
 		UseBlockCallback.EVENT.register(interactionHandler);
+		ExplosionDetonationCallback.EVENT.register(interactionHandler);
 
 		final DeathChestDropHandler dropHandler = new DeathChestDropHandler();
 

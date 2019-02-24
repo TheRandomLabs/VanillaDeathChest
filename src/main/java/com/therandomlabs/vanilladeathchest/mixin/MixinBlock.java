@@ -1,5 +1,6 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
+import java.util.Collections;
 import java.util.List;
 import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
 import net.minecraft.block.Block;
@@ -18,8 +19,12 @@ public class MixinBlock {
 			return;
 		}
 
-		final List<ItemStack> drops =
+		List<ItemStack> drops =
 				GetBlockDropCallback.EVENT.invoker().getDrop(world, pos, stack);
+
+		if(drops == null) {
+			drops = Collections.singletonList(stack);
+		}
 
 		for(ItemStack drop : drops) {
 			if(drop.isEmpty()) {

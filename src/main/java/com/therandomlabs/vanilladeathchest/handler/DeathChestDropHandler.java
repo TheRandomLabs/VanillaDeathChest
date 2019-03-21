@@ -11,10 +11,10 @@ import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DefaultedList;
-import net.minecraft.util.InventoryUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -47,7 +47,7 @@ public class DeathChestDropHandler implements
 
 		if(Block.getBlockFromItem(drop.getItem()) instanceof ShulkerBoxBlock) {
 			final DefaultedList<ItemStack> inventory = DefaultedList.create(27, ItemStack.EMPTY);
-			InventoryUtil.deserialize(drop.getTag().getCompound("BlockEntityTag"), inventory);
+			Inventories.fromTag(drop.getTag().getCompound("BlockEntityTag"), inventory);
 			return inventory;
 		}
 

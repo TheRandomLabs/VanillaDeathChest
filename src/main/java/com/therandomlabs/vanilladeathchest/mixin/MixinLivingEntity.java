@@ -77,8 +77,8 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 		}
 	}
 
-	@Inject(method = "method_16077", at = @At("HEAD"), cancellable = true)
-	public void method_16077(DamageSource source, boolean recentlyHit, CallbackInfo callback) {
+	@Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
+	public void dropLoot(DamageSource source, boolean recentlyHit, CallbackInfo callback) {
 		final Object object = this;
 
 		if(!(object instanceof MobEntity)) {

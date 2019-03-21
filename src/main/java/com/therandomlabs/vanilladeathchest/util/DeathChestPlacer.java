@@ -24,7 +24,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnType;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PigZombieEntity;
+import net.minecraft.entity.mob.ZombiePigmanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
@@ -186,7 +186,7 @@ public final class DeathChestPlacer {
 							world, world.getLocalDifficulty(pos), SpawnType.EVENT, null, null
 					);
 
-					if(living instanceof PigZombieEntity) {
+					if(living instanceof ZombiePigmanEntity) {
 						((IAngerable) living).makeAngryAt(player);
 					}
 

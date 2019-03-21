@@ -6,9 +6,9 @@
 		"MixinBlock",
 		"MixinExplosion",
 		"MixinLivingEntity",
-		"MixinPigZombieEntity",
 		"MixinPlayerInventory",
-		"MixinServerPlayerInteractionManager"
+		"MixinServerPlayerInteractionManager",
+		"MixinZombiePigmanEntity"
 	],
 	"injectors": {
 		"defaultRequire": 1

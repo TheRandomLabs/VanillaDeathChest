@@ -88,7 +88,7 @@ public final class DeathChestPlacer {
 		final DeathChestType type = VDCConfig.spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
-		final BlockPos playerPos = player.getPos();
+		final BlockPos playerPos = new BlockPos(player.getPos());
 
 		boolean useDoubleChest =
 				type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;

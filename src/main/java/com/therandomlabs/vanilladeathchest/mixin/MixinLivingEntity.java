@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity implements DeathChestDefenseEntity {
 	@Shadow
-	protected PlayerEntity field_6258;
+	protected PlayerEntity attackingPlayer;
 	@Shadow
 	protected int playerHitTimer;
 
@@ -52,8 +52,8 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 		deathChestPos = pos;
 	}
 
-	@Inject(method = "update", at = @At("HEAD"))
-	public void update(CallbackInfo callback) {
+	@Inject(method = "tick", at = @At("HEAD"))
+	public void tick(CallbackInfo callback) {
 		if((Object) this instanceof MobEntity) {
 			LivingEntityTickCallback.EVENT.invoker().onLivingEntityTick(
 					(MobEntity) (Object) this, this
@@ -118,9 +118,10 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 			return;
 		}
 
-		if(!entity.world.isClient && (method_6071() || playerHitTimer > 0 && canDropLootAndXp() &&
-				entity.world.getGameRules().getBoolean("doMobLoot"))) {
-			int experience = getCurrentExperience(field_6258);
+		if(!entity.world.isClient && (shouldAlwaysDropXp() ||
+				(playerHitTimer > 0 && canDropLootAndXp() &&
+						entity.world.getGameRules().getBoolean("doMobLoot")))) {
+			int experience = getCurrentExperience(attackingPlayer);
 
 			if((Object) this instanceof MobEntity) {
 				experience = LivingEntityDropExperienceCallback.EVENT.invoker().
@@ -136,7 +137,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 			}
 		}
 
-		entity.invalidate();
+		entity.remove();
 
 		final Random random = entity.getRand();
 		final float width = entity.getWidth();
@@ -156,7 +157,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	}
 
 	@Shadow
-	protected boolean method_6071() {
+	protected boolean shouldAlwaysDropXp() {
 		return false;
 	}
 

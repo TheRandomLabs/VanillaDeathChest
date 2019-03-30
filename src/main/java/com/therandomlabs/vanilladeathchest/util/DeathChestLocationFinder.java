@@ -90,7 +90,7 @@ public class DeathChestLocationFinder {
 
 			if(canPlace(world, player, potentialPos)) {
 				if((!isDoubleChest || canPlace(world, player, potentialPos.east())) &&
-						isOnSolidBlocks(world, potentialPos, isDoubleChest)) {
+						isOnSolidBlocks(world, player, potentialPos, isDoubleChest)) {
 					return potentialPos;
 				}
 
@@ -117,6 +117,7 @@ public class DeathChestLocationFinder {
 		return canPlace(world, player, pos);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos) {
 		if(!world.isBlockLoaded(pos) || !world.canPlayerModifyAt(player, pos)) {
 			return false;
@@ -158,17 +159,18 @@ public class DeathChestLocationFinder {
 		return world.getBlockState(pos).getBlock() != Blocks.CHEST;
 	}
 
-	private static boolean isOnSolidBlocks(World world, BlockPos pos, boolean isDoubleChest) {
+	private static boolean isOnSolidBlocks(World world, PlayerEntity player, BlockPos pos,
+			boolean isDoubleChest) {
 		if(!VDCConfig.spawning.mustBeOnSolidBlocks) {
 			return true;
 		}
 
 		final BlockPos down = pos.down();
 
-		if(!world.doesBlockHaveSolidTopSurface(down)) {
+		if(!world.doesBlockHaveSolidTopSurface(down, player)) {
 			return false;
 		}
 
-		return !isDoubleChest || world.doesBlockHaveSolidTopSurface(down.east());
+		return !isDoubleChest || world.doesBlockHaveSolidTopSurface(down.east(), player);
 	}
 }

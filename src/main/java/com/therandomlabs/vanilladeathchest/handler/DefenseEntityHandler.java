@@ -10,6 +10,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class DefenseEntityHandler implements
@@ -39,9 +40,9 @@ public class DefenseEntityHandler implements
 		}
 
 		final BlockPos pos = defenseEntity.getDeathChestPos();
-		final BlockPos entityPos = entity.getPos();
+		final Vec3d entityPos = entity.getPos();
 
-		final double distanceSq = entityPos.squaredDistanceTo(pos);
+		final double distanceSq = entityPos.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ());
 		final double distanceSqFromPlayer;
 
 		if(player == null) {

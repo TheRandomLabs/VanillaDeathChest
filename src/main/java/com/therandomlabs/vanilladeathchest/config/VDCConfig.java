@@ -128,19 +128,13 @@ public final class VDCConfig implements ServerTickCallback {
 			}
 
 			final Identifier itemIdentifier = new Identifier(unlockerRegistryName);
+			unlocker = Registry.ITEM.get(itemIdentifier);
 
-			if(Registry.ITEM.containsId(itemIdentifier)) {
-				unlocker = Registry.ITEM.get(itemIdentifier);
-
-				if(unlocker == Items.AIR) {
-					unlocker = null;
-					unlockerRegistryName = "";
-				} else {
-					unlockerRegistryName = Registry.ITEM.getId(unlocker).toString();
-				}
-			} else {
+			if(unlocker == Items.AIR) {
 				unlocker = null;
 				unlockerRegistryName = "";
+			} else {
+				unlockerRegistryName = Registry.ITEM.getId(unlocker).toString();
 			}
 
 			final JsonObject category = object.getAsJsonObject("defense");

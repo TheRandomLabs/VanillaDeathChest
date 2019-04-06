@@ -26,7 +26,7 @@ public final class DeathChestPlaceHandler {
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS =
 			new EnumMap<>(DimensionType.class);
 
-	@SubscribeEvent(priority = EventPriority.LOW)
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onPlayerDrops(PlayerDropsEvent event) {
 		final List<EntityItem> drops = event.getDrops();
 

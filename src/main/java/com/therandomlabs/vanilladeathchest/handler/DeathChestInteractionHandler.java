@@ -4,10 +4,8 @@ import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
-import com.therandomlabs.vanilladeathchest.gamestages.VDCStageInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -89,35 +87,33 @@ public final class DeathChestInteractionHandler {
 			return false;
 		}
 
-		final VDCStageInfo info = VDCStageInfo.get(player);
-		final Item unlocker = info.getUnlocker();
-
-		if(unlocker == null || deathChest.isUnlocked()) {
+		if(VDCConfig.Defense.unlocker == null || deathChest.isUnlocked()) {
 			return true;
 		}
 
 		final ItemStack stack = player.getHeldItem(player.getActiveHand());
-		final int amount = info.getUnlockerConsumeAmount();
 
-		if(stack.getItem() == unlocker) {
-			if(amount == 0) {
+		if(stack.getItem() == VDCConfig.Defense.unlocker) {
+			if(VDCConfig.Defense.unlockerConsumeAmount == 0) {
 				deathChest.setUnlocked(true);
 				return true;
 			}
 
-			if(info.damageUnlockerInsteadOfConsume()) {
-				if(stack.isItemStackDamageable() &&
-						stack.getItemDamage() + amount < stack.getMaxDamage()) {
+			if(VDCConfig.Defense.damageUnlockerInsteadOfConsume) {
+				final int newDamage =
+						stack.getItemDamage() + VDCConfig.Defense.unlockerConsumeAmount;
+
+				if(stack.isItemStackDamageable() && newDamage < stack.getMaxDamage()) {
 					if(!player.capabilities.isCreativeMode) {
-						stack.damageItem(amount, player);
+						stack.damageItem(VDCConfig.Defense.unlockerConsumeAmount, player);
 					}
 
 					deathChest.setUnlocked(true);
 					return true;
 				}
-			} else if(stack.getCount() >= amount) {
+			} else if(stack.getCount() >= VDCConfig.Defense.unlockerConsumeAmount) {
 				if(!player.capabilities.isCreativeMode) {
-					stack.shrink(amount);
+					stack.shrink(VDCConfig.Defense.unlockerConsumeAmount);
 				}
 
 				deathChest.setUnlocked(true);
@@ -125,14 +121,12 @@ public final class DeathChestInteractionHandler {
 			}
 		}
 
-		final String message = info.getUnlockFailedMessage();
-
-		if(!message.isEmpty()) {
+		if(!VDCConfig.Defense.unlockFailedMessage.isEmpty()) {
 			final TextComponentString component = new TextComponentString(String.format(
-					message,
-					amount,
+					VDCConfig.Defense.unlockFailedMessage,
+					VDCConfig.Defense.unlockerConsumeAmount,
 					new TextComponentTranslation(
-							unlocker.getTranslationKey() + ".name"
+							VDCConfig.Defense.unlocker.getUnlocalizedName() + ".name"
 					).getFormattedText().trim()
 			));
 

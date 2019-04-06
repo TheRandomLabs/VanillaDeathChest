@@ -16,15 +16,13 @@ import org.apache.logging.log4j.Logger;
 		modid = VanillaDeathChest.MOD_ID, version = VanillaDeathChest.VERSION,
 		acceptedMinecraftVersions = VanillaDeathChest.ACCEPTED_MINECRAFT_VERSIONS,
 		acceptableRemoteVersions = VanillaDeathChest.ACCEPTABLE_REMOTE_VERSIONS,
-		guiFactory = VanillaDeathChest.GUI_FACTORY, dependencies = VanillaDeathChest.DEPENDENCIES,
-		updateJSON = VanillaDeathChest.UPDATE_JSON,
+		guiFactory = VanillaDeathChest.GUI_FACTORY, updateJSON = VanillaDeathChest.UPDATE_JSON,
 		certificateFingerprint = VanillaDeathChest.CERTIFICATE_FINGERPRINT
 )
 public final class VanillaDeathChest {
 	public static final String MOD_ID = "vanilladeathchest";
 	public static final String VERSION = "@VERSION@";
-	public static final String ACCEPTED_MINECRAFT_VERSIONS = "[1.12,1.13)";
-	public static final String DEPENDENCIES = "after:gamestages@[2.0.89,)";
+	public static final String ACCEPTED_MINECRAFT_VERSIONS = "[1.11,1.12)";
 	public static final String ACCEPTABLE_REMOTE_VERSIONS = "*";
 	public static final String GUI_FACTORY =
 			"com.therandomlabs.vanilladeathchest.config.VDCGuiConfigFactory";
@@ -35,7 +33,6 @@ public final class VanillaDeathChest {
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
 	public static final boolean CUBIC_CHUNKS_LOADED = Loader.isModLoaded("cubicchunks");
-	public static final boolean GAME_STAGES_LOADED = Loader.isModLoaded("gamestages");
 
 	@SidedProxy(clientSide = "com.therandomlabs.vanilladeathchest.ClientProxy",
 			serverSide = "com.therandomlabs.vanilladeathchest.CommonProxy")

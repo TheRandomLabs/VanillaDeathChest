@@ -11,7 +11,6 @@ import com.therandomlabs.randomlib.TRLUtils;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
-import com.therandomlabs.vanilladeathchest.gamestages.VDCStageInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
@@ -168,25 +167,19 @@ public final class DeathChestPlacer {
 			}
 		}
 
-		final VDCStageInfo info = VDCStageInfo.get(player);
-
-		if(info.getDefenseEntity() != null) {
+		if(VDCConfig.Defense.defenseEntity != null) {
 			final double x = pos.getX() + 0.5;
 			final double y = pos.getY() + 1.0;
 			final double z = pos.getZ() + 0.5;
 
-			final int count = info.getDefenseEntitySpawnCount();
-			final String nbt = info.getDefenseEntityNBT();
-			final String registryName = info.getDefenseEntityRegistryName();
-
-			for(int i = 0; i < count; i++) {
+			for(int i = 0; i < VDCConfig.Defense.defenseEntitySpawnCount; i++) {
 				NBTTagCompound compound = null;
 
 				try {
-					compound = JsonToNBT.getTagFromJson(nbt);
+					compound = JsonToNBT.getTagFromJson(VDCConfig.Defense.defenseEntityNBT);
 				} catch(NBTException ignored) {}
 
-				compound.setString("id", registryName);
+				compound.setString("id", VDCConfig.Defense.defenseEntityRegistryName);
 
 				final Entity entity =
 						AnvilChunkLoader.readWorldEntityPos(compound, world, x, y, z, true);
@@ -219,11 +212,9 @@ public final class DeathChestPlacer {
 
 		VanillaDeathChest.LOGGER.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
 
-		final String chatMessage = info.getChatMessage();
-
-		if(!chatMessage.isEmpty()) {
+		if(!VDCConfig.Spawning.chatMessage.isEmpty()) {
 			player.sendMessage(new TextComponentString(String.format(
-					chatMessage, pos.getX(), pos.getY(), pos.getZ()
+					VDCConfig.Spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
 			)));
 		}
 	}

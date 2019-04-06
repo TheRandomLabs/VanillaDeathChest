@@ -8,4 +8,10 @@ public class VDCGuiConfigFactory extends TRLGuiConfigFactory {
 	public Class<? extends GuiConfig> mainConfigGuiClass() {
 		return VDCGuiConfig.class;
 	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
+		return null;
+	}
 }

@@ -29,6 +29,7 @@ vanilladeathchest.config.protection.period=Protection period in ticks
 
 vanilladeathchest.config.spawning=Spawning
 vanilladeathchest.config.spawning.chatMessage=Chat message
+vanilladeathchest.config.spawning.containerDisplayName=Container display name
 vanilladeathchest.config.spawning.chestType=Chest type
 vanilladeathchest.config.spawning.chestType.singleOnly=Single only
 vanilladeathchest.config.spawning.chestType.singleOrDouble=Single or double

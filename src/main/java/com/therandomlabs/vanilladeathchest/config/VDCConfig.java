@@ -173,6 +173,12 @@ public final class VDCConfig {
 		})
 		public static String chatMessage = "Death chest spawned at [%s, %s, %s]";
 
+		@Config.Property({
+				"The display name of the death chest container.",
+				"Leave this empty to not specify a custom name."
+		})
+		public static String containerDisplayName = "Death Chest";
+
 		@Config.Property("The type of death chest that should be placed.")
 		public static DeathChestPlacer.DeathChestType chestType =
 				DeathChestPlacer.DeathChestType.SINGLE_OR_DOUBLE;

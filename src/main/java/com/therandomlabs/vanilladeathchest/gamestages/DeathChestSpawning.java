@@ -15,4 +15,9 @@ public final class DeathChestSpawning {
 	public static void setChatMessage(String stage, String message) {
 		CraftTweakerAPI.apply(new ActionSetChatMessage(stage, message));
 	}
+
+	@ZenMethod
+	public static void setContainerDisplayName(String stage, String name) {
+		CraftTweakerAPI.apply(new ActionSetContainerDisplayName(stage, name));
+	}
 }

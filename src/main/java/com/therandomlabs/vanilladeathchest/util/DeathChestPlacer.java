@@ -169,6 +169,11 @@ public final class DeathChestPlacer {
 		}
 
 		final VDCStageInfo info = VDCStageInfo.get(player);
+		final String displayName = info.getContainerDisplayName();
+
+		if(!displayName.isEmpty()) {
+			chest.setCustomName(displayName);
+		}
 
 		if(info.getDefenseEntity() != null) {
 			final double x = pos.getX() + 0.5;

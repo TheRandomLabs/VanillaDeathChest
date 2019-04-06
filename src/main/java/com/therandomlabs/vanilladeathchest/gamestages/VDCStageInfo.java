@@ -36,6 +36,7 @@ public class VDCStageInfo {
 	private Item unlocker;
 
 	private String chatMessage;
+	private String containerDisplayName;
 
 	public boolean damageUnlockerInsteadOfConsume() {
 		return damageUnlockerSet ?
@@ -135,6 +136,15 @@ public class VDCStageInfo {
 		return unlocker == null ? VDCConfig.Defense.unlocker : unlocker;
 	}
 
+	public String getUnlockFailedMessage() {
+		return unlockFailedMessage == null ?
+				VDCConfig.Defense.unlockFailedMessage : unlockFailedMessage;
+	}
+
+	public void setUnlockFailedMessage(String message) {
+		unlockFailedMessage = message;
+	}
+
 	public String getChatMessage() {
 		return chatMessage == null ? VDCConfig.Spawning.chatMessage : chatMessage;
 	}
@@ -143,13 +153,13 @@ public class VDCStageInfo {
 		chatMessage = message;
 	}
 
-	public String getUnlockFailedMessage() {
-		return unlockFailedMessage == null ?
-				VDCConfig.Defense.unlockFailedMessage : unlockFailedMessage;
+	public String getContainerDisplayName() {
+		return containerDisplayName == null ?
+				VDCConfig.Spawning.containerDisplayName : containerDisplayName;
 	}
 
-	public void setUnlockFailedMessage(String message) {
-		unlockFailedMessage = message;
+	public void setContainerDisplayName(String name) {
+		containerDisplayName = name;
 	}
 
 	public static VDCStageInfo get(EntityPlayer player) {

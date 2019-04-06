@@ -3,9 +3,9 @@ package com.therandomlabs.vanilladeathchest.handler;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.event.DeathChestRemoveEvent;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.entity.Entity;
@@ -29,7 +29,7 @@ public final class DeathChestDropHandler {
 
 	@SubscribeEvent
 	public static void onDeathChestRemove(DeathChestRemoveEvent event) {
-		if(VDCConfig.misc.dropDeathChests) {
+		if(VDCConfig.Misc.dropDeathChests) {
 			return;
 		}
 

@@ -1,14 +1,12 @@
 package com.therandomlabs.vanilladeathchest;
 
-public class CommonProxy {
-	public void construct() {
-		VDCConfig.reload();
-	}
+import com.therandomlabs.randomlib.config.ConfigManager;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 
+public class CommonProxy {
 	public void preInit() {}
 
 	public void init() {
-		//Validate registry names
-		VDCConfig.reload();
+		ConfigManager.register(VDCConfig.class);
 	}
 }

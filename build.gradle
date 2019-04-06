@@ -9,18 +9,24 @@ buildscript {
 
 	dependencies {
 		classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+		classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
 	}
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "com.github.johnrengelman.shadow"
 
-version = "1.12.2-1.8.0.2"
+version = "1.12.2-1.9.0.0"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 
 sourceCompatibility = targetCompatibility = "1.8"
 
 repositories {
+	maven {
+		url "https://jitpack.io"
+	}
+
 	maven {
 		url "https://maven.mcmoddev.com"
 	}
@@ -31,13 +37,34 @@ repositories {
 }
 
 dependencies {
+	shadow "com.github.TheRandomLabs:RandomLib:1.12-SNAPSHOT"
+	compile "com.github.TheRandomLabs:RandomLib:1.12-SNAPSHOT"
+
 	compile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.574"
 	compile "net.darkhax.gamestages:GameStages-1.12.2:2.0.112"
 	compile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
 }
 
+shadowJar {
+	classifier = ""
+	relocate "com.therandomlabs.randomlib", "com.therandomlabs.vanilladeathchest.repackage.com.therandomlabs.randomlib"
+	configurations = [project.configurations.shadow]
+}
+
+reobf {
+	shadowJar {
+		mappingType = "SEARGE"
+	}
+}
+
+build.dependsOn shadowJar
+
+artifacts {
+	archives shadowJar
+}
+
 minecraft {
-	version = "1.12.2-14.23.5.2815"
+	version = "1.12.2-14.23.5.2824"
 	runDir = "run"
 	mappings = "stable_39"
 

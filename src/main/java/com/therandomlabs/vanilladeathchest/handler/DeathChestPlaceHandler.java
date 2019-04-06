@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import com.google.common.collect.Queues;
-import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,8 +46,8 @@ public final class DeathChestPlaceHandler {
 			return;
 		}
 
-		if(!(VDCConfig.misc.gameRuleName.isEmpty() ||
-				gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {
+		if(!(VDCConfig.Misc.gameRuleName.isEmpty() ||
+				gameRules.getBoolean(VDCConfig.Misc.gameRuleName))) {
 			return;
 		}
 

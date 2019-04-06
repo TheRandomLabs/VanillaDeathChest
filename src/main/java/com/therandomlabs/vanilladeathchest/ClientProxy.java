@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest;
 
-import com.therandomlabs.vanilladeathchest.command.CommandVDCReload;
+import com.therandomlabs.randomlib.config.CommandConfigReload;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -9,8 +10,10 @@ public final class ClientProxy extends CommonProxy {
 	public void preInit() {
 		super.preInit();
 
-		if(VDCConfig.misc.vdcreloadclient) {
-			ClientCommandHandler.instance.registerCommand(new CommandVDCReload(Side.CLIENT));
+		if(VDCConfig.Misc.vdcreloadclient) {
+			ClientCommandHandler.instance.registerCommand(new CommandConfigReload(
+					"vdcreloadclient", VDCConfig.class, Side.CLIENT
+			));
 		}
 	}
 }

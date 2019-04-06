@@ -1,9 +1,9 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
-import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.gamestages.VDCStageInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -136,7 +136,7 @@ public final class DeathChestInteractionHandler {
 					).getFormattedText().trim()
 			));
 
-			if(VDCConfig.defense.unlockFailedStatusMessage) {
+			if(VDCConfig.Defense.unlockFailedStatusMessage) {
 				player.sendStatusMessage(component, true);
 			} else {
 				player.sendMessage(component);

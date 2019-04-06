@@ -6,9 +6,11 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 import com.mojang.authlib.GameProfile;
-import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.randomlib.BooleanWrapper;
+import com.therandomlabs.randomlib.TRLUtils;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.gamestages.VDCStageInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
@@ -50,7 +52,7 @@ public final class DeathChestPlacer {
 		}
 	}
 
-	private static final Method BECOME_ANGRY_AT = VanillaDeathChest.findMethod(
+	private static final Method BECOME_ANGRY_AT = TRLUtils.findMethod(
 			EntityPigZombie.class, "becomeAngryAt", "func_70835_c", Entity.class
 	);
 
@@ -98,7 +100,7 @@ public final class DeathChestPlacer {
 	}
 
 	private void place(World world, EntityPlayer player) {
-		final DeathChestType type = VDCConfig.spawning.chestType;
+		final DeathChestType type = VDCConfig.Spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = player.getPosition();
@@ -123,7 +125,7 @@ public final class DeathChestPlacer {
 		final Block block;
 
 		if(type == DeathChestType.SHULKER_BOX) {
-			block = BlockShulkerBox.getBlockByColor(VDCConfig.spawning.shulkerBoxColor.get());
+			block = BlockShulkerBox.getBlockByColor(VDCConfig.Spawning.shulkerBoxColor.get());
 		} else if(type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
 			block = BlockShulkerBox.getBlockByColor(EnumDyeColor.byMetadata(random.nextInt(16)));
 		} else {

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.randomlib.BooleanWrapper;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -81,7 +82,7 @@ public class DeathChestLocationFinder {
 
 		BlockPos singleChestPos = null;
 
-		for(BlockPos translation : getSearchOrder(VDCConfig.spawning.locationSearchRadius)) {
+		for(BlockPos translation : getSearchOrder(VDCConfig.Spawning.locationSearchRadius)) {
 			final BlockPos potentialPos = searchPos.add(translation);
 
 			if(canPlace(world, player, potentialPos)) {
@@ -101,7 +102,7 @@ public class DeathChestLocationFinder {
 			return singleChestPos;
 		}
 
-		return VDCConfig.spawning.forcePlaceIfLocationNotFound ? pos : null;
+		return VDCConfig.Spawning.forcePlaceIfLocationNotFound ? pos : null;
 	}
 
 	public static boolean canPlace(World world, EntityPlayer player, BlockPos pos,
@@ -143,7 +144,7 @@ public class DeathChestLocationFinder {
 	}
 
 	private static boolean isOnSolidBlocks(World world, BlockPos pos, boolean isDoubleChest) {
-		if(!VDCConfig.spawning.mustBeOnSolidBlocks) {
+		if(!VDCConfig.Spawning.mustBeOnSolidBlocks) {
 			return true;
 		}
 

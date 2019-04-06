@@ -1,7 +1,7 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
-import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public final class VDCGameRuleAdder {
 	@SubscribeEvent
 	public static void onWorldLoad(WorldEvent.Load event) {
-		if(VDCConfig.misc.gameRuleName.isEmpty()) {
+		if(VDCConfig.Misc.gameRuleName.isEmpty()) {
 			return;
 		}
 
@@ -24,10 +24,10 @@ public final class VDCGameRuleAdder {
 
 		final GameRules gameRules = world.getGameRules();
 
-		if(!gameRules.hasRule(VDCConfig.misc.gameRuleName)) {
+		if(!gameRules.hasRule(VDCConfig.Misc.gameRuleName)) {
 			gameRules.setOrCreateGameRule(
-					VDCConfig.misc.gameRuleName,
-					Boolean.toString(VDCConfig.misc.gameRuleDefaultValue)
+					VDCConfig.Misc.gameRuleName,
+					Boolean.toString(VDCConfig.Misc.gameRuleDefaultValue)
 			);
 		}
 	}

@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -25,7 +26,7 @@ public final class DeathChestPlaceHandler {
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS =
 			new EnumMap<>(DimensionType.class);
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void onPlayerDrops(PlayerDropsEvent event) {
 		final List<EntityItem> drops = event.getDrops();
 

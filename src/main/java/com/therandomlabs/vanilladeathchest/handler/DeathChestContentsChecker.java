@@ -1,7 +1,6 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.Map;
-import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
@@ -15,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-@Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
+@Mod.EventBusSubscriber
 public final class DeathChestContentsChecker {
 	@SubscribeEvent
 	public static void onWorldTick(TickEvent.WorldTickEvent event) {
@@ -46,7 +45,7 @@ public final class DeathChestContentsChecker {
 			boolean empty = true;
 
 			for(int i = 0; i < lockableLoot.getSizeInventory(); i++) {
-				if(!lockableLoot.getStackInSlot(i).isEmpty()) {
+				if(lockableLoot.getStackInSlot(i) != null) {
 					empty = false;
 					break;
 				}

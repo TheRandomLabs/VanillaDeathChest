@@ -5,7 +5,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
@@ -46,8 +45,8 @@ public class VDCSavedData extends WorldSavedData {
 
 		final NBTTagList list = nbt.getTagList(DEATH_CHESTS_KEY, Constants.NBT.TAG_COMPOUND);
 
-		for(NBTBase tag : list) {
-			final NBTTagCompound compound = (NBTTagCompound) tag;
+		for(int i = 0; i < list.tagCount(); i++) {
+			final NBTTagCompound compound = (NBTTagCompound) list.get(i);
 
 			final UUID playerID = NBTUtil.getUUIDFromTag(compound.getCompoundTag(UUID_KEY));
 			final long creationTime = compound.getLong(CREATION_TIME_KEY);

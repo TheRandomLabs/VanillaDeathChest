@@ -1,6 +1,5 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
-import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
@@ -18,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
+@Mod.EventBusSubscriber
 public final class DeathChestInteractionHandler {
 	private static BlockPos harvesting;
 
@@ -111,9 +110,9 @@ public final class DeathChestInteractionHandler {
 					deathChest.setUnlocked(true);
 					return true;
 				}
-			} else if(stack.getCount() >= VDCConfig.Defense.unlockerConsumeAmount) {
+			} else if(stack.stackSize >= VDCConfig.Defense.unlockerConsumeAmount) {
 				if(!player.capabilities.isCreativeMode) {
-					stack.shrink(VDCConfig.Defense.unlockerConsumeAmount);
+					stack.stackSize -= VDCConfig.Defense.unlockerConsumeAmount;
 				}
 
 				deathChest.setUnlocked(true);
@@ -131,7 +130,7 @@ public final class DeathChestInteractionHandler {
 			));
 
 			if(VDCConfig.Defense.unlockFailedStatusMessage) {
-				player.sendStatusMessage(component, true);
+				player.sendStatusMessage(component);
 			} else {
 				player.sendMessage(component);
 			}

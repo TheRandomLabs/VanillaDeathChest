@@ -2,7 +2,6 @@ package com.therandomlabs.vanilladeathchest.config;
 
 import com.therandomlabs.randomlib.TRLUtils;
 import com.therandomlabs.randomlib.config.Config;
-import com.therandomlabs.randomlib.config.ConfigColor;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.entity.EntityList;
@@ -85,8 +84,6 @@ public final class VDCConfig {
 		)
 		public static boolean unlockFailedStatusMessage = true;
 
-		public static ResourceLocation defenseEntity;
-
 		@SuppressWarnings("Duplicates")
 		public static void onReload() {
 			try {
@@ -95,18 +92,16 @@ public final class VDCConfig {
 				defenseEntityNBT = "{}";
 			}
 
-			final ResourceLocation[] entityNames =
-					EntityList.getEntityNameList().toArray(new ResourceLocation[0]);
+			final String[] entityNames =
+					EntityList.getEntityNameList().toArray(new String[0]);
 			final int index = ArrayUtils.indexOf(
 					entityNames, new ResourceLocation(defenseEntityRegistryName)
 			);
 
 			if(index == ArrayUtils.INDEX_NOT_FOUND) {
-				defenseEntity = null;
 				defenseEntityRegistryName = "";
 			} else {
-				defenseEntity = entityNames[index];
-				defenseEntityRegistryName = defenseEntity.toString();
+				defenseEntityRegistryName = entityNames[index];
 			}
 		}
 	}
@@ -173,6 +168,12 @@ public final class VDCConfig {
 		})
 		public static String chatMessage = "Death chest spawned at [%s, %s, %s]";
 
+		@Config.Property({
+				"The display name of the death chest container.",
+				"Leave this empty to not specify a custom name."
+		})
+		public static String containerDisplayName = "Death Chest";
+
 		@Config.Property("The type of death chest that should be placed.")
 		public static DeathChestPlacer.DeathChestType chestType =
 				DeathChestPlacer.DeathChestType.SINGLE_OR_DOUBLE;
@@ -189,9 +190,6 @@ public final class VDCConfig {
 
 		@Config.Property("Whether death chests can only spwan on solid blocks.")
 		public static boolean mustBeOnSolidBlocks;
-
-		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
-		public static ConfigColor shulkerBoxColor = ConfigColor.WHITE;
 	}
 
 	@Config.Category("Options related to death chest defense.")
@@ -205,10 +203,4 @@ public final class VDCConfig {
 
 	@Config.Category("Options related to death chest spawning.")
 	public static final Spawning spawning = null;
-
-	static {
-		ConfigColor.setTranslationKeyPrefix(
-				"vanilladeathchest.config.spawning.chestType.randomShulkerBoxColor."
-		);
-	}
 }

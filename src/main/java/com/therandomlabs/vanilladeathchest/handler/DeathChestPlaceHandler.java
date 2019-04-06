@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import com.google.common.collect.Queues;
-import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.entity.item.EntityItem;
@@ -21,7 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-@Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
+@Mod.EventBusSubscriber
 public final class DeathChestPlaceHandler {
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS =
 			new EnumMap<>(DimensionType.class);

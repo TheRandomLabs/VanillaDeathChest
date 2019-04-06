@@ -14,6 +14,7 @@ vanilladeathchest.config.defense.unlockFailedMessage=Unlock failed message
 vanilladeathchest.config.defense.unlockFailedStatusMessage=Unlock failed status message
 
 vanilladeathchest.config.misc=Miscellaneous
+vanilladeathchest.config.misc.deathChestsDisappearWhenEmptied=Death chests disappear when emptied
 vanilladeathchest.config.misc.dropDeathChests=Drop death chests
 vanilladeathchest.config.misc.gameRuleDefaultValue=Gamerule default value
 vanilladeathchest.config.misc.gameRuleName=Gamerule name

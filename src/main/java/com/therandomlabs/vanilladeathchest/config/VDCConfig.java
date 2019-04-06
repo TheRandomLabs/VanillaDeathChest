@@ -1,5 +1,6 @@
 package com.therandomlabs.vanilladeathchest.config;
 
+import com.therandomlabs.randomlib.TRLUtils;
 import com.therandomlabs.randomlib.config.Config;
 import com.therandomlabs.randomlib.config.ConfigColor;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
@@ -111,6 +112,9 @@ public final class VDCConfig {
 	}
 
 	public static final class Misc {
+		@Config.Property("Whether death chets should disappear when they are emptied.")
+		public static boolean deathChestsDisappearWhenEmptied = TRLUtils.IS_DEOBFUSCATED;
+
 		@Config.Property({
 				"Whether death chests should be dropped when broken.",
 				"Enable this for infinite chests."

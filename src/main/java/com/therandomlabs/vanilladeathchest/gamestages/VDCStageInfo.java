@@ -13,10 +13,14 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class VDCStageInfo {
 	public static final Map<String, VDCStageInfo> STAGES = new LinkedHashMap<>();
+
+	private static final IForgeRegistry<Item> ITEM_REGISTRY = GameRegistry.findRegistry(Item.class);
 
 	private boolean damageUnlockerSet;
 	private boolean damageUnlockerInsteadOfConsume;
@@ -115,9 +119,7 @@ public class VDCStageInfo {
 
 	@SuppressWarnings("Duplicates")
 	public void setUnlockerRegistryName(String registryName) {
-		unlocker = VanillaDeathChest.ITEM_REGISTRY.getValue(
-				new ResourceLocation(registryName)
-		);
+		unlocker = ITEM_REGISTRY.getValue(new ResourceLocation(registryName));
 
 		if(unlocker != null) {
 			if(unlocker == Items.AIR) {

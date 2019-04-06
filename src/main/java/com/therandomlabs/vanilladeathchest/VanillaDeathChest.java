@@ -2,16 +2,13 @@ package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.randomlib.config.CommandConfigReload;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
-import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,8 +33,6 @@ public final class VanillaDeathChest {
 	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
 
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-
-	public static final IForgeRegistry<Item> ITEM_REGISTRY = GameRegistry.findRegistry(Item.class);
 
 	public static final boolean CUBIC_CHUNKS_LOADED = Loader.isModLoaded("cubicchunks");
 	public static final boolean GAME_STAGES_LOADED = Loader.isModLoaded("gamestages");

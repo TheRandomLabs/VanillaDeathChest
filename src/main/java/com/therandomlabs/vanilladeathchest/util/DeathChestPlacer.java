@@ -155,6 +155,10 @@ public final class DeathChestPlacer {
 			}
 		}
 
+		if(!VDCConfig.spawning.containerDisplayName.isEmpty()) {
+			chest.setCustomName(new StringTextComponent(VDCConfig.spawning.containerDisplayName));
+		}
+
 		if(VDCConfig.defense.defenseEntity != null) {
 			final double x = pos.getX() + 0.5;
 			final double y = pos.getY() + 1.0;

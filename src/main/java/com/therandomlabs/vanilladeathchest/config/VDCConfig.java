@@ -33,41 +33,32 @@ import org.apache.commons.lang3.StringUtils;
 
 public final class VDCConfig implements ServerTickCallback {
 	public static final class Defense {
-		@Config.LangKey("vanilladeathchest.config.defense.damageUnlockerInsteadOfConsume")
-		@Config.Comment("Whether the unlocker should be damaged rather than consumed.")
+		@Config.Property("Whether the unlocker should be damaged rather than consumed.")
 		public boolean damageUnlockerInsteadOfConsume;
 
-		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityDropsExperience")
-		@Config.Comment("Whether defense entities drop experience.")
+		@Config.Property("Whether defense entities drop experience.")
 		public boolean defenseEntityDropsExperience;
 
-		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityDropsItems")
-		@Config.Comment("Whether defense entities drop items.")
+		@Config.Property("Whether defense entities drop items.")
 		public boolean defenseEntityDropsItems;
 
 		@Config.RangeDouble(min = 0.0)
-		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityMaxDistanceSquared")
-		@Config.Comment(
+		@Config.Property(
 				"The maximum distance squared that a defense entity can be from its chest."
 		)
 		public double defenseEntityMaxDistanceSquared = 64.0;
 
 		@Config.RangeDouble(min = 0.0)
-		@Config.LangKey(
-				"vanilladeathchest.config.defense.defenseEntityMaxDistanceSquaredFromPlayer"
-		)
-		@Config.Comment(
+		@Config.Property(
 				"The maximum distance squared that a defense entity can be from its player if it " +
 						"is too far away from its chest."
 		)
 		public double defenseEntityMaxDistanceSquaredFromPlayer = 64.0;
 
-		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityNBT")
-		@Config.Comment("The defense entity NBT data.")
+		@Config.Property("The defense entity NBT data.")
 		public String defenseEntityNBT = "{}";
 
-		@Config.LangKey("vanilladeathchest.config.defense.defenseEntityRegistryName")
-		@Config.Comment({
+		@Config.Property({
 				"The registry name of the defense entity.",
 				"If the defense entity is a living entity, it will not automatically despawn.",
 				"If the defense entity can have a revenge target, then the revenge target will " +
@@ -76,13 +67,11 @@ public final class VDCConfig implements ServerTickCallback {
 		public String defenseEntityRegistryName = "";
 
 		@Config.RangeInt(min = 1)
-		@Config.LangKey("vanilladeathchest.config.defense.defenseEntitySpawnCount")
-		@Config.Comment("The number of defense entities to spawn.")
+		@Config.Property("The number of defense entities to spawn.")
 		public int defenseEntitySpawnCount = 3;
 
 		@Config.RangeInt(min = 0, max = Short.MAX_VALUE)
-		@Config.LangKey("vanilladeathchest.config.defense.unlockerConsumeAmount")
-		@Config.Comment({
+		@Config.Property({
 				"How many times the unlocker should be consumed or damaged.",
 				"If the unlocker cannot be consumed or damage this many times, the death chest " +
 						"will not be unlocked.",
@@ -91,20 +80,17 @@ public final class VDCConfig implements ServerTickCallback {
 		})
 		public int unlockerConsumeAmount = 1;
 
-		@Config.LangKey("vanilladeathchest.config.defense.unlockerRegistryName")
-		@Config.Comment("The registry name of the unlocker.")
+		@Config.Property("The registry name of the unlocker.")
 		public String unlockerRegistryName = "";
 
-		@Config.LangKey("vanilladeathchest.config.defense.unlockFailedMessage")
-		@Config.Comment({
+		@Config.Property({
 				"The message that is sent to the player when they fail to unlock a death chest.",
 				"This string takes the required amount and display name of the item as arguments."
 		})
 		public String unlockFailedMessage =
 				"You need %s of the following item to retrieve your items: %s";
 
-		@Config.LangKey("vanilladeathchest.config.defense.unlockFailedStatusMessage")
-		@Config.Comment(
+		@Config.Property(
 				"Whether the unlock failed message should be a status message rather than a " +
 						"chat message."
 		)
@@ -149,53 +135,48 @@ public final class VDCConfig implements ServerTickCallback {
 	}
 
 	public static final class Misc {
-		@Config.LangKey("vanilladeathchest.config.misc.dropDeathChests")
-		@Config.Comment({
+		@Config.Property("Whether death chets should disappear when they are emptied.")
+		public boolean deathChestsDisappearWhenEmptied = VanillaDeathChest.IS_DEOBFUSCATED;
+
+		@Config.Property({
 				"Whether death chests should be dropped when broken.",
 				"Enable this for infinite chests."
 		})
 		public boolean dropDeathChests;
 
-		@Config.LangKey("vanilladeathchest.config.misc.gameRuleDefaultValue")
-		@Config.Comment("The default value of the spawnDeathChests gamerule.")
+		@Config.Property("The default value of the spawnDeathChests gamerule.")
 		public boolean gameRuleDefaultValue = true;
 
-		@Config.LangKey("vanilladeathchest.config.misc.gameRuleName")
-		@Config.Comment({
+		@Config.Property({
 				"The name of the spawnDeathChests gamerule.",
 				"Set this to an empty string to disable the gamerule."
 		})
 		public String gameRuleName = "spawnDeathChests";
 
-		@Config.RequiresWorldRestart
-		@Config.LangKey("vanilladeathchest.config.misc.vdcreload")
-		@Config.Comment("Whether to enable the /vdcreload command.")
+		@Config.RequiresWorldReload
+		@Config.Property("Whether to enable the /vdcreload command.")
 		public boolean vdcreload = true;
 	}
 
 	public static final class Protection {
-		@Config.LangKey("vanilladeathchest.config.protection.bypassIfCreative")
-		@Config.Comment(
+		@Config.Property(
 				"Whether players in creative mode should be able to bypass death chest " +
 						"protection."
 		)
 		public boolean bypassIfCreative = true;
 
 		@Config.RangeInt(min = 0)
-		@Config.LangKey("vanilladeathchest.config.protection.bypassPermissionLevel")
-		@Config.Comment("The required permission level to bypass death chest proteciton.")
+		@Config.Property("The required permission level to bypass death chest proteciton.")
 		public int bypassPermissionLevel = 3;
 
-		@Config.LangKey("vanilladeathchest.config.protection.enabled")
-		@Config.Comment({
+		@Config.Property({
 				"Whether death chests should be protected.",
 				"When this is enabled, death chests can only be broken by their owners."
 		})
 		public boolean enabled = true;
 
 		@Config.RangeInt(min = 0)
-		@Config.LangKey("vanilladeathchest.config.protection.period")
-		@Config.Comment({
+		@Config.Property({
 				"The amount of time in ticks death chest protection should last.",
 				"120000 ticks is 5 in-game days.",
 				"Set this to 0 to protect death chests indefinitely."
@@ -204,37 +185,37 @@ public final class VDCConfig implements ServerTickCallback {
 	}
 
 	public static final class Spawning {
-		@Config.LangKey("vanilladeathchest.config.spawning.chatMessage")
-		@Config.Comment({
+		@Config.Property({
 				"The message sent to a player when they die and a death chest is placed.",
 				"%d refers to the X, Y and Z coordinates.",
 				"Set this to an empty string to disable the message."
 		})
 		public String chatMessage = "Death chest spawned at [%d, %d, %d]";
 
-		@Config.LangKey("vanilladeathchest.config.spawning.chestType")
-		@Config.Comment("The type of death chest that should be placed.")
+		@Config.Property({
+				"The display name of the death chest container.",
+				"Leave this empty to not specify a custom name."
+		})
+		public String containerDisplayName = "Death Chest";
+
+		@Config.Property("The type of death chest that should be placed.")
 		public DeathChestPlacer.DeathChestType chestType =
 				DeathChestPlacer.DeathChestType.SINGLE_OR_DOUBLE;
 
-		@Config.LangKey("vanilladeathchest.config.spawning.forcePlaceIfLocationNotFound")
-		@Config.Comment(
+		@Config.Property(
 				"Whether to force place a death chest at the location of a player's death if no " +
 						"viable locations are found."
 		)
 		public boolean forcePlaceIfLocationNotFound;
 
 		@Config.RangeInt(min = 1)
-		@Config.LangKey("vanilladeathchest.config.spawning.locationSearchRadius")
-		@Config.Comment("The death chest location search radius.")
+		@Config.Property("The death chest location search radius.")
 		public int locationSearchRadius = 8;
 
-		@Config.LangKey("vanilladeathchest.config.spawning.mustBeOnSolidBlocks")
-		@Config.Comment("Whether death chests can only spwan on solid blocks.")
+		@Config.Property("Whether death chests can only spwan on solid blocks.")
 		public boolean mustBeOnSolidBlocks;
 
-		@Config.LangKey("vanilladeathchest.config.spawning.shulkerBoxColor")
-		@Config.Comment("The color of the shulker box if chestType is set to SHULKER_BOX.")
+		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
 		public DyeColor shulkerBoxColor = DyeColor.WHITE;
 	}
 
@@ -242,20 +223,16 @@ public final class VDCConfig implements ServerTickCallback {
 	public static final Path PATH =
 			Paths.get("config", VanillaDeathChest.MOD_ID + ".json").toAbsolutePath();
 
-	@Config.LangKey("vanilladeathchest.config.defense")
-	@Config.Comment("Options related to death chest defense.")
+	@Config.Category("Options related to death chest defense.")
 	public static final Defense defense = new Defense();
 
-	@Config.LangKey("vanilladeathchest.config.misc")
-	@Config.Comment("Options that don't fit into any other categories.")
+	@Config.Category("Options that don't fit into any other categories.")
 	public static final Misc misc = new Misc();
 
-	@Config.LangKey("vanilladeathchest.config.protection")
-	@Config.Comment("Options related to death chest protection.")
+	@Config.Category("Options related to death chest protection.")
 	public static final Protection protection = new Protection();
 
-	@Config.LangKey("vanilladeathchest.config.spawning")
-	@Config.Comment("Options related to death chest spawning.")
+	@Config.Category("Options related to death chest spawning.")
 	public static final Spawning spawning = new Spawning();
 
 	private static final Map<String, Category> CATEGORIES = new HashMap<>();

@@ -112,9 +112,9 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	public void updatePostDeath() {
 		final LivingEntity entity = (LivingEntity) (Object) this;
 
-		entity.deathCounter++;
+		entity.deathTime++;
 
-		if(entity.deathCounter != 20) {
+		if(entity.deathTime != 20) {
 			return;
 		}
 

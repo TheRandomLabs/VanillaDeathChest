@@ -28,7 +28,7 @@ public class Property {
 		this.isEnum = Enum.class.isAssignableFrom(type);
 
 		final List<String> description = new ArrayList<>(Arrays.asList(
-				field.getAnnotation(Config.Comment.class).value()
+				field.getAnnotation(Config.Property.class).value()
 		));
 
 		final Config.RangeInt rangeInt = field.getAnnotation(Config.RangeInt.class);

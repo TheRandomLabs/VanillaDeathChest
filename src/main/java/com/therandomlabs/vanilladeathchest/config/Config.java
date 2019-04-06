@@ -8,13 +8,13 @@ public class Config {
 	public @interface Ignore {}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface Comment {
+	public @interface Category {
 		String[] value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface LangKey {
-		String value();
+	public @interface Property {
+		String[] value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -31,9 +31,8 @@ public class Config {
 		double max() default Double.MAX_VALUE;
 	}
 
-	@Retention(RetentionPolicy.RUNTIME)
-	public @interface RequiresMcRestart {}
+	public @interface RequiresMCRestart {}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface RequiresWorldRestart {}
+	public @interface RequiresWorldReload {}
 }

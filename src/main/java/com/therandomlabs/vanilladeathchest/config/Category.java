@@ -22,7 +22,7 @@ public class Category {
 		}
 
 		this.properties = ImmutableList.copyOf(propertyList);
-		description = field.getAnnotation(Config.Comment.class).value();
+		description = field.getAnnotation(Config.Category.class).value();
 	}
 
 	public Object getObject() {

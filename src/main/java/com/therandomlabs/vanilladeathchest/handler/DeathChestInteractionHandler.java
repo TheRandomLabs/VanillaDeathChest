@@ -95,7 +95,7 @@ public class DeathChestInteractionHandler implements
 			if(VDCConfig.defense.damageUnlockerInsteadOfConsume) {
 				if(stack.hasDurability() && stack.getDamage() + amount < stack.getDurability()) {
 					if(!player.abilities.creativeMode) {
-						stack.applyDamage(amount, player);
+						stack.applyDamage(amount, player.getRand(), player);
 					}
 
 					deathChest.setUnlocked(true);

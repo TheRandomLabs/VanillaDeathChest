@@ -10,8 +10,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -125,7 +125,7 @@ public class DeathChestLocationFinder {
 
 		final ItemPlacementContext context = new ItemPlacementContext(new ItemUsageContext(
 				player,
-				ItemStack.EMPTY,
+				Hand.MAIN,
 				new BlockHitResult(
 						new Vec3d(0.0, 0.0, 0.0),
 						Direction.DOWN,

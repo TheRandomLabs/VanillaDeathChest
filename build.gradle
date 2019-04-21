@@ -28,10 +28,10 @@ repositories {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:19w14b"
-	mappings "net.fabricmc:yarn:19w14b.1"
-	modCompile "net.fabricmc:fabric-loader:0.3.7.109"
-	modCompile "net.fabricmc:fabric:0.2.6.119"
+	minecraft "com.mojang:minecraft:1.14 Pre-Release 5"
+	mappings "net.fabricmc:yarn:1.14 Pre-Release 5+build.4"
+	modCompile "net.fabricmc:fabric-loader:0.4.2+build.130"
+	modCompile "net.fabricmc:fabric:0.2.7+build.126"
 
 	shadow "blue.endless:jankson:1.1.0"
 	compile "blue.endless:jankson:1.1.0"

@@ -27,8 +27,8 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.ZombiePigmanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sortme.JsonLikeTagParser;
 import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
@@ -168,7 +168,7 @@ public final class DeathChestPlacer {
 				CompoundTag compound = null;
 
 				try {
-					compound = new JsonLikeTagParser(
+					compound = new StringNbtReader(
 							new StringReader(VDCConfig.defense.defenseEntityNBT)
 					).parseCompoundTag();
 				} catch(CommandSyntaxException ignored) {}
@@ -186,7 +186,7 @@ public final class DeathChestPlacer {
 					final MobEntity living = (MobEntity) entity;
 
 					living.setPersistent();
-					living.prepareEntityData(
+					living.initialize(
 							world, world.getLocalDifficulty(pos), SpawnType.EVENT, null, null
 					);
 

@@ -152,7 +152,7 @@ public class DeathChestLocationFinder {
 		}
 
 		final BlockState state = world.getBlockState(pos);
-		return state.isAir() || state.method_11587(context);
+		return state.isAir() || state.canReplace(context);
 	}
 
 	private static boolean isNotChest(World world, BlockPos pos) {

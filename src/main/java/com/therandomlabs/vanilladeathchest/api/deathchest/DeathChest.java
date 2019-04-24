@@ -4,7 +4,7 @@ import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.config.OperatorEntry;
+import net.minecraft.server.OperatorEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 

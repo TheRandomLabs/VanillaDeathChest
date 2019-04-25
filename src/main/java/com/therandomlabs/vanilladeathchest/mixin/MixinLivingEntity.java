@@ -1,34 +1,26 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
-import java.util.Random;
 import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityTickCallback;
-import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.TagHelper;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity implements DeathChestDefenseEntity {
-	@Shadow
-	protected PlayerEntity attackingPlayer;
-	@Shadow
-	protected int playerHitTimer;
-
 	private UUID deathChestPlayer;
 	private BlockPos deathChestPos;
 
@@ -108,62 +100,20 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 		}
 	}
 
-	@Overwrite
-	public void updatePostDeath() {
-		final LivingEntity entity = (LivingEntity) (Object) this;
+	@Redirect(method = "updatePostDeath", at = @At(
+			value = "INVOKE",
+			target = "net/minecraft/entity/LivingEntity.getCurrentExperience(" +
+					"Lnet/minecraft/entity/player/PlayerEntity;)I"
+	))
+	public int getExperience(LivingEntity entity, PlayerEntity player) {
+		final int experience = getCurrentExperience(player);
 
-		entity.deathTime++;
-
-		if(entity.deathTime != 20) {
-			return;
+		if((Object) this instanceof MobEntity) {
+			return LivingEntityDropExperienceCallback.EVENT.invoker().
+					onLivingEntityDropExperience((MobEntity) (Object) this, this, experience);
 		}
 
-		if(!entity.world.isClient && (shouldAlwaysDropXp() ||
-				(playerHitTimer > 0 && canDropLootAndXp() &&
-						entity.world.getGameRules().getBoolean("doMobLoot")))) {
-			int experience = getCurrentExperience(attackingPlayer);
-
-			if((Object) this instanceof MobEntity) {
-				experience = LivingEntityDropExperienceCallback.EVENT.invoker().
-						onLivingEntityDropExperience((MobEntity) (Object) this, this, experience);
-			}
-
-			while(experience > 0) {
-				final int split = ExperienceOrbEntity.roundToOrbSize(experience);
-				experience -= split;
-				entity.world.spawnEntity(new ExperienceOrbEntity(
-						entity.world, entity.x, entity.y, entity.z, split
-				));
-			}
-		}
-
-		entity.remove();
-
-		final Random random = entity.getRand();
-		final float width = entity.getWidth();
-		final float height = entity.getHeight();
-
-		for(int i = 0; i < 20; i++) {
-			entity.world.addParticle(
-					ParticleTypes.POOF,
-					entity.x + random.nextFloat() * width * 2.0 - width,
-					entity.y + random.nextFloat() * height,
-					entity.z + random.nextFloat() * width * 2.0 - width,
-					random.nextGaussian() * 0.02,
-					random.nextGaussian() * 0.02,
-					random.nextGaussian() * 0.02
-			);
-		}
-	}
-
-	@Shadow
-	protected boolean shouldAlwaysDropXp() {
-		return false;
-	}
-
-	@Shadow
-	protected boolean canDropLootAndXp() {
-		return true;
+		return experience;
 	}
 
 	@Shadow

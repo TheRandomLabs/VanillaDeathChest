@@ -25,14 +25,14 @@ public class MixinPlayerInventory {
 
 	@Shadow
 	@Final
-	private List<DefaultedList<ItemStack>> field_7543;
+	private List<DefaultedList<ItemStack>> combinedInventory;
 
 	@Overwrite
 	public void dropAll() {
 		final ServerWorld world = (ServerWorld) player.getEntityWorld();
 		final List<ItemEntity> drops = new ArrayList<>();
 
-		for(List<ItemStack> stacks : field_7543) {
+		for(List<ItemStack> stacks : combinedInventory) {
 			for(int i = 0; i < stacks.size(); i++) {
 				final ItemStack stack = stacks.get(i);
 

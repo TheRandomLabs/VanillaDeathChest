@@ -22,23 +22,21 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsCallback, Serve
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
 
 	@Override
-	public boolean onPlayerDropAllItems(ServerWorld world, PlayerEntity player,
+	public void onPlayerDropAllItems(ServerWorld world, PlayerEntity player,
 			List<ItemEntity> drops) {
 		if(drops.isEmpty()) {
-			return true;
+			return;
 		}
 
 		final GameRules gameRules = world.getGameRules();
 
 		if(gameRules.getBoolean("keepInventory") || (!VDCConfig.misc.gameRuleName.isEmpty() &&
 				!gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {
-			return true;
+			return;
 		}
 
 		final Queue<DeathChestPlacer> placers = getPlacers(world);
 		placers.add(new DeathChestPlacer(world, player, drops));
-
-		return false;
 	}
 
 	@Override

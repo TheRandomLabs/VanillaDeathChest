@@ -3,6 +3,7 @@ package com.therandomlabs.vanilladeathchest.mixin;
 import java.util.ArrayList;
 import java.util.List;
 import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -19,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerInventory.class)
 public class MixinPlayerInventory {
-	private List<ItemEntity> drops = new ArrayList<>();
+	private final ArrayList<ItemEntity> drops = new ArrayList<>();
 
 	@Shadow
 	@Final
@@ -29,12 +30,16 @@ public class MixinPlayerInventory {
 	@Final
 	private List<DefaultedList<ItemStack>> combinedInventory;
 
+	@SuppressWarnings("unchecked")
 	@Inject(method = "dropAll", at = @At("TAIL"))
 	public void dropAll(CallbackInfo callback) {
-		PlayerDropAllItemsCallback.EVENT.invoker().onPlayerDropAllItems(
-				(ServerWorld) player.getEntityWorld(), player, drops
-		);
-		drops = new ArrayList<>();
+		if(!PlayerDropAllItemsCallback.EVENT.invoker().onPlayerDropAllItems(
+				(ServerWorld) player.getEntityWorld(), player, (List<ItemEntity>) drops.clone()
+		)) {
+			drops.forEach(Entity::remove);
+		}
+
+		drops.clear();
 	}
 
 	@Redirect(method = "dropAll", at = @At(

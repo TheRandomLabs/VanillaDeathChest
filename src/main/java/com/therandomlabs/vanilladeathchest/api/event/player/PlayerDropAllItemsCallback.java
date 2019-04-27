@@ -12,10 +12,13 @@ public interface PlayerDropAllItemsCallback {
 			PlayerDropAllItemsCallback.class,
 			listeners -> (world, player, drops) -> {
 				for(PlayerDropAllItemsCallback event : listeners) {
-					event.onPlayerDropAllItems(world, player, drops);
+					if(!event.onPlayerDropAllItems(world, player, drops)) {
+						return false;
+					}
 				}
+				return true;
 			}
 	);
 
-	void onPlayerDropAllItems(ServerWorld world, PlayerEntity player, List<ItemEntity> drops);
+	boolean onPlayerDropAllItems(ServerWorld world, PlayerEntity player, List<ItemEntity> drops);
 }

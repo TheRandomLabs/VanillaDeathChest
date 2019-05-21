@@ -8,11 +8,12 @@ import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.chat.ChatMessageType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.ChatMessageType;
-import net.minecraft.text.StringTextComponent;
-import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -114,10 +115,10 @@ public class DeathChestInteractionHandler implements
 		final String message = VDCConfig.defense.unlockFailedMessage;
 
 		if(!message.isEmpty()) {
-			final StringTextComponent component = new StringTextComponent(String.format(
+			final Component component = new TextComponent(String.format(
 					message,
 					amount,
-					new TranslatableTextComponent(
+					new TranslatableComponent(
 							VDCConfig.defense.unlocker.getTranslationKey()
 					).getFormattedText().trim()
 			));

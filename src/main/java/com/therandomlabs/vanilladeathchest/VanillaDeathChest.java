@@ -44,7 +44,7 @@ public final class VanillaDeathChest implements ModInitializer {
 					VDCConfig.misc.gameRuleName,
 					new GameRules.Key(
 							Boolean.toString(VDCConfig.misc.gameRuleDefaultValue),
-							GameRules.Type.BOOLEAN
+							GameRules.Type.BOOLEAN_VALUE
 					)
 			);
 		}

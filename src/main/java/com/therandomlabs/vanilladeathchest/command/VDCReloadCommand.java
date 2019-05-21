@@ -4,10 +4,10 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.StringTextComponent;
-import net.minecraft.text.TranslatableTextComponent;
 
 public final class VDCReloadCommand {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -23,12 +23,12 @@ public final class VDCReloadCommand {
 
 		if(server != null && server.isDedicated()) {
 			source.sendFeedback(
-					new StringTextComponent("VanillaDeathChest configuration reloaded!"),
+					new TextComponent("VanillaDeathChest configuration reloaded!"),
 					true
 			);
 		} else {
 			source.sendFeedback(
-					new TranslatableTextComponent("commands.vdcreloadclient.success"),
+					new TranslatableComponent("commands.vdcreloadclient.success"),
 					true
 			);
 		}

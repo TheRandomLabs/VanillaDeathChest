@@ -28,8 +28,8 @@ import net.minecraft.entity.mob.ZombiePigmanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 
@@ -156,7 +156,7 @@ public final class DeathChestPlacer {
 		}
 
 		if(!VDCConfig.spawning.containerDisplayName.isEmpty()) {
-			chest.setCustomName(new StringTextComponent(VDCConfig.spawning.containerDisplayName));
+			chest.setCustomName(new TextComponent(VDCConfig.spawning.containerDisplayName));
 		}
 
 		if(VDCConfig.defense.defenseEntity != null) {
@@ -206,7 +206,7 @@ public final class DeathChestPlacer {
 
 		VanillaDeathChest.LOGGER.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
 
-		player.addChatMessage(new StringTextComponent(String.format(
+		player.addChatMessage(new TextComponent(String.format(
 				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
 		)), false);
 	}

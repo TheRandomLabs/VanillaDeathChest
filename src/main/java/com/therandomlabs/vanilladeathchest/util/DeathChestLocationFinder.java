@@ -125,7 +125,7 @@ public class DeathChestLocationFinder {
 
 		final ItemPlacementContext context = new ItemPlacementContext(new ItemUsageContext(
 				player,
-				Hand.MAIN,
+				Hand.MAIN_HAND,
 				new BlockHitResult(
 						new Vec3d(0.0, 0.0, 0.0),
 						Direction.DOWN,

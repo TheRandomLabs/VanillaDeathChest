@@ -136,7 +136,7 @@ public final class VDCConfig implements ServerTickCallback {
 
 	public static final class Misc {
 		@Config.Property("Whether death chets should disappear when they are emptied.")
-		public boolean deathChestsDisappearWhenEmptied = VanillaDeathChest.IS_DEOBFUSCATED;
+		public boolean deathChestsDisappearWhenEmptied = true;
 
 		@Config.Property({
 				"Whether death chests should be dropped when broken.",
@@ -206,7 +206,7 @@ public final class VDCConfig implements ServerTickCallback {
 				"Whether to force place a death chest at the location of a player's death if no " +
 						"viable locations are found."
 		)
-		public boolean forcePlaceIfLocationNotFound;
+		public boolean forcePlaceIfLocationNotFound = true;
 
 		@Config.RangeInt(min = 1)
 		@Config.Property("The death chest location search radius.")

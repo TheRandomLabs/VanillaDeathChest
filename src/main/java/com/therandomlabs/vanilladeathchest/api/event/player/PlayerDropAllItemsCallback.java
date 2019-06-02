@@ -16,6 +16,7 @@ public interface PlayerDropAllItemsCallback {
 						return false;
 					}
 				}
+
 				return true;
 			}
 	);

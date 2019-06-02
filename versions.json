@@ -1,6 +1,7 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/vanilladeathchest",
 	"1.12.2": {
+		"1.12.2-1.9.3.0": "Death chests are now forcibly placed by default if no valid locations are found.\nDeath chests now disappear when emptied by default.",
 		"1.12.2-1.9.0.0": "Switched to RandomLib for configuration handling.\nFixed Baubles and Backpacks compatibility.\nAdded an option to make death chests disappear when they are emptied.\nThe display name of death chest containers can now be configured.",
 		"1.12.2-1.8.0.2": "Fixed explosions being able to destroy locked death chests.",
 		"1.12.2-1.8.0.1": "Fixed registry names being reset in the configuration.",
@@ -35,6 +36,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12.1": {
+		"1.12.2-1.9.3.0": "Death chests are now forcibly placed by default if no valid locations are found.\nDeath chests now disappear when emptied by default.",
 		"1.12.2-1.9.0.0": "Switched to RandomLib for configuration handling.\nFixed Baubles and Backpacks compatibility.\nAdded an option to make death chests disappear when they are emptied.",
 		"1.12.2-1.8.0.2": "Fixed explosions being able to destroy locked death chests.",
 		"1.12.2-1.8.0.1": "Fixed registry names being reset in the configuration.",
@@ -69,6 +71,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12": {
+		"1.12.2-1.9.3.0": "Death chests are now forcibly placed by default if no valid locations are found.\nDeath chests now disappear when emptied by default.",
 		"1.12.2-1.9.0.0": "Switched to RandomLib for configuration handling.\nFixed Baubles and Backpacks compatibility.\nAdded an option to make death chests disappear when they are emptied.",
 		"1.12.2-1.8.0.2": "Fixed explosions being able to destroy locked death chests.",
 		"1.12.2-1.8.0.1": "Fixed registry names being reset in the configuration.",
@@ -103,31 +106,35 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.11.2": {
+		"1.11.2-1.9.3.0": "Death chests are now forcibly placed by default if no valid locations are found.\nDeath chests now disappear when emptied by default.",
 		"1.11.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
 	},
 	"1.11": {
+		"1.11.2-1.9.3.0": "Death chests are now forcibly placed by default if no valid locations are found.\nDeath chests now disappear when emptied by default.",
 		"1.11.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
 	},
 	"1.10.2": {
+		"1.10.2-1.9.3.0": "Death chests are now forcibly placed by default if no valid locations are found.\nDeath chests now disappear when emptied by default.",
 		"1.10.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
 	},
 	"1.10": {
+		"1.10.2-1.9.3.0": "Death chests are now forcibly placed by default if no valid locations are found.\nDeath chests now disappear when emptied by default.",
 		"1.10.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
 	},
 	"promos": {
-		"1.12.2-latest": "1.12.2-1.9.0.0",
-		"1.12.2-recommended": "1.12.2-1.9.0.0",
-		"1.12.1-latest": "1.12.2-1.9.0.0",
-		"1.12.1-recommended": "1.12.2-1.9.0.0",
-		"1.12-latest": "1.12.2-1.9.0.0",
-		"1.12-recommended": "1.12.2-1.9.0.0",
-		"1.11.2-latest": "1.11.2-1.9.0.0",
-		"1.11.2-recommended": "1.11.2-1.9.0.0",
-		"1.11-latest": "1.11.2-1.9.0.0",
-		"1.11-recommended": "1.11.2-1.9.0.0",
-		"1.10.2-latest": "1.10.2-1.9.0.0",
-		"1.10.2-recommended": "1.10.2-1.9.0.0",
-		"1.10-latest": "1.10.2-1.9.0.0",
-		"1.10-recommended": "1.10.2-1.9.0.0"
+		"1.12.2-latest": "1.12.2-1.9.3.0",
+		"1.12.2-recommended": "1.12.2-1.9.3.0",
+		"1.12.1-latest": "1.12.2-1.9.3.0",
+		"1.12.1-recommended": "1.12.2-1.9.3.0",
+		"1.12-latest": "1.12.2-1.9.3.0",
+		"1.12-recommended": "1.12.2-1.9.3.0",
+		"1.11.2-latest": "1.11.2-1.9.3.0",
+		"1.11.2-recommended": "1.11.2-1.9.3.0",
+		"1.11-latest": "1.11.2-1.9.3.0",
+		"1.11-recommended": "1.11.2-1.9.3.0",
+		"1.10.2-latest": "1.10.2-1.9.3.0",
+		"1.10.2-recommended": "1.10.2-1.9.3.0",
+		"1.10-latest": "1.10.2-1.9.3.0",
+		"1.10-recommended": "1.10.2-1.9.3.0"
 	}
 }

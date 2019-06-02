@@ -1,6 +1,5 @@
 package com.therandomlabs.vanilladeathchest.config;
 
-import com.therandomlabs.randomlib.TRLUtils;
 import com.therandomlabs.randomlib.config.Config;
 import com.therandomlabs.randomlib.config.ConfigColor;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
@@ -113,7 +112,7 @@ public final class VDCConfig {
 
 	public static final class Misc {
 		@Config.Property("Whether death chets should disappear when they are emptied.")
-		public static boolean deathChestsDisappearWhenEmptied = TRLUtils.IS_DEOBFUSCATED;
+		public static boolean deathChestsDisappearWhenEmptied = true;
 
 		@Config.Property({
 				"Whether death chests should be dropped when broken.",
@@ -187,7 +186,7 @@ public final class VDCConfig {
 				"Whether to force place a death chest at the location of a player's death if no " +
 						"viable locations are found."
 		)
-		public static boolean forcePlaceIfLocationNotFound;
+		public static boolean forcePlaceIfLocationNotFound = true;
 
 		@Config.RangeInt(min = 1)
 		@Config.Property("The death chest location search radius.")

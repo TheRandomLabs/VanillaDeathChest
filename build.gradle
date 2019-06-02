@@ -16,7 +16,7 @@ buildscript {
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "com.github.johnrengelman.shadow"
 
-version = "1.12.2-1.9.0.0"
+version = "1.12.2-1.9.3.0"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 
@@ -64,7 +64,7 @@ artifacts {
 }
 
 minecraft {
-	version = "1.12.2-14.23.5.2824"
+	version = "1.12.2-14.23.5.2838"
 	runDir = "run"
 	mappings = "stable_39"
 

@@ -30,8 +30,9 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsCallback, Serve
 
 		final GameRules gameRules = world.getGameRules();
 
-		if(gameRules.getBoolean("keepInventory") || (!VDCConfig.misc.gameRuleName.isEmpty() &&
-				!gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {
+		if(gameRules.getBoolean(GameRules.KEEP_INVENTORY)) {/*
+		|| (!VDCConfig.misc.gameRuleName.isEmpty() &&
+		!gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {*/
 			return true;
 		}
 

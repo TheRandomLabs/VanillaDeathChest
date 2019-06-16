@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
-import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,13 +39,13 @@ public final class VanillaDeathChest implements ModInitializer {
 		VDCConfig.reload();
 
 		if(!VDCConfig.misc.gameRuleName.isEmpty()) {
-			GameRules.getKeys().put(
+			/*GameRules.getKeys().put(
 					VDCConfig.misc.gameRuleName,
 					new GameRules.Key(
 							Boolean.toString(VDCConfig.misc.gameRuleDefaultValue),
 							GameRules.Type.BOOLEAN_VALUE
 					)
-			);
+			);*/
 		}
 
 		if(VDCConfig.misc.vdcreload) {

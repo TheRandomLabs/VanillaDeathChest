@@ -8,12 +8,12 @@ import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.chat.ChatMessageType;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.MessageType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -94,17 +94,17 @@ public class DeathChestInteractionHandler implements
 			}
 
 			if(VDCConfig.defense.damageUnlockerInsteadOfConsume) {
-				if(stack.hasDurability() && stack.getDamage() + amount < stack.getDurability()) {
+				if(stack.isDamageable() && stack.getDamage() + amount < stack.getDamage()) {
 					if(!player.abilities.creativeMode) {
-						stack.applyDamage(amount, player.getRand(), player);
+						stack.damage(amount, player.getRand(), player);
 					}
 
 					deathChest.setUnlocked(true);
 					return true;
 				}
-			} else if(stack.getAmount() >= amount) {
+			} else if(stack.getCount() >= amount) {
 				if(!player.abilities.creativeMode) {
-					stack.subtractAmount(amount);
+					stack.decrement(amount);
 				}
 
 				deathChest.setUnlocked(true);
@@ -115,18 +115,18 @@ public class DeathChestInteractionHandler implements
 		final String message = VDCConfig.defense.unlockFailedMessage;
 
 		if(!message.isEmpty()) {
-			final Component component = new TextComponent(String.format(
+			final Text component = new LiteralText(String.format(
 					message,
 					amount,
-					new TranslatableComponent(
+					new TranslatableText(
 							VDCConfig.defense.unlocker.getTranslationKey()
-					).getFormattedText().trim()
+					).formatted().asString().trim()
 			));
 
 			if(VDCConfig.defense.unlockFailedStatusMessage) {
 				player.addChatMessage(component, true);
 			} else {
-				player.sendChatMessage(component, ChatMessageType.CHAT);
+				player.sendChatMessage(component, MessageType.CHAT);
 			}
 		}
 

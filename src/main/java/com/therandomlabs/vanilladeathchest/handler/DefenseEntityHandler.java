@@ -62,16 +62,18 @@ public class DefenseEntityHandler implements
 	}
 
 	@Override
-	public boolean onLivingEntityDrop(MobEntity entity,
-			DeathChestDefenseEntity defenseEntity, boolean recentlyHit, int lootingModifier,
-			DamageSource source) {
+	public boolean onLivingEntityDrop(
+			MobEntity entity, DeathChestDefenseEntity defenseEntity, boolean recentlyHit,
+			int lootingModifier, DamageSource source
+	) {
 		return VDCConfig.defense.defenseEntityDropsItems ||
 				defenseEntity.getDeathChestPlayer() == null;
 	}
 
 	@Override
-	public int onLivingEntityDropExperience(MobEntity entity, DeathChestDefenseEntity defenseEntity,
-			int experience) {
+	public int onLivingEntityDropExperience(
+			MobEntity entity, DeathChestDefenseEntity defenseEntity, int experience
+	) {
 		if(!VDCConfig.defense.defenseEntityDropsExperience &&
 				defenseEntity.getDeathChestPlayer() != null) {
 			return 0;

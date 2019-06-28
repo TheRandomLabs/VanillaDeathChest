@@ -16,8 +16,10 @@ public class DeathChest {
 	private final boolean isDoubleChest;
 	private boolean unlocked;
 
-	public DeathChest(ServerWorld world, UUID playerID, long creationTime, BlockPos pos,
-			boolean isDoubleChest, boolean unlocked) {
+	public DeathChest(
+			ServerWorld world, UUID playerID, long creationTime, BlockPos pos,
+			boolean isDoubleChest, boolean unlocked
+	) {
 		this.world = world;
 		this.playerID = playerID;
 		this.creationTime = creationTime;

@@ -53,8 +53,9 @@ public class DeathChestInteractionHandler implements
 
 	//onRightClickBlock (UseBlockCallback)
 	@Override
-	public ActionResult interact(PlayerEntity player, World world, Hand hand,
-			BlockHitResult result) {
+	public ActionResult interact(
+			PlayerEntity player, World world, Hand hand, BlockHitResult result
+	) {
 		if(world.isClient) {
 			return ActionResult.PASS;
 		}

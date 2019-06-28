@@ -26,8 +26,9 @@ public class MixinBlock {
 			),
 			cancellable = true
 	)
-	private static void dropStack(World world, BlockPos pos, ItemStack stack,
-			CallbackInfo callbackInfo) {
+	private static void dropStack(
+			World world, BlockPos pos, ItemStack stack, CallbackInfo callbackInfo
+	) {
 		if(currentlyDropping.contains(pos)) {
 			return;
 		}

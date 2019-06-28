@@ -19,6 +19,7 @@ public interface LivingEntityDropExperienceCallback {
 			}
 	);
 
-	int onLivingEntityDropExperience(MobEntity entity, DeathChestDefenseEntity defenseEntity,
-			int experience);
+	int onLivingEntityDropExperience(
+			MobEntity entity, DeathChestDefenseEntity defenseEntity, int experience
+	);
 }

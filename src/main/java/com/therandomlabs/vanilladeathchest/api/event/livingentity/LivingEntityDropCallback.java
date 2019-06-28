@@ -22,6 +22,8 @@ public interface LivingEntityDropCallback {
 			}
 	);
 
-	boolean onLivingEntityDrop(MobEntity entity, DeathChestDefenseEntity defenseEntity,
-			boolean recentlyHit, int lootingModifier, DamageSource source);
+	boolean onLivingEntityDrop(
+			MobEntity entity, DeathChestDefenseEntity defenseEntity, boolean recentlyHit,
+			int lootingModifier, DamageSource source
+	);
 }

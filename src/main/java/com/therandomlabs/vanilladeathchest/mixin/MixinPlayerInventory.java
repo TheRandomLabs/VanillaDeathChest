@@ -20,12 +20,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerInventory.class)
 public class MixinPlayerInventory {
-	private final ArrayList<ItemEntity> drops = new ArrayList<>();
-
 	@Shadow
 	@Final
 	public PlayerEntity player;
-
+	private final ArrayList<ItemEntity> drops = new ArrayList<>();
 	@Shadow
 	@Final
 	private List<DefaultedList<ItemStack>> combinedInventory;
@@ -47,8 +45,9 @@ public class MixinPlayerInventory {
 			target = "net/minecraft/entity/player/PlayerEntity.dropItem(" +
 					"Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;"
 	))
-	private ItemEntity dropItem(PlayerEntity player, ItemStack stack, boolean flag1,
-			boolean flag2) {
+	private ItemEntity dropItem(
+			PlayerEntity player, ItemStack stack, boolean flag1, boolean flag2
+	) {
 		final ItemEntity item = player.dropItem(stack, flag1, flag2);
 		drops.add(item);
 		return item;

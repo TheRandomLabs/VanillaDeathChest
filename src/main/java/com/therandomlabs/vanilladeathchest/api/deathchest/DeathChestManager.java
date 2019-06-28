@@ -13,8 +13,9 @@ import net.minecraft.util.math.BlockPos;
 public final class DeathChestManager {
 	private DeathChestManager() {}
 
-	public static void addDeathChest(ServerWorld world, PlayerEntity player, BlockPos pos,
-			boolean isDoubleChest) {
+	public static void addDeathChest(
+			ServerWorld world, PlayerEntity player, BlockPos pos, boolean isDoubleChest
+	) {
 		final VDCSavedData data = VDCSavedData.get(world);
 		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
 		final DeathChest deathChest = new DeathChest(

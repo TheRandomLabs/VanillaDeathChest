@@ -7,7 +7,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import com.therandomlabs.vanilladeathchest.api.IAngerable;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
@@ -24,7 +23,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnType;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.ZombiePigmanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
@@ -189,10 +187,7 @@ public final class DeathChestPlacer {
 					living.initialize(
 							world, world.getLocalDifficulty(pos), SpawnType.EVENT, null, null
 					);
-
-					if(living instanceof ZombiePigmanEntity) {
-						((IAngerable) living).makeAngryAt(player);
-					}
+					living.setAttacker(player);
 
 					final DeathChestDefenseEntity defenseEntity = (DeathChestDefenseEntity) living;
 

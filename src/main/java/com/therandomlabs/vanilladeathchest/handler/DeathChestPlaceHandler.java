@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Queue;
 import com.google.common.collect.Queues;
 import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.entity.ItemEntity;
@@ -22,8 +21,9 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsCallback, Serve
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
 
 	@Override
-	public boolean onPlayerDropAllItems(ServerWorld world, PlayerEntity player,
-			List<ItemEntity> drops) {
+	public boolean onPlayerDropAllItems(
+			ServerWorld world, PlayerEntity player, List<ItemEntity> drops
+	) {
 		if(drops.isEmpty()) {
 			return true;
 		}

@@ -11,15 +11,13 @@ buildscript {
 
 	dependencies {
 		classpath "net.fabricmc:fabric-loom:0.2.4-SNAPSHOT"
-		classpath "com.github.jengelman.gradle.plugins:shadow:5.0.0"
 	}
 }
 
 apply plugin: "fabric-loom"
-apply plugin: "com.github.johnrengelman.shadow"
 
 archivesBaseName = "vanilladeathchest"
-version = "1.14.3-1.10.0.0-fabric"
+version = "1.14.3-1.10.1.0-fabric"
 
 sourceCompatibility = targetCompatibility = "1.8"
 
@@ -29,24 +27,15 @@ repositories {
 
 dependencies {
 	minecraft "com.mojang:minecraft:1.14.3"
-	mappings "net.fabricmc:yarn:1.14.3+build.1"
-	modCompile "net.fabricmc:fabric-loader:0.4.8+build.155"
+	mappings "net.fabricmc:yarn:1.14.3+build.7"
+
+	modImplementation "net.fabricmc:fabric-loader:0.4.8+build.155"
 	modCompile "net.fabricmc:fabric:0.2.7+build.127"
 
-	shadow "blue.endless:jankson:1.1.0"
-	compile "blue.endless:jankson:1.1.0"
-}
-
-shadowJar {
-	classifier = ""
-	relocate "blue.endless.jankson", "com.therandomlabs.vanilladeathchest.repackage.blue.endless.jankson"
-	configurations = [project.configurations.shadow]
-}
-
-build.dependsOn shadowJar
-
-artifacts {
-	archives shadowJar
+	modApi ("blue.endless:jankson:1.1.2")
+	include ("blue.endless:jankson:1.1.2") {
+		transitive = false
+	}
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

@@ -1,14 +1,30 @@
 {
+	"schemaVersion": 1,
 	"id": "vanilladeathchest",
+	"version": "${version}",
 	"name": "VanillaDeathChest",
 	"description": "Places chests (or shulker boxes) where players die that contain all of their items.",
-	"version": "1.14.3-1.10.0.0-Fabric",
-	"side": "universal",
-	"initializer": "com.therandomlabs.vanilladeathchest.VanillaDeathChest",
-	"requires": {
+	"authors": [
+		"TheRandomLabs"
+	],
+	"contact": {
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
+		"sources": "https://github.com/TheRandomLabs/VanillaDeathChest"
+	},
+	"license": "MIT License",
+	"icon": "assets/vanilladeathchest/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.therandomlabs.vanilladeathchest.VanillaDeathChest"
+		]
+	},
+	"mixins": [
+		"vanilladeathchest.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.4.0",
 		"fabric": "*"
 	},
-	"mixins": {
-		"common": "vanilladeathchest.common.json"
-	}
+	"suggests": {}
 }

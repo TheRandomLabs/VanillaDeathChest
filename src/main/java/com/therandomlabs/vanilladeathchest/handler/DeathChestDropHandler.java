@@ -46,7 +46,7 @@ public class DeathChestDropHandler implements
 		justRemoved.remove(pos);
 
 		if(Block.getBlockFromItem(drop.getItem()) instanceof ShulkerBoxBlock) {
-			final DefaultedList<ItemStack> inventory = DefaultedList.create(27, ItemStack.EMPTY);
+			final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(27, ItemStack.EMPTY);
 			Inventories.fromTag(drop.getTag().getCompound("BlockEntityTag"), inventory);
 			return inventory;
 		}

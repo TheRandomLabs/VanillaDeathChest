@@ -17,7 +17,7 @@ buildscript {
 apply plugin: "fabric-loom"
 
 archivesBaseName = "vanilladeathchest"
-version = "1.14.3-1.10.1.0-fabric"
+version = "1.14.4-1.10.2.0-fabric"
 
 sourceCompatibility = targetCompatibility = "1.8"
 
@@ -26,10 +26,10 @@ repositories {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.14.3"
-	mappings "net.fabricmc:yarn:1.14.3+build.7"
+	minecraft "com.mojang:minecraft:1.14.4"
+	mappings "net.fabricmc:yarn:1.14.4+build.9"
 
-	modImplementation "net.fabricmc:fabric-loader:0.4.8+build.155"
+	modImplementation "net.fabricmc:fabric-loader:0.4.8+build.159"
 	modCompile "net.fabricmc:fabric:0.2.7+build.127"
 
 	modApi ("blue.endless:jankson:1.1.2")

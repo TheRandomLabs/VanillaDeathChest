@@ -1,0 +1,16 @@
+modLoader = "javafml"
+loaderVersion = "[14,)"
+updateJSONURL = "https://raw.githubusercontent.com/TheRandomLabs/VanillaDeathChest/misc/versions.json"
+issueTrackerURL = "https://github.com/TheRandomLabs/VanillaDeathChest/issues"
+displayURL = "https://minecraft.curseforge.com/projects/vanilladeathchest"
+logoFile = "logo.png"
+authors = "TheRandomLabs"
+
+[[mods]]
+
+modId = "vanilladeathchest"
+version = "${file.jarVersion}"
+displayName = "VanillaDeathChest"
+description = '''
+Places chests (or shulker boxes) where players die that contain all of their items.
+'''

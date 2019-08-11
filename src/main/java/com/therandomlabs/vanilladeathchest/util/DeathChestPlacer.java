@@ -1,70 +1,53 @@
 package com.therandomlabs.vanilladeathchest.util;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.randomlib.BooleanWrapper;
-import com.therandomlabs.randomlib.TRLUtils;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
-import com.therandomlabs.vanilladeathchest.gamestages.VDCStageInfo;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.state.properties.ChestType;
+import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.storage.AnvilChunkLoader;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.server.ServerWorld;
 
 public final class DeathChestPlacer {
 	public enum DeathChestType {
-		SINGLE_ONLY("singleOnly"),
-		SINGLE_OR_DOUBLE("singleOrDouble"),
-		SHULKER_BOX("shulkerBox"),
-		RANDOM_SHULKER_BOX_COLOR("randomShulkerBoxColor");
-
-		private final String translationKey;
-
-		DeathChestType(String translationKey) {
-			this.translationKey = "vanilladeathchest.config.spawning.chestType." + translationKey;
-		}
-
-		@Override
-		public String toString() {
-			return translationKey;
-		}
+		SINGLE_ONLY,
+		SINGLE_OR_DOUBLE,
+		SHULKER_BOX,
+		RANDOM_SHULKER_BOX_COLOR
 	}
-
-	private static final Method BECOME_ANGRY_AT = TRLUtils.findMethod(
-			EntityPigZombie.class, "becomeAngryAt", "func_70835_c", Entity.class
-	);
 
 	private static final Random random = new Random();
 
-	private final WeakReference<World> world;
-	private final WeakReference<EntityPlayer> player;
-	private final List<EntityItem> drops;
+	private final WeakReference<ServerWorld> world;
+	private final WeakReference<PlayerEntity> player;
+	private final List<ItemEntity> drops;
 
 	private boolean alreadyCalled;
 
-	public DeathChestPlacer(World world, EntityPlayer player, List<EntityItem> drops) {
+	public DeathChestPlacer(ServerWorld world, PlayerEntity player, List<ItemEntity> drops) {
 		this.world = new WeakReference<>(world);
 		this.player = new WeakReference<>(player);
 		this.drops = drops;
@@ -77,13 +60,13 @@ public final class DeathChestPlacer {
 			return false;
 		}
 
-		final World world = this.world.get();
+		final ServerWorld world = this.world.get();
 
 		if(world == null) {
 			return true;
 		}
 
-		final EntityPlayer player = this.player.get();
+		final PlayerEntity player = this.player.get();
 
 		if(player == null) {
 			return true;
@@ -92,18 +75,18 @@ public final class DeathChestPlacer {
 		place(world, player);
 
 		//Drop any remaining items
-		for(EntityItem drop : drops) {
-			world.spawnEntity(drop);
+		for(ItemEntity drop : drops) {
+			world.addEntity(new ItemEntity(world, drop.posX, drop.posY, drop.posZ, drop.getItem()));
 		}
 
 		return true;
 	}
 
-	private void place(World world, EntityPlayer player) {
+	private void place(ServerWorld world, PlayerEntity player) {
 		final DeathChestType type = VDCConfig.Spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
-		final BlockPos playerPos = player.getPosition();
+		final BlockPos playerPos = new BlockPos(player.getPosition());
 
 		boolean useDoubleChest =
 				type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
@@ -125,34 +108,36 @@ public final class DeathChestPlacer {
 		final Block block;
 
 		if(type == DeathChestType.SHULKER_BOX) {
-			block = BlockShulkerBox.getBlockByColor(VDCConfig.Spawning.shulkerBoxColor.get());
+			block = ShulkerBoxBlock.getBlockByColor(VDCConfig.Spawning.shulkerBoxColor.get());
 		} else if(type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
-			block = BlockShulkerBox.getBlockByColor(EnumDyeColor.byMetadata(random.nextInt(16)));
+			block = ShulkerBoxBlock.getBlockByColor(DyeColor.byId(random.nextInt(16)));
 		} else {
 			block = Blocks.CHEST;
 		}
 
-		final IBlockState state = block.getDefaultState();
+		final BlockState state = block.getDefaultState();
 		final BlockPos east = pos.east();
 
-		world.setBlockState(pos, state);
-
 		if(useDoubleChest) {
-			world.setBlockState(east, state);
+			world.setBlockState(pos, state.with(ChestBlock.TYPE, ChestType.LEFT));
+			world.setBlockState(east, state.with(ChestBlock.TYPE, ChestType.RIGHT));
+		} else {
+			world.setBlockState(pos, state);
 		}
 
-		final TileEntity tile = world.getTileEntity(pos);
-		final TileEntity tile2 = useDoubleChest ? world.getTileEntity(east) : null;
+		final TileEntity blockEntity = world.getTileEntity(pos);
+		final TileEntity blockEntity2 = useDoubleChest ? world.getTileEntity(east) : null;
 
-		if(!(tile instanceof TileEntityLockableLoot) ||
-				(useDoubleChest && !(tile2 instanceof TileEntityLockableLoot))) {
+		if(!(blockEntity instanceof LockableLootTileEntity) ||
+				(useDoubleChest && !(blockEntity2 instanceof LockableLootTileEntity))) {
 			VanillaDeathChest.LOGGER.warn(
 					"Failed to place death chest at [{}] due to invalid tile entity", pos
 			);
 			return;
 		}
 
-		TileEntityLockableLoot chest = (TileEntityLockableLoot) tile;
+		LockableLootTileEntity chest =
+				(LockableLootTileEntity) (useDoubleChest ? blockEntity2 : blockEntity);
 
 		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 			chest.setInventorySlotContents(i, drops.get(0).getItem());
@@ -160,7 +145,7 @@ public final class DeathChestPlacer {
 		}
 
 		if(useDoubleChest) {
-			chest = (TileEntityLockableLoot) tile2;
+			chest = (LockableLootTileEntity) blockEntity;
 
 			for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
 				chest.setInventorySlotContents(i, drops.get(0).getItem());
@@ -168,54 +153,45 @@ public final class DeathChestPlacer {
 			}
 		}
 
-		final VDCStageInfo info = VDCStageInfo.get(player);
-		final String displayName = info.getContainerDisplayName();
-
-		if(!displayName.isEmpty()) {
-			chest.setCustomName(displayName);
+		if(!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
+			chest.setCustomName(new StringTextComponent(VDCConfig.Spawning.containerDisplayName));
 		}
 
-		if(info.getDefenseEntity() != null) {
+		if(VDCConfig.Defense.defenseEntity != null) {
 			final double x = pos.getX() + 0.5;
 			final double y = pos.getY() + 1.0;
 			final double z = pos.getZ() + 0.5;
 
-			final int count = info.getDefenseEntitySpawnCount();
-			final String nbt = info.getDefenseEntityNBT();
-			final String registryName = info.getDefenseEntityRegistryName();
-
-			for(int i = 0; i < count; i++) {
-				NBTTagCompound compound = null;
+			for(int i = 0; i < VDCConfig.Defense.defenseEntitySpawnCount; i++) {
+				CompoundNBT compound = null;
 
 				try {
-					compound = JsonToNBT.getTagFromJson(nbt);
-				} catch(NBTException ignored) {}
+					compound = JsonToNBT.getTagFromJson(VDCConfig.Defense.defenseEntityNBT);
+				} catch(CommandSyntaxException ignored) {}
 
-				compound.setString("id", registryName);
+				compound.putString("id", VDCConfig.Defense.defenseEntityRegistryName);
 
-				final Entity entity =
-						AnvilChunkLoader.readWorldEntityPos(compound, world, x, y, z, true);
+				final Entity entity = EntityType.func_220335_a(
+						compound, world, spawnedEntity -> {
+							spawnedEntity.setPosition(x, y, z);
+							return !world.summonEntity(spawnedEntity) ? null : spawnedEntity;
+						}
+				);
 
-				if(entity instanceof EntityLiving) {
-					final EntityLiving living = (EntityLiving) entity;
+				if(entity instanceof MobEntity) {
+					final MobEntity living = (MobEntity) entity;
 
 					living.enablePersistence();
-					living.onInitialSpawn(world.getDifficultyForLocation(pos), null);
+					living.onInitialSpawn(
+							world, world.getDifficultyForLocation(pos), SpawnReason.EVENT, null,
+							null
+					);
+					living.setLastAttackedEntity(player);
 
-					if(living instanceof EntityPigZombie) {
-						try {
-							BECOME_ANGRY_AT.invoke(living, player);
-						} catch(IllegalAccessException | InvocationTargetException ex) {
-							VanillaDeathChest.LOGGER.error(
-									"Failed to make zombie pigman angry", ex
-							);
-						}
-					}
+					final CompoundNBT data = living.getEntityData();
 
-					final NBTTagCompound data = living.getEntityData();
-
-					data.setTag("DeathChestPlayer", NBTUtil.createUUIDTag(player.getUniqueID()));
-					data.setTag("DeathChestPos", NBTUtil.createPosTag(pos));
+					data.put("DeathChestPlayer", NBTUtil.writeUniqueId(player.getUniqueID()));
+					data.put("DeathChestPos", NBTUtil.writeBlockPos(pos));
 				}
 			}
 		}
@@ -224,12 +200,8 @@ public final class DeathChestPlacer {
 
 		VanillaDeathChest.LOGGER.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
 
-		final String chatMessage = info.getChatMessage();
-
-		if(!chatMessage.isEmpty()) {
-			player.sendMessage(new TextComponentString(String.format(
-					chatMessage, pos.getX(), pos.getY(), pos.getZ()
-			)));
-		}
+		player.sendStatusMessage(new StringTextComponent(String.format(
+				VDCConfig.Spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
+		)), false);
 	}
 }

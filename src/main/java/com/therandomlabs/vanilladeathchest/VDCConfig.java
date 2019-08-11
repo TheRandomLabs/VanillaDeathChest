@@ -1,18 +1,15 @@
-package com.therandomlabs.vanilladeathchest.config;
+package com.therandomlabs.vanilladeathchest;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.randomlib.config.Config;
 import com.therandomlabs.randomlib.config.ConfigColor;
-import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
-import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.ArrayUtils;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@Config(VanillaDeathChest.MOD_ID)
+@Config(modid = VanillaDeathChest.MOD_ID, comment = "VanillaDeathChest configuration")
 public final class VDCConfig {
 	public static final class Defense {
 		@Config.Property("Whether the unlocker should be damaged rather than consumed.")
@@ -52,7 +49,6 @@ public final class VDCConfig {
 		@Config.Property("The number of defense entities to spawn.")
 		public static int defenseEntitySpawnCount = 3;
 
-		@Config.Previous("unlockerRegistryName")
 		@Config.Blacklist("minecraft:air")
 		@Config.Property("The registry name of the unlocker.")
 		public static Item unlocker;
@@ -69,7 +65,7 @@ public final class VDCConfig {
 
 		@Config.RangeInt(min = 0, max = Short.MAX_VALUE)
 		@Config.Property("The meta value of the unlocker.")
-		public static int unlockerMeta = OreDictionary.WILDCARD_VALUE;
+		public static int unlockerMeta = Short.MAX_VALUE;
 
 		@Config.Property({
 				"The message that is sent to the player when they fail to unlock a death chest.",
@@ -90,22 +86,18 @@ public final class VDCConfig {
 		public static void onReload() {
 			try {
 				JsonToNBT.getTagFromJson(defenseEntityNBT);
-			} catch(NBTException ex) {
+			} catch(CommandSyntaxException ex) {
 				defenseEntityNBT = "{}";
 			}
 
-			final ResourceLocation[] entityNames =
-					EntityList.getEntityNameList().toArray(new ResourceLocation[0]);
-			final int index = ArrayUtils.indexOf(
-					entityNames, new ResourceLocation(defenseEntityRegistryName)
-			);
+			final ResourceLocation entityID = new ResourceLocation(defenseEntityRegistryName);
 
-			if(index == ArrayUtils.INDEX_NOT_FOUND) {
+			if(ForgeRegistries.ENTITIES.containsKey(entityID)) {
+				defenseEntity = entityID;
+				defenseEntityRegistryName = entityID.toString();
+			} else {
 				defenseEntity = null;
 				defenseEntityRegistryName = "";
-			} else {
-				defenseEntity = entityNames[index];
-				defenseEntityRegistryName = defenseEntity.toString();
 			}
 		}
 	}
@@ -120,22 +112,9 @@ public final class VDCConfig {
 		})
 		public static boolean dropDeathChests;
 
-		@Config.Property("The default value of the spawnDeathChests gamerule.")
-		public static boolean gameRuleDefaultValue = true;
-
-		@Config.Property({
-				"The name of the spawnDeathChests gamerule.",
-				"Set this to an empty string to disable the gamerule."
-		})
-		public static String gameRuleName = "spawnDeathChests";
-
 		@Config.RequiresWorldReload
 		@Config.Property("Whether to enable the /vdcreload command.")
 		public static boolean vdcreload = true;
-
-		@Config.RequiresMCRestart
-		@Config.Property("Whether to enable the /vdcreloadclient command.")
-		public static boolean vdcreloadclient = true;
 	}
 
 	public static final class Protection {
@@ -210,10 +189,4 @@ public final class VDCConfig {
 
 	@Config.Category("Options related to death chest spawning.")
 	public static final Spawning spawning = null;
-
-	static {
-		ConfigColor.setTranslationKeyPrefix(
-				"vanilladeathchest.config.spawning.chestType.randomShulkerBoxColor."
-		);
-	}
 }

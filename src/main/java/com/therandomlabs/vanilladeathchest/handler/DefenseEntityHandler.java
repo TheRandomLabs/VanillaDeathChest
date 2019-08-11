@@ -1,40 +1,40 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.UUID;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DefenseEntityHandler {
 	@SubscribeEvent
 	public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-		final EntityLivingBase entity = event.getEntityLiving();
+		final LivingEntity entity = event.getEntityLiving();
 		final World world = entity.getEntityWorld();
 
-		if(world.isRemote) {
+		if(world.isRemote()) {
 			return;
 		}
 
-		final NBTTagCompound data = entity.getEntityData();
+		final CompoundNBT data = entity.getEntityData();
 
-		if(!data.hasKey("DeathChestPlayer")) {
+		if(!data.contains("DeathChestPlayer")) {
 			return;
 		}
 
-		final UUID playerUUID = NBTUtil.getUUIDFromTag(data.getCompoundTag("DeathChestPlayer"));
-		final EntityPlayer player = world.getPlayerEntityByUUID(playerUUID);
+		final UUID playerUUID = NBTUtil.readUniqueId(data.getCompound("DeathChestPlayer"));
+		final PlayerEntity player = world.getPlayerByUuid(playerUUID);
 
 		if(player != null) {
 			entity.setRevengeTarget(player);
@@ -44,7 +44,7 @@ public final class DefenseEntityHandler {
 			return;
 		}
 
-		final BlockPos pos = NBTUtil.getPosFromTag(data.getCompoundTag("DeathChestPos"));
+		final BlockPos pos = NBTUtil.readBlockPos(data.getCompound("DeathChestPos"));
 		final BlockPos entityPos = entity.getPosition();
 
 		final double distanceSq = entityPos.distanceSq(pos);
@@ -69,7 +69,7 @@ public final class DefenseEntityHandler {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onLivingDrops(LivingDropsEvent event) {
 		if(!VDCConfig.Defense.defenseEntityDropsItems &&
-				event.getEntity().getEntityData().hasKey("DeathChestPlayer")) {
+				event.getEntity().getEntityData().contains("DeathChestPlayer")) {
 			event.getDrops().clear();
 		}
 	}
@@ -77,7 +77,7 @@ public final class DefenseEntityHandler {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onLivingExperienceDrop(LivingExperienceDropEvent event) {
 		if(!VDCConfig.Defense.defenseEntityDropsExperience &&
-				event.getEntity().getEntityData().hasKey("DeathChestPlayer")) {
+				event.getEntity().getEntityData().contains("DeathChestPlayer")) {
 			event.setCanceled(true);
 		}
 	}

@@ -1,19 +1,21 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.Map;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
+import net.minecraft.block.Blocks;
+import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestContentsChecker {
@@ -23,14 +25,16 @@ public final class DeathChestContentsChecker {
 			return;
 		}
 
-		final VDCSavedData savedData = VDCSavedData.get(event.world);
-		final IChunkProvider provider = event.world.getChunkProvider();
+		final ServerWorld world = (ServerWorld) event.world;
+
+		final VDCSavedData savedData = VDCSavedData.get(world);
+		final ServerChunkProvider provider = world.getChunkProvider();
 
 		for(Map.Entry<BlockPos, DeathChest> entry : savedData.getDeathChests().entrySet()) {
 			final BlockPos pos = entry.getKey();
 
 			//Make sure we don't unnecessarily load any chunks
-			final Chunk chunk = provider.getLoadedChunk(pos.getX() >> 4, pos.getZ() >> 4);
+			final Chunk chunk = provider.func_225313_a(pos.getX() >> 4, pos.getZ() >> 4);
 
 			if(chunk == null || chunk.isEmpty()) {
 				continue;
@@ -38,11 +42,11 @@ public final class DeathChestContentsChecker {
 
 			final TileEntity tileEntity = event.world.getTileEntity(pos);
 
-			if(!(tileEntity instanceof TileEntityLockableLoot)) {
+			if(!(tileEntity instanceof LockableLootTileEntity)) {
 				continue;
 			}
 
-			final TileEntityLockableLoot lockableLoot = (TileEntityLockableLoot) tileEntity;
+			final LockableLootTileEntity lockableLoot = (LockableLootTileEntity) tileEntity;
 			boolean empty = true;
 
 			for(int i = 0; i < lockableLoot.getSizeInventory(); i++) {
@@ -53,12 +57,12 @@ public final class DeathChestContentsChecker {
 			}
 
 			if(empty) {
-				DeathChestManager.removeDeathChest(event.world, pos);
+				DeathChestManager.removeDeathChest(world, pos);
 
-				event.world.setBlockToAir(pos);
+				event.world.setBlockState(pos, Blocks.AIR.getDefaultState());
 
 				if(entry.getValue().isDoubleChest()) {
-					event.world.setBlockToAir(pos.east());
+					event.world.setBlockState(pos.east(), Blocks.AIR.getDefaultState());
 				}
 			}
 		}

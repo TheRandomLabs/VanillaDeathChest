@@ -1,24 +1,22 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
-import com.therandomlabs.vanilladeathchest.gamestages.VDCStageInfo;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.World;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestInteractionHandler {
@@ -26,9 +24,9 @@ public final class DeathChestInteractionHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onBlockBreak(BlockEvent.BreakEvent event) {
-		final World world = event.getWorld();
+		final IWorld world = event.getWorld();
 
-		if(world.isRemote) {
+		if(world.isRemote()) {
 			return;
 		}
 
@@ -38,20 +36,22 @@ public final class DeathChestInteractionHandler {
 			return;
 		}
 
-		final DeathChest deathChest = DeathChestManager.getDeathChest(world, pos);
+		final ServerWorld serverWorld = (ServerWorld) world;
+
+		final DeathChest deathChest = DeathChestManager.getDeathChest(serverWorld, pos);
 
 		if(deathChest == null) {
 			return;
 		}
 
-		final EntityPlayerMP player = (EntityPlayerMP) event.getPlayer();
+		final ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
 
 		if(!canInteract(player, deathChest)) {
 			event.setCanceled(true);
 			return;
 		}
 
-		final DeathChest chest = DeathChestManager.removeDeathChest(world, pos);
+		final DeathChest chest = DeathChestManager.removeDeathChest(serverWorld, pos);
 
 		if(chest.isDoubleChest()) {
 			harvesting = chest.getPos().equals(pos) ? pos.east() : pos.west();
@@ -61,62 +61,60 @@ public final class DeathChestInteractionHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-		final World world = event.getWorld();
+		final IWorld world = event.getWorld();
 
-		if(world.isRemote) {
+		if(world.isRemote()) {
 			return;
 		}
 
-		final DeathChest deathChest = DeathChestManager.getDeathChest(world, event.getPos());
+		final DeathChest deathChest =
+				DeathChestManager.getDeathChest((ServerWorld) world, event.getPos());
 
 		if(deathChest == null) {
 			return;
 		}
 
-		if(!canInteract(event.getEntityPlayer(), deathChest)) {
+		if(!canInteract((ServerPlayerEntity) event.getPlayer(), deathChest)) {
 			event.setCanceled(true);
 		}
 	}
 
 	@SubscribeEvent
 	public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
-		final World world = event.getWorld();
-		event.getAffectedBlocks().removeIf(pos -> DeathChestManager.isLocked(world, pos));
+		event.getAffectedBlocks().removeIf(
+				pos -> DeathChestManager.isLocked((ServerWorld) event.getWorld(), pos)
+		);
 	}
 
-	private static boolean canInteract(EntityPlayer player, DeathChest deathChest) {
+	private static boolean canInteract(ServerPlayerEntity player, DeathChest deathChest) {
 		if(!deathChest.canInteract(player)) {
 			return false;
 		}
 
-		final VDCStageInfo info = VDCStageInfo.get(player);
-		final Item unlocker = info.getUnlocker();
-
-		if(unlocker == null || deathChest.isUnlocked()) {
+		if(VDCConfig.Defense.unlocker == null || deathChest.isUnlocked()) {
 			return true;
 		}
 
 		final ItemStack stack = player.getHeldItem(player.getActiveHand());
-		final int amount = info.getUnlockerConsumeAmount();
+		final int amount = VDCConfig.Defense.unlockerConsumeAmount;
 
-		if(stack.getItem() == unlocker) {
+		if(stack.getItem() == VDCConfig.Defense.unlocker) {
 			if(amount == 0) {
 				deathChest.setUnlocked(true);
 				return true;
 			}
 
-			if(info.damageUnlockerInsteadOfConsume()) {
-				if(stack.isItemStackDamageable() &&
-						stack.getItemDamage() + amount < stack.getMaxDamage()) {
-					if(!player.capabilities.isCreativeMode) {
-						stack.damageItem(amount, player);
+			if(VDCConfig.Defense.damageUnlockerInsteadOfConsume) {
+				if(stack.isDamageable() && stack.getDamage() + amount < stack.getMaxDamage()) {
+					if(!player.abilities.isCreativeMode) {
+						stack.damageItem(amount, player, player2 -> {});
 					}
 
 					deathChest.setUnlocked(true);
 					return true;
 				}
 			} else if(stack.getCount() >= amount) {
-				if(!player.capabilities.isCreativeMode) {
+				if(!player.abilities.isCreativeMode) {
 					stack.shrink(amount);
 				}
 
@@ -125,14 +123,14 @@ public final class DeathChestInteractionHandler {
 			}
 		}
 
-		final String message = info.getUnlockFailedMessage();
+		final String message = VDCConfig.Defense.unlockFailedMessage;
 
 		if(!message.isEmpty()) {
-			final TextComponentString component = new TextComponentString(String.format(
+			final StringTextComponent component = new StringTextComponent(String.format(
 					message,
 					amount,
-					new TextComponentTranslation(
-							unlocker.getTranslationKey() + ".name"
+					new TranslationTextComponent(
+							VDCConfig.Defense.unlocker.getTranslationKey() + ".name"
 					).getFormattedText().trim()
 			));
 

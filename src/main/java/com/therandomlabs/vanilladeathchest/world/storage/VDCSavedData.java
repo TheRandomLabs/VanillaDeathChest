@@ -5,17 +5,18 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.MapStorage;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
-import net.minecraftforge.common.util.Constants;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class VDCSavedData extends WorldSavedData {
+	public static final int TAG_COMPOUND = ArrayUtils.indexOf(INBT.NBT_TYPES, "COMPOUND");
+
 	public static final String ID = VanillaDeathChest.MOD_ID;
 
 	public static final String DEATH_CHESTS_KEY = "DeathChests";
@@ -26,10 +27,10 @@ public class VDCSavedData extends WorldSavedData {
 	public static final String IS_DOUBLE_CHEST_KEY = "IsDoubleChest";
 	public static final String UNLOCKED_KEY = "Unlocked";
 
-	private static World currentWorld;
+	private static ServerWorld currentWorld;
 
-	private final World world;
-	private final Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
+	private final ServerWorld world;
+	private Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
 
 	public VDCSavedData() {
 		this(ID);
@@ -41,17 +42,17 @@ public class VDCSavedData extends WorldSavedData {
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
+	public void read(CompoundNBT nbt) {
 		deathChests.clear();
 
-		final NBTTagList list = nbt.getTagList(DEATH_CHESTS_KEY, Constants.NBT.TAG_COMPOUND);
+		final ListNBT list = nbt.getList(DEATH_CHESTS_KEY, TAG_COMPOUND);
 
-		for(NBTBase tag : list) {
-			final NBTTagCompound compound = (NBTTagCompound) tag;
+		for(INBT tag : list) {
+			final CompoundNBT compound = (CompoundNBT) tag;
 
-			final UUID playerID = NBTUtil.getUUIDFromTag(compound.getCompoundTag(UUID_KEY));
+			final UUID playerID = NBTUtil.readUniqueId(compound.getCompound(UUID_KEY));
 			final long creationTime = compound.getLong(CREATION_TIME_KEY);
-			final BlockPos pos = NBTUtil.getPosFromTag(compound.getCompoundTag(POS_KEY));
+			final BlockPos pos = NBTUtil.readBlockPos(compound.getCompound(POS_KEY));
 			final boolean isDoubleChest = compound.getBoolean(IS_DOUBLE_CHEST_KEY);
 			final boolean unlocked = compound.getBoolean(UNLOCKED_KEY);
 
@@ -62,23 +63,23 @@ public class VDCSavedData extends WorldSavedData {
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		final NBTTagList tagList = new NBTTagList();
+	public CompoundNBT write(CompoundNBT nbt) {
+		final ListNBT tagList = new ListNBT();
 
 		for(Map.Entry<BlockPos, DeathChest> entry : deathChests.entrySet()) {
 			final DeathChest deathChest = entry.getValue();
-			final NBTTagCompound compound = new NBTTagCompound();
+			final CompoundNBT compound = new CompoundNBT();
 
-			compound.setTag(UUID_KEY, NBTUtil.createUUIDTag(deathChest.getPlayerID()));
-			compound.setLong(CREATION_TIME_KEY, deathChest.getCreationTime());
-			compound.setTag(POS_KEY, NBTUtil.createPosTag(entry.getKey()));
-			compound.setBoolean(IS_DOUBLE_CHEST_KEY, deathChest.isDoubleChest());
-			compound.setBoolean(UNLOCKED_KEY, deathChest.isUnlocked());
+			compound.put(UUID_KEY, NBTUtil.writeUniqueId(deathChest.getPlayerID()));
+			compound.putLong(CREATION_TIME_KEY, deathChest.getCreationTime());
+			compound.put(POS_KEY, NBTUtil.writeBlockPos(entry.getKey()));
+			compound.putBoolean(IS_DOUBLE_CHEST_KEY, deathChest.isDoubleChest());
+			compound.putBoolean(UNLOCKED_KEY, deathChest.isUnlocked());
 
-			tagList.appendTag(compound);
+			tagList.add(compound);
 		}
 
-		nbt.setTag(DEATH_CHESTS_KEY, tagList);
+		nbt.put(DEATH_CHESTS_KEY, tagList);
 		return nbt;
 	}
 
@@ -86,16 +87,10 @@ public class VDCSavedData extends WorldSavedData {
 		return deathChests;
 	}
 
-	public static VDCSavedData get(World world) {
+	public static VDCSavedData get(ServerWorld world) {
 		currentWorld = world;
 
-		final MapStorage storage = world.getPerWorldStorage();
-		VDCSavedData instance = (VDCSavedData) storage.getOrLoadData(VDCSavedData.class, ID);
-
-		if(instance == null) {
-			instance = new VDCSavedData();
-			storage.setData(ID, instance);
-		}
+		final VDCSavedData instance = world.getSavedData().getOrCreate(VDCSavedData::new, ID);
 
 		currentWorld = null;
 

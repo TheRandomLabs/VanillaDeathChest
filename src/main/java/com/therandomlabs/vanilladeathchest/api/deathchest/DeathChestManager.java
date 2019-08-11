@@ -4,22 +4,23 @@ import java.util.Map;
 import com.therandomlabs.vanilladeathchest.api.event.DeathChestRemoveEvent;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 
 public final class DeathChestManager {
 	private DeathChestManager() {}
 
-	public static void addDeathChest(World world, EntityPlayer player, BlockPos pos,
-			boolean isDoubleChest) {
+	public static void addDeathChest(
+			ServerWorld world, PlayerEntity player, BlockPos pos, boolean isDoubleChest
+	) {
 		final VDCSavedData data = VDCSavedData.get(world);
 		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
 		final DeathChest deathChest = new DeathChest(
-				world, player.getUniqueID(), world.getTotalWorldTime(), pos, isDoubleChest, false
+				world, player.getUniqueID(), world.getGameTime(), pos, isDoubleChest, false
 		);
 
 		deathChests.put(pos, deathChest);
@@ -31,19 +32,19 @@ public final class DeathChestManager {
 		data.markDirty();
 	}
 
-	public static boolean isDeathChest(World world, BlockPos pos) {
+	public static boolean isDeathChest(ServerWorld world, BlockPos pos) {
 		return getDeathChest(world, pos) != null;
 	}
 
-	public static boolean isLocked(World world, BlockPos pos) {
+	public static boolean isLocked(ServerWorld world, BlockPos pos) {
 		final DeathChest deathChest = getDeathChest(world, pos);
 		return deathChest != null && !deathChest.isUnlocked();
 	}
 
-	public static DeathChest getDeathChest(World world, BlockPos pos) {
+	public static DeathChest getDeathChest(ServerWorld world, BlockPos pos) {
 		final Block block = world.getBlockState(pos).getBlock();
 
-		if(block != Blocks.CHEST && !(block instanceof BlockShulkerBox)) {
+		if(block != Blocks.CHEST && !(block instanceof ShulkerBoxBlock)) {
 			return null;
 		}
 
@@ -51,7 +52,7 @@ public final class DeathChestManager {
 		return deathChests.get(pos);
 	}
 
-	public static DeathChest removeDeathChest(World world, BlockPos pos) {
+	public static DeathChest removeDeathChest(ServerWorld world, BlockPos pos) {
 		final Map<BlockPos, DeathChest> deathChests = VDCSavedData.get(world).getDeathChests();
 		final DeathChest chest = deathChests.remove(pos);
 
@@ -76,7 +77,7 @@ public final class DeathChestManager {
 		}
 
 		MinecraftForge.EVENT_BUS.post(new DeathChestRemoveEvent(chest, west, east));
-
 		return chest;
 	}
 }
+

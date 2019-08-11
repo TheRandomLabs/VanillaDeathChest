@@ -5,12 +5,18 @@ import java.util.Iterator;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.therandomlabs.randomlib.BooleanWrapper;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class DeathChestLocationFinder {
@@ -61,7 +67,7 @@ public class DeathChestLocationFinder {
 		return searchOrder;
 	}
 
-	public static BlockPos findLocation(World world, EntityPlayer player, BlockPos pos,
+	public static BlockPos findLocation(World world, PlayerEntity player, BlockPos pos,
 			BooleanWrapper doubleChest) {
 		int y = pos.getY();
 
@@ -70,10 +76,8 @@ public class DeathChestLocationFinder {
 				y = 1;
 			}
 
-			final int actualHeight = world.getActualHeight();
-
-			if(y > actualHeight) {
-				y = actualHeight;
+			if(y > 256) {
+				y = 256;
 			}
 		}
 
@@ -87,7 +91,7 @@ public class DeathChestLocationFinder {
 
 			if(canPlace(world, player, potentialPos)) {
 				if((!isDoubleChest || canPlace(world, player, potentialPos.east())) &&
-						isOnSolidBlocks(world, potentialPos, isDoubleChest)) {
+						isOnSolidBlocks(world, player, potentialPos, isDoubleChest)) {
 					return potentialPos;
 				}
 
@@ -105,7 +109,7 @@ public class DeathChestLocationFinder {
 		return VDCConfig.Spawning.forcePlaceIfLocationNotFound ? pos : null;
 	}
 
-	public static boolean canPlace(World world, EntityPlayer player, BlockPos pos,
+	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos,
 			boolean doubleChest) {
 		if(doubleChest) {
 			return canPlace(world, player, pos) && canPlace(world, player, pos.east());
@@ -114,12 +118,24 @@ public class DeathChestLocationFinder {
 		return canPlace(world, player, pos);
 	}
 
-	public static boolean canPlace(World world, EntityPlayer player, BlockPos pos) {
+	@SuppressWarnings("deprecation")
+	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos) {
 		if(!world.isBlockLoaded(pos) || !world.isBlockModifiable(player, pos)) {
 			return false;
 		}
 
-		if(isReplaceable(world, pos) && isReplaceable(world, pos.up())) {
+		final BlockItemUseContext context = new BlockItemUseContext(new ItemUseContext(
+				player,
+				Hand.MAIN_HAND,
+				new BlockRayTraceResult(
+						new Vec3d(0.0, 0.0, 0.0),
+						Direction.DOWN,
+						pos,
+						false
+				)
+		));
+
+		if(isReplaceable(world, pos, context) && isReplaceable(world, pos.up(), context)) {
 			return isNotChest(world, pos.north()) && isNotChest(world, pos.east()) &&
 					isNotChest(world, pos.south()) && isNotChest(world, pos.west());
 		}
@@ -127,7 +143,7 @@ public class DeathChestLocationFinder {
 		return false;
 	}
 
-	private static boolean isReplaceable(World world, BlockPos pos) {
+	private static boolean isReplaceable(World world, BlockPos pos, BlockItemUseContext context) {
 		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
 			final int y = pos.getY();
 
@@ -136,24 +152,26 @@ public class DeathChestLocationFinder {
 			}
 		}
 
-		return world.getBlockState(pos).getBlock().isReplaceable(world, pos);
+		final BlockState state = world.getBlockState(pos);
+		return state.isAir(world, pos) || state.isReplaceable(context);
 	}
 
 	private static boolean isNotChest(World world, BlockPos pos) {
 		return world.getBlockState(pos).getBlock() != Blocks.CHEST;
 	}
 
-	private static boolean isOnSolidBlocks(World world, BlockPos pos, boolean isDoubleChest) {
+	private static boolean isOnSolidBlocks(World world, PlayerEntity player, BlockPos pos,
+			boolean isDoubleChest) {
 		if(!VDCConfig.Spawning.mustBeOnSolidBlocks) {
 			return true;
 		}
 
 		final BlockPos down = pos.down();
 
-		if(!world.isSideSolid(down, EnumFacing.UP)) {
+		if(!world.func_217400_a(down, player)) {
 			return false;
 		}
 
-		return !isDoubleChest || world.isSideSolid(down.east(), EnumFacing.UP);
+		return !isDoubleChest || world.func_217400_a(down.east(), player);
 	}
 }

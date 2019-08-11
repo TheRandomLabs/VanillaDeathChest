@@ -3,25 +3,25 @@ package com.therandomlabs.vanilladeathchest.handler;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.event.DeathChestRemoveEvent;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestDropHandler {
@@ -74,14 +74,14 @@ public final class DeathChestDropHandler {
 
 		final Entity entity = event.getEntity();
 
-		if(!(entity instanceof EntityItem)) {
+		if(!(entity instanceof ItemEntity)) {
 			return;
 		}
 
-		final ItemStack stack = ((EntityItem) entity).getItem();
+		final ItemStack stack = ((ItemEntity) entity).getItem();
 
 		if(stack.getCount() != 1 ||
-				!(Block.getBlockFromItem(stack.getItem()) instanceof BlockShulkerBox)) {
+				!(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock)) {
 			return;
 		}
 
@@ -93,7 +93,7 @@ public final class DeathChestDropHandler {
 			if(pos.squareDistanceTo(chestPos.getX(), chestPos.getY(), chestPos.getZ()) <= 1.6875) {
 				final NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 				ItemStackHelper.loadAllItems(
-						stack.getTagCompound().getCompoundTag("BlockEntityTag"), inventory
+						stack.getTag().getCompound("BlockEntityTag"), inventory
 				);
 
 				for(ItemStack drop : inventory) {

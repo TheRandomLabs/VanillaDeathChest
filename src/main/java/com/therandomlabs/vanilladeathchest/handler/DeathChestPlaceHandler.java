@@ -1,54 +1,55 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import com.google.common.collect.Queues;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.DimensionType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.entity.player.PlayerDropsEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestPlaceHandler {
-	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS =
-			new EnumMap<>(DimensionType.class);
+	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public static void onPlayerDrops(PlayerDropsEvent event) {
-		final List<EntityItem> drops = event.getDrops();
+	public static void onPlayerDrops(LivingDropsEvent event) {
+		final Entity entity = event.getEntity();
+
+		if(!(entity instanceof PlayerEntity)) {
+			return;
+		}
+
+		final List<ItemEntity> drops = (List<ItemEntity>) event.getDrops();
 
 		if(drops.isEmpty()) {
 			return;
 		}
 
-		final EntityPlayer player = event.getEntityPlayer();
+		final PlayerEntity player = (PlayerEntity) entity;
 
 		if(player instanceof FakePlayer) {
 			return;
 		}
 
-		final World world = player.getEntityWorld();
+		final ServerWorld world = (ServerWorld) player.getEntityWorld();
 		final GameRules gameRules = world.getGameRules();
 
-		if(gameRules.getBoolean("keepInventory")) {
-			return;
-		}
-
-		if(!(VDCConfig.Misc.gameRuleName.isEmpty() ||
-				gameRules.getBoolean(VDCConfig.Misc.gameRuleName))) {
+		if(gameRules.getBoolean(GameRules.KEEP_INVENTORY)) {
 			return;
 		}
 
@@ -76,7 +77,7 @@ public final class DeathChestPlaceHandler {
 	public static Queue<DeathChestPlacer> getPlacers(World world) {
 		synchronized(PLACERS) {
 			return PLACERS.computeIfAbsent(
-					world.provider.getDimensionType(),
+					world.getDimension().getType(),
 					key -> Queues.newConcurrentLinkedQueue()
 			);
 		}

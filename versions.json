@@ -1,6 +1,7 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/vanilladeathchest",
 	"1.14.4": {
+		"1.14.4-1.9.3.1": "Invalid configurations are now regenerated automatically.",
 		"1.14.4-1.9.3.0": "Initial port to Forge 1.14.4."
 	},
 	"1.12.2": {
@@ -125,8 +126,8 @@
 		"1.10.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
 	},
 	"promos": {
-		"1.14.4-latest": "1.14.4-1.9.3.0",
-		"1.14.4-recommended": "1.14.4-1.9.3.0",
+		"1.14.4-latest": "1.14.4-1.9.3.1",
+		"1.14.4-recommended": "1.14.4-1.9.3.1",
 		"1.12.2-latest": "1.12.2-1.9.3.0",
 		"1.12.2-recommended": "1.12.2-1.9.3.0",
 		"1.12.1-latest": "1.12.2-1.9.3.0",

@@ -112,6 +112,12 @@ public final class VDCConfig {
 		})
 		public static boolean dropDeathChests;
 
+		@Config.Property({
+				"The name of the disableDeathChests gamerule.",
+				"Set this to an empty string to disable the gamerule."
+		})
+		public static String gameRuleName = "disableDeathChests";
+
 		@Config.RequiresWorldReload
 		@Config.Property("Whether to enable the /vdcreload command.")
 		public static boolean vdcreload = true;
@@ -146,7 +152,7 @@ public final class VDCConfig {
 	public static final class Spawning {
 		@Config.Property({
 				"The message sent to a player when they die and a death chest is placed.",
-				"%d refers to the X, Y and Z coordinates.",
+				"%s refers to the X, Y and Z coordinates.",
 				"Set this to an empty string to disable the message."
 		})
 		public static String chatMessage = "Death chest spawned at [%s, %s, %s]";

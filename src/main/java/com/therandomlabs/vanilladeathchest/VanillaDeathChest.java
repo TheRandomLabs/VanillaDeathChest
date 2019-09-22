@@ -2,11 +2,10 @@ package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.randomlib.config.CommandConfigReload;
 import com.therandomlabs.randomlib.config.ConfigManager;
+import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,14 +16,17 @@ public final class VanillaDeathChest {
 
 	public static final boolean CUBIC_CHUNKS_LOADED = false;
 
+	private static GameRules.RuleKey<GameRules.BooleanValue> disableDeathChests;
+
 	public VanillaDeathChest() {
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		ConfigManager.register(VDCConfig.class);
-	}
 
-	private void commonSetup(FMLCommonSetupEvent event) {
-		ConfigManager.reloadFromDisk(VDCConfig.class);
+		if(!VDCConfig.Misc.gameRuleName.isEmpty()) {
+			disableDeathChests = GameRules.register(
+					VDCConfig.Misc.gameRuleName, GameRules.BooleanValue.create(false)
+			);
+		}
 	}
 
 	private void serverStarting(FMLServerStartingEvent event) {
@@ -34,5 +36,9 @@ public final class VanillaDeathChest {
 					"VanillaDeathChest configuration reloaded!"
 			);
 		}
+	}
+
+	public static GameRules.RuleKey<GameRules.BooleanValue> getDisableDeathChestsKey() {
+		return disableDeathChests;
 	}
 }

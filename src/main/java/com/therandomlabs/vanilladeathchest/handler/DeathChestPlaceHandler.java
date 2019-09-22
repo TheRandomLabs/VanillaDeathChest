@@ -53,6 +53,13 @@ public final class DeathChestPlaceHandler {
 			return;
 		}
 
+		final GameRules.RuleKey<GameRules.BooleanValue> key =
+				VanillaDeathChest.getDisableDeathChestsKey();
+
+		if(key != null && gameRules.getBoolean(key)) {
+			return;
+		}
+
 		final Queue<DeathChestPlacer> placers = getPlacers(world);
 		placers.add(new DeathChestPlacer(world, player, drops));
 

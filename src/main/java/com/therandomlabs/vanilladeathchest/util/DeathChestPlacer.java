@@ -188,7 +188,7 @@ public final class DeathChestPlacer {
 					);
 					living.setLastAttackedEntity(player);
 
-					final CompoundNBT data = living.getEntityData();
+					final CompoundNBT data = living.getPersistentData();
 
 					data.put("DeathChestPlayer", NBTUtil.writeUniqueId(player.getUniqueID()));
 					data.put("DeathChestPos", NBTUtil.writeBlockPos(pos));

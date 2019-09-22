@@ -27,7 +27,7 @@ public final class DefenseEntityHandler {
 			return;
 		}
 
-		final CompoundNBT data = entity.getEntityData();
+		final CompoundNBT data = entity.getPersistentData();
 
 		if(!data.contains("DeathChestPlayer")) {
 			return;
@@ -69,7 +69,7 @@ public final class DefenseEntityHandler {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onLivingDrops(LivingDropsEvent event) {
 		if(!VDCConfig.Defense.defenseEntityDropsItems &&
-				event.getEntity().getEntityData().contains("DeathChestPlayer")) {
+				event.getEntity().getPersistentData().contains("DeathChestPlayer")) {
 			event.getDrops().clear();
 		}
 	}
@@ -77,7 +77,7 @@ public final class DefenseEntityHandler {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onLivingExperienceDrop(LivingExperienceDropEvent event) {
 		if(!VDCConfig.Defense.defenseEntityDropsExperience &&
-				event.getEntity().getEntityData().contains("DeathChestPlayer")) {
+				event.getEntity().getPersistentData().contains("DeathChestPlayer")) {
 			event.setCanceled(true);
 		}
 	}

@@ -14,8 +14,6 @@ public final class VanillaDeathChest {
 	public static final String MOD_ID = "vanilladeathchest";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-	public static final boolean CUBIC_CHUNKS_LOADED = false;
-
 	private static GameRules.RuleKey<GameRules.BooleanValue> disableDeathChests;
 
 	public VanillaDeathChest() {

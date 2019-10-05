@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.therandomlabs.randomlib.BooleanWrapper;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
-import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.ModList;
 
 public class DeathChestLocationFinder {
 	private static class SearchOrder implements Iterable<BlockPos> {
@@ -71,7 +71,7 @@ public class DeathChestLocationFinder {
 			BooleanWrapper doubleChest) {
 		int y = pos.getY();
 
-		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
+		if(!ModList.get().isLoaded("cubicchunks")) {
 			if(y < 1) {
 				y = 1;
 			}
@@ -144,7 +144,7 @@ public class DeathChestLocationFinder {
 	}
 
 	private static boolean isReplaceable(World world, BlockPos pos, BlockItemUseContext context) {
-		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
+		if(!ModList.get().isLoaded("cubicchunks")) {
 			final int y = pos.getY();
 
 			if(y < 1 || y > world.getActualHeight()) {

@@ -2,7 +2,7 @@ modLoader = "javafml"
 loaderVersion = "[14,)"
 updateJSONURL = "https://raw.githubusercontent.com/TheRandomLabs/VanillaDeathChest/misc/versions.json"
 issueTrackerURL = "https://github.com/TheRandomLabs/VanillaDeathChest/issues"
-displayURL = "https://minecraft.curseforge.com/projects/vanilladeathchest"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest"
 logoFile = "logo.png"
 authors = "TheRandomLabs"
 

@@ -105,11 +105,15 @@ public final class DeathChestInteractionHandler {
 			}
 
 			if(VDCConfig.Defense.damageUnlockerInsteadOfConsume) {
-				if(stack.isDamageable() && stack.getDamage() + amount < stack.getMaxDamage()) {
-					if(!player.abilities.isCreativeMode) {
-						stack.damageItem(amount, player, player2 -> {});
-					}
+				boolean unlocked = player.abilities.isCreativeMode;
 
+				if(!unlocked && stack.isDamageable() &&
+						stack.getDamage() + amount < stack.getDamage()) {
+					stack.attemptDamageItem(amount, player.getRNG(), player);
+					unlocked = true;
+				}
+
+				if(unlocked) {
 					deathChest.setUnlocked(true);
 					return true;
 				}

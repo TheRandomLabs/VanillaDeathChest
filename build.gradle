@@ -16,14 +16,17 @@ buildscript {
 
 apply plugin: "net.minecraftforge.gradle"
 
-version = "1.14.4-1.9.4.0"
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
+compileJava.targetCompatibility = JavaVersion.VERSION_1_8
+
+version = "1.14.4-1.10.3.0"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = "1.8"
-
 minecraft {
-	mappings channel: "snapshot", version: "20190921-1.14.3"
+	mappings channel: "snapshot", version: "20191004-1.14.3"
 
 	accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
 
@@ -57,13 +60,12 @@ minecraft {
 }
 
 dependencies {
-	minecraft "net.minecraftforge:forge:1.14.4-28.1.11"
+	minecraft "net.minecraftforge:forge:1.14.4-28.1.37"
 }
 
 jar {
 	manifest {
 		attributes([
-			"FMLCorePlugin": "com.therandomlabs.randompatches.core.RPCore",
 			"Specification-Title": project.name,
 			"Specification-Vendor": "TheRandomLabs",
 			"Specification-Version": "1",

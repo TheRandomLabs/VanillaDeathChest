@@ -1,11 +1,11 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.UUID;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityTickCallback;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +35,7 @@ public class DefenseEntityHandler implements
 			entity.setTarget(player);
 		}
 
-		if(VDCConfig.defense.defenseEntityMaxDistanceSquared == 0.0) {
+		if(VDCConfig.Defense.defenseEntityMaxDistanceSquared == 0.0) {
 			return;
 		}
 
@@ -51,9 +51,9 @@ public class DefenseEntityHandler implements
 			distanceSqFromPlayer = entityPos.squaredDistanceTo(player.getPos());
 		}
 
-		if(distanceSq > VDCConfig.defense.defenseEntityMaxDistanceSquared) {
+		if(distanceSq > VDCConfig.Defense.defenseEntityMaxDistanceSquared) {
 			final double maxDistanceSqFromPlayer =
-					VDCConfig.defense.defenseEntityMaxDistanceSquaredFromPlayer;
+					VDCConfig.Defense.defenseEntityMaxDistanceSquaredFromPlayer;
 
 			if(maxDistanceSqFromPlayer == 0.0 || distanceSqFromPlayer > maxDistanceSqFromPlayer) {
 				entity.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
@@ -66,7 +66,7 @@ public class DefenseEntityHandler implements
 			MobEntity entity, DeathChestDefenseEntity defenseEntity, boolean recentlyHit,
 			int lootingModifier, DamageSource source
 	) {
-		return VDCConfig.defense.defenseEntityDropsItems ||
+		return VDCConfig.Defense.defenseEntityDropsItems ||
 				defenseEntity.getDeathChestPlayer() == null;
 	}
 
@@ -74,7 +74,7 @@ public class DefenseEntityHandler implements
 	public int onLivingEntityDropExperience(
 			MobEntity entity, DeathChestDefenseEntity defenseEntity, int experience
 	) {
-		if(!VDCConfig.defense.defenseEntityDropsExperience &&
+		if(!VDCConfig.Defense.defenseEntityDropsExperience &&
 				defenseEntity.getDeathChestPlayer() != null) {
 			return 0;
 		}

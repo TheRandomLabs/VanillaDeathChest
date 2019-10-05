@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
+import com.therandomlabs.utils.fabric.config.BooleanWrapper;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,24 +68,17 @@ public class DeathChestLocationFinder {
 
 	public static BlockPos findLocation(World world, PlayerEntity player, BlockPos pos,
 			BooleanWrapper doubleChest) {
-		int y = pos.getY();
-
-		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
-			if(y < 1) {
-				y = 1;
-			}
-
-			if(y > 256) {
-				y = 256;
-			}
-		}
-
 		final boolean isDoubleChest = doubleChest.get();
-		final BlockPos searchPos = new BlockPos(pos.getX(), y, pos.getZ());
+
+		final BlockPos searchPos = new BlockPos(
+				pos.getX(),
+				Math.min(256, Math.max(1, pos.getY())),
+				pos.getZ()
+		);
 
 		BlockPos singleChestPos = null;
 
-		for(BlockPos translation : getSearchOrder(VDCConfig.spawning.locationSearchRadius)) {
+		for(BlockPos translation : getSearchOrder(VDCConfig.Spawning.locationSearchRadius)) {
 			final BlockPos potentialPos = searchPos.add(translation);
 
 			if(canPlace(world, player, potentialPos)) {
@@ -105,7 +98,7 @@ public class DeathChestLocationFinder {
 			return singleChestPos;
 		}
 
-		return VDCConfig.spawning.forcePlaceIfLocationNotFound ? pos : null;
+		return VDCConfig.Spawning.forcePlaceIfLocationNotFound ? pos : null;
 	}
 
 	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos,
@@ -143,12 +136,8 @@ public class DeathChestLocationFinder {
 	}
 
 	private static boolean isReplaceable(World world, BlockPos pos, ItemPlacementContext context) {
-		if(!VanillaDeathChest.CUBIC_CHUNKS_LOADED) {
-			final int y = pos.getY();
-
-			if(y < 1 || y > world.getEffectiveHeight()) {
-				return false;
-			}
+		if(pos.getY() < 1 || pos.getY() > world.getEffectiveHeight()) {
+			return false;
 		}
 
 		final BlockState state = world.getBlockState(pos);
@@ -161,7 +150,7 @@ public class DeathChestLocationFinder {
 
 	private static boolean isOnSolidBlocks(World world, PlayerEntity player, BlockPos pos,
 			boolean isDoubleChest) {
-		if(!VDCConfig.spawning.mustBeOnSolidBlocks) {
+		if(!VDCConfig.Spawning.mustBeOnSolidBlocks) {
 			return true;
 		}
 

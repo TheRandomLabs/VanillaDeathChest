@@ -1,44 +1,76 @@
-buildscript {
-	repositories {
-		jcenter()
-
-		gradlePluginPortal()
-
-		maven {
-			url "http://maven.fabricmc.net/"
-		}
-	}
-
-	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.2.4-SNAPSHOT"
-	}
+plugins {
+	id "fabric-loom" version "0.2.5-SNAPSHOT"
 }
 
-apply plugin: "fabric-loom"
+apply plugin: "maven-publish"
 
-archivesBaseName = "vanilladeathchest"
-version = "1.14.4-1.10.2.0-fabric"
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-sourceCompatibility = targetCompatibility = "1.8"
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
+
+minecraft {}
 
 repositories {
 	mavenCentral()
+
+	maven {
+		url "https://jitpack.io"
+	}
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.14.4"
-	mappings "net.fabricmc:yarn:1.14.4+build.9"
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+	modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modImplementation "net.fabricmc:fabric-loader:0.4.8+build.159"
-	modCompile "net.fabricmc:fabric:0.2.7+build.127"
+	modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modApi ("blue.endless:jankson:1.1.2")
-	include ("blue.endless:jankson:1.1.2") {
-		transitive = false
+	include "com.electronwill.night-config:core:3.6.0"
+	include "com.electronwill.night-config:toml:3.6.0"
+	include group: "com.github.TheRandomLabs", name: "TRLUtils-Config", version: "master-SNAPSHOT", changing: true
+	modApi group: "com.github.TheRandomLabs", name: "TRLUtils-Fabric", version: "master-SNAPSHOT", changing: true
+	include group: "com.github.TheRandomLabs", name: "TRLUtils-Fabric", version: "master-SNAPSHOT", changing: true
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include "fabric.mod.json"
+		expand "version": project.version
 	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "fabric.mod.json"
+	}
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = "sources"
 	from sourceSets.main.allSource
+}
+
+jar {
+	from "LICENSE"
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(remapJar) {
+				builtBy remapJar
+			}
+
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+		}
+	}
 }

@@ -17,10 +17,7 @@ public class MixinExplosion {
 	@Final
 	private World world;
 
-	@Inject(method = "collectBlocksAndDamageEntities", at = @At(
-			value = "NEW",
-			target = "net/minecraft/util/math/Vec3d"
-	))
+	@Inject(method = "collectBlocksAndDamageEntities", at = @At(value = "NEW", target = "net/minecraft/util/math/Vec3d"))
 	public void collectBlocksAndDamageEntities(CallbackInfo callback) {
 		ExplosionDetonationCallback.EVENT.invoker().onExplosionDetonate(
 				(ServerWorld) world, (Explosion) (Object) this

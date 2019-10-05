@@ -19,11 +19,8 @@ public class MixinBlock {
 
 	@Inject(
 			method = "dropStack",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/world/World;" +
-							"spawnEntity(Lnet/minecraft/entity/Entity;)Z"
-			),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;" +
+							"spawnEntity(Lnet/minecraft/entity/Entity;)Z"),
 			cancellable = true
 	)
 	private static void dropStack(

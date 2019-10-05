@@ -1,5 +1,12 @@
 package com.therandomlabs.vanilladeathchest;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import com.mojang.brigadier.CommandDispatcher;
+import com.therandomlabs.utils.config.ConfigManager;
+import com.therandomlabs.utils.fabric.config.config.CommandConfigReload;
+import com.therandomlabs.utils.fabric.config.config.FabricConfig;
 import com.therandomlabs.vanilladeathchest.api.event.block.BreakBlockCallback;
 import com.therandomlabs.vanilladeathchest.api.event.block.ExplosionDetonationCallback;
 import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
@@ -8,8 +15,6 @@ import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDr
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityTickCallback;
 import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
-import com.therandomlabs.vanilladeathchest.command.VDCReloadCommand;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestContentsChecker;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestDropHandler;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestInteractionHandler;
@@ -22,6 +27,7 @@ import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
+import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,22 +40,41 @@ public final class VanillaDeathChest implements ModInitializer {
 
 	public static final boolean CUBIC_CHUNKS_LOADED = false;
 
+	private static final Method REGISTER = findMethod(
+			GameRules.class, "register", "method_8359", String.class, GameRules.RuleType.class
+	);
+
+	private static final Method OF = findMethod(
+			GameRules.BooleanRule.class, "of", "method_20759", boolean.class
+	);
+
+	private static GameRules.RuleKey<GameRules.BooleanRule> disableDeathChests;
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onInitialize() {
-		VDCConfig.reload();
+		FabricConfig.initialize();
+		ConfigManager.register(VDCConfig.class);
 
-		if(!VDCConfig.misc.gameRuleName.isEmpty()) {
-			/*GameRules.getKeys().put(
-					VDCConfig.misc.gameRuleName,
-					new GameRules.Key(
-							Boolean.toString(VDCConfig.misc.gameRuleDefaultValue),
-							GameRules.Type.BOOLEAN_VALUE
-					)
-			);*/
+		if(!VDCConfig.Misc.gameRuleName.isEmpty()) {
+			try {
+				disableDeathChests = (GameRules.RuleKey<GameRules.BooleanRule>) REGISTER.invoke(
+						null, VDCConfig.Misc.gameRuleName, OF.invoke(null, false)
+				);
+			} catch(IllegalAccessException | InvocationTargetException ex) {
+				crashReport("Failed to register disableDeathChests gamerule", ex);
+			}
 		}
 
-		if(VDCConfig.misc.vdcreload) {
-			CommandRegistry.INSTANCE.register(false, VDCReloadCommand::register);
+		if(VDCConfig.Misc.vdcreload) {
+			CommandRegistry.INSTANCE.register(
+					false,
+					dispatcher -> CommandConfigReload.server(
+							//TODO remove cast
+							(CommandDispatcher) dispatcher, "vdcreload", "vdcreloadclient",
+							VDCConfig.class, "VanillaDeathChest configuration reloaded!"
+					)
+			);
 		}
 
 		final DeathChestPlaceHandler placeHandler = new DeathChestPlaceHandler();
@@ -75,8 +100,26 @@ public final class VanillaDeathChest implements ModInitializer {
 		LivingEntityDropExperienceCallback.EVENT.register(defenseEntityHandler);
 		LivingEntityTickCallback.EVENT.register(defenseEntityHandler);
 
-		ServerTickCallback.EVENT.register(new VDCConfig());
 		ServerTickCallback.EVENT.register(new DeathChestContentsChecker());
+	}
+
+	public static GameRules.RuleKey<GameRules.BooleanRule> getDisableDeathChestsKey() {
+		return disableDeathChests;
+	}
+
+	public static Method findMethod(Class<?> clazz, String name, String obfName,
+			Class<?>... parameterTypes) {
+		for(Method method : clazz.getDeclaredMethods()) {
+			final String methodName = method.getName();
+
+			if((name.equals(methodName) || obfName.equals(methodName)) &&
+					Arrays.equals(method.getParameterTypes(), parameterTypes)) {
+				method.setAccessible(true);
+				return method;
+			}
+		}
+
+		return null;
 	}
 
 	public static void crashReport(String message, Throwable throwable) {

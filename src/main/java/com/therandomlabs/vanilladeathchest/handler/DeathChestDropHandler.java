@@ -4,10 +4,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.deathchest.DeathChestRemoveCallback;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -24,7 +24,7 @@ public class DeathChestDropHandler implements
 
 	@Override
 	public void onRemove(DeathChest chest, BlockPos west, BlockPos east) {
-		if(VDCConfig.misc.dropDeathChests) {
+		if(VDCConfig.Misc.dropDeathChests) {
 			return;
 		}
 

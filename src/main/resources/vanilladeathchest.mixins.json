@@ -9,6 +9,7 @@
 		"MixinPlayerInventory",
 		"MixinServerPlayerInteractionManager"
 	],
+	"client": [],
 	"injectors": {
 		"defaultRequire": 1
 	}

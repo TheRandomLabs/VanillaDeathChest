@@ -4,12 +4,12 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
 import com.mojang.authlib.GameProfile;
-import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.therandomlabs.utils.fabric.config.BooleanWrapper;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -83,7 +83,7 @@ public final class DeathChestPlacer {
 	}
 
 	private void place(ServerWorld world, PlayerEntity player) {
-		final DeathChestType type = VDCConfig.spawning.chestType;
+		final DeathChestType type = VDCConfig.Spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = new BlockPos(player.getPos());
@@ -108,7 +108,10 @@ public final class DeathChestPlacer {
 		final Block block;
 
 		if(type == DeathChestType.SHULKER_BOX) {
-			block = ShulkerBoxBlock.get(VDCConfig.spawning.shulkerBoxColor);
+			//TODO ColorConfig.get()
+			block = ShulkerBoxBlock.get(DyeColor.valueOf(
+					VDCConfig.Spawning.shulkerBoxColor.name()
+			));
 		} else if(type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
 			block = ShulkerBoxBlock.get(DyeColor.byId(random.nextInt(16)));
 		} else {
@@ -153,25 +156,23 @@ public final class DeathChestPlacer {
 			}
 		}
 
-		if(!VDCConfig.spawning.containerDisplayName.isEmpty()) {
-			chest.setCustomName(new LiteralText(VDCConfig.spawning.containerDisplayName));
+		if(!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
+			chest.setCustomName(new LiteralText(VDCConfig.Spawning.containerDisplayName));
 		}
 
-		if(VDCConfig.defense.defenseEntity != null) {
+		if(VDCConfig.Defense.defenseEntity != null) {
 			final double x = pos.getX() + 0.5;
 			final double y = pos.getY() + 1.0;
 			final double z = pos.getZ() + 0.5;
 
-			for(int i = 0; i < VDCConfig.defense.defenseEntitySpawnCount; i++) {
+			for(int i = 0; i < VDCConfig.Defense.defenseEntitySpawnCount; i++) {
 				CompoundTag compound = null;
 
 				try {
-					compound = new StringNbtReader(
-							new StringReader(VDCConfig.defense.defenseEntityNBT)
-					).parseCompoundTag();
+					compound = StringNbtReader.parse(VDCConfig.Defense.defenseEntityNBT);
 				} catch(CommandSyntaxException ignored) {}
 
-				compound.putString("id", VDCConfig.defense.defenseEntityRegistryName);
+				compound.putString("id", VDCConfig.Defense.defenseEntityRegistryName);
 
 				final Entity entity = EntityType.loadEntityWithPassengers(
 						compound, world, spawnedEntity -> {
@@ -202,7 +203,7 @@ public final class DeathChestPlacer {
 		VanillaDeathChest.LOGGER.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
 
 		player.addChatMessage(new LiteralText(String.format(
-				VDCConfig.spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
+				VDCConfig.Spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
 		)), false);
 	}
 }

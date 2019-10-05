@@ -23,7 +23,9 @@ public class MixinPlayerInventory {
 	@Shadow
 	@Final
 	public PlayerEntity player;
+
 	private final ArrayList<ItemEntity> drops = new ArrayList<>();
+
 	@Shadow
 	@Final
 	private List<DefaultedList<ItemStack>> combinedInventory;

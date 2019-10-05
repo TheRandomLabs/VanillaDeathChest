@@ -1,9 +1,9 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.Map;
+import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
-import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.block.Blocks;
@@ -23,7 +23,7 @@ public class DeathChestContentsChecker implements ServerTickCallback {
 	}
 
 	private static void worldTick(ServerWorld world) {
-		if(!VDCConfig.misc.deathChestsDisappearWhenEmptied) {
+		if(!VDCConfig.Misc.deathChestsDisappearWhenEmptied) {
 			return;
 		}
 

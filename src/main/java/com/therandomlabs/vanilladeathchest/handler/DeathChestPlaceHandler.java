@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import com.google.common.collect.Queues;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
@@ -30,9 +31,14 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsCallback, Serve
 
 		final GameRules gameRules = world.getGameRules();
 
-		if(gameRules.getBoolean(GameRules.KEEP_INVENTORY)) {/*
-		|| (!VDCConfig.misc.gameRuleName.isEmpty() &&
-		!gameRules.getBoolean(VDCConfig.misc.gameRuleName))) {*/
+		if(gameRules.getBoolean(GameRules.KEEP_INVENTORY)) {
+			return true;
+		}
+
+		final GameRules.RuleKey<GameRules.BooleanRule> key =
+				VanillaDeathChest.getDisableDeathChestsKey();
+
+		if(key != null && gameRules.getBoolean(key)) {
 			return true;
 		}
 

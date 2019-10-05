@@ -5,7 +5,6 @@ import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.gamestages.VDCStageInfo;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -73,7 +72,7 @@ public final class DeathChestInteractionHandler {
 			return;
 		}
 
-		if(!canInteract(event.getEntityPlayer(), deathChest)) {
+		if(!canInteract((EntityPlayerMP) event.getEntityPlayer(), deathChest)) {
 			event.setCanceled(true);
 		}
 	}
@@ -84,7 +83,7 @@ public final class DeathChestInteractionHandler {
 		event.getAffectedBlocks().removeIf(pos -> DeathChestManager.isLocked(world, pos));
 	}
 
-	private static boolean canInteract(EntityPlayer player, DeathChest deathChest) {
+	private static boolean canInteract(EntityPlayerMP player, DeathChest deathChest) {
 		if(!deathChest.canInteract(player)) {
 			return false;
 		}
@@ -106,12 +105,15 @@ public final class DeathChestInteractionHandler {
 			}
 
 			if(info.damageUnlockerInsteadOfConsume()) {
-				if(stack.isItemStackDamageable() &&
-						stack.getItemDamage() + amount < stack.getMaxDamage()) {
-					if(!player.capabilities.isCreativeMode) {
-						stack.damageItem(amount, player);
-					}
+				boolean unlocked = player.capabilities.isCreativeMode;
 
+				if(!unlocked && stack.isItemStackDamageable() &&
+						stack.getItemDamage() + amount < stack.getMaxDamage()) {
+					stack.attemptDamageItem(amount, player.getRNG(), player);
+					unlocked = true;
+				}
+
+				if(unlocked) {
 					deathChest.setUnlocked(true);
 					return true;
 				}

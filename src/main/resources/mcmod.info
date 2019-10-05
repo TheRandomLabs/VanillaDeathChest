@@ -5,7 +5,7 @@
 		"description": "Places chests (or shulker boxes) where players die that contain all of their items.",
 		"version": "${version}",
 		"mcversion": "${mcversion}",
-		"url": "https://minecraft.curseforge.com/projects/vanilladeathchest",
+		"url": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
 		"updateUrl": "https://raw.githubusercontent.com/TheRandomLabs/VanillaDeathChest/misc/versions.json",
 		"authorList": [
 			"TheRandomLabs"

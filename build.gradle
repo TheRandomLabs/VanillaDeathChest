@@ -16,11 +16,12 @@ buildscript {
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "com.github.johnrengelman.shadow"
 
-version = "1.12.2-1.9.3.0"
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+version = "1.12.2-1.10.3.0"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
-
-sourceCompatibility = targetCompatibility = "1.8"
 
 repositories {
 	maven {
@@ -40,8 +41,8 @@ dependencies {
 	shadow "com.github.TheRandomLabs:RandomLib:1.12-SNAPSHOT"
 	compile "com.github.TheRandomLabs:RandomLib:1.12-SNAPSHOT"
 
-	compile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.574"
-	compile "net.darkhax.gamestages:GameStages-1.12.2:2.0.112"
+	compile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.588"
+	compile "net.darkhax.gamestages:GameStages-1.12.2:2.0.117"
 	compile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
 }
 
@@ -64,7 +65,7 @@ artifacts {
 }
 
 minecraft {
-	version = "1.12.2-14.23.5.2838"
+	version = "1.12.2-14.23.5.2847"
 	runDir = "run"
 	mappings = "stable_39"
 

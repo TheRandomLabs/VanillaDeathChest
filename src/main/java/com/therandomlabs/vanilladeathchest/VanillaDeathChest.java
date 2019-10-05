@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,8 +53,10 @@ public final class VanillaDeathChest {
 	@Mod.EventHandler
 	public static void serverStarting(FMLServerStartingEvent event) {
 		if(VDCConfig.Misc.vdcreload) {
-			event.registerServerCommand(new CommandConfigReload(
-					"vdcreload", VDCConfig.class, Side.SERVER,
+			event.registerServerCommand(CommandConfigReload.server(
+					"vdcreload",
+					"vdcreloadclient",
+					VDCConfig.class,
 					"VanillaDeathChest configuration reloaded!"
 			));
 		}

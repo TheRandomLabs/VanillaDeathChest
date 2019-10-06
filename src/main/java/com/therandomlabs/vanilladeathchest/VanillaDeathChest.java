@@ -1,7 +1,8 @@
 package com.therandomlabs.vanilladeathchest;
 
-import com.therandomlabs.randomlib.config.CommandConfigReload;
-import com.therandomlabs.randomlib.config.ConfigManager;
+import com.therandomlabs.utils.config.ConfigManager;
+import com.therandomlabs.utils.forge.config.ConfigReloadCommand;
+import com.therandomlabs.utils.forge.config.ForgeConfig;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -17,8 +18,10 @@ public final class VanillaDeathChest {
 	private static GameRules.RuleKey<GameRules.BooleanValue> disableDeathChests;
 
 	public VanillaDeathChest() {
-		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		ForgeConfig.initialize();
 		ConfigManager.register(VDCConfig.class);
+
+		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 
 		if(!VDCConfig.Misc.gameRuleName.isEmpty()) {
 			disableDeathChests = GameRules.register(
@@ -29,7 +32,7 @@ public final class VanillaDeathChest {
 
 	private void serverStarting(FMLServerStartingEvent event) {
 		if(VDCConfig.Misc.vdcreload) {
-			CommandConfigReload.server(
+			ConfigReloadCommand.server(
 					event.getCommandDispatcher(), "vdcreload", "vdcreloadclient", VDCConfig.class,
 					"VanillaDeathChest configuration reloaded!"
 			);

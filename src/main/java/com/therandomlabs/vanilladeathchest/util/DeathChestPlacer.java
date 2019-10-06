@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.therandomlabs.randomlib.BooleanWrapper;
+import com.therandomlabs.utils.forge.BooleanWrapper;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
@@ -157,7 +157,7 @@ public final class DeathChestPlacer {
 			chest.setCustomName(new StringTextComponent(VDCConfig.Spawning.containerDisplayName));
 		}
 
-		if(VDCConfig.Defense.defenseEntity != null) {
+		if(VDCConfig.Defense.defenseEntityRegistryName != null) {
 			final double x = pos.getX() + 0.5;
 			final double y = pos.getY() + 1.0;
 			final double z = pos.getZ() + 0.5;
@@ -169,7 +169,10 @@ public final class DeathChestPlacer {
 					compound = JsonToNBT.getTagFromJson(VDCConfig.Defense.defenseEntityNBT);
 				} catch(CommandSyntaxException ignored) {}
 
-				compound.putString("id", VDCConfig.Defense.defenseEntityRegistryName);
+				compound.putString(
+						"id",
+						VDCConfig.Defense.defenseEntityRegistryName.getRegistryName().toString()
+				);
 
 				final Entity entity = EntityType.func_220335_a(
 						compound, world, spawnedEntity -> {

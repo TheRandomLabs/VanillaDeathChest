@@ -134,7 +134,7 @@ public final class DeathChestInteractionHandler {
 					message,
 					amount,
 					new TranslationTextComponent(
-							VDCConfig.Defense.unlocker.getTranslationKey() + ".name"
+							VDCConfig.Defense.unlocker.getTranslationKey()
 					).getFormattedText().trim()
 			));
 

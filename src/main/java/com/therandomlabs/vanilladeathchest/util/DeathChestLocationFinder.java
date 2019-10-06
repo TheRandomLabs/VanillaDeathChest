@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import com.therandomlabs.randomlib.BooleanWrapper;
+import com.therandomlabs.utils.forge.BooleanWrapper;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -67,8 +67,9 @@ public class DeathChestLocationFinder {
 		return searchOrder;
 	}
 
-	public static BlockPos findLocation(World world, PlayerEntity player, BlockPos pos,
-			BooleanWrapper doubleChest) {
+	public static BlockPos findLocation(
+			World world, PlayerEntity player, BlockPos pos, BooleanWrapper doubleChest
+	) {
 		int y = pos.getY();
 
 		if(!ModList.get().isLoaded("cubicchunks")) {
@@ -109,8 +110,9 @@ public class DeathChestLocationFinder {
 		return VDCConfig.Spawning.forcePlaceIfLocationNotFound ? pos : null;
 	}
 
-	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos,
-			boolean doubleChest) {
+	public static boolean canPlace(
+			World world, PlayerEntity player, BlockPos pos, boolean doubleChest
+	) {
 		if(doubleChest) {
 			return canPlace(world, player, pos) && canPlace(world, player, pos.east());
 		}
@@ -160,8 +162,9 @@ public class DeathChestLocationFinder {
 		return world.getBlockState(pos).getBlock() != Blocks.CHEST;
 	}
 
-	private static boolean isOnSolidBlocks(World world, PlayerEntity player, BlockPos pos,
-			boolean isDoubleChest) {
+	private static boolean isOnSolidBlocks(
+			World world, PlayerEntity player, BlockPos pos, boolean isDoubleChest
+	) {
 		if(!VDCConfig.Spawning.mustBeOnSolidBlocks) {
 			return true;
 		}

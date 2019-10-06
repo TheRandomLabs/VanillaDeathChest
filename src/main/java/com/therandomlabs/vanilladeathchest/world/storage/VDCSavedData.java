@@ -89,11 +89,8 @@ public class VDCSavedData extends WorldSavedData {
 
 	public static VDCSavedData get(ServerWorld world) {
 		currentWorld = world;
-
 		final VDCSavedData instance = world.getSavedData().getOrCreate(VDCSavedData::new, ID);
-
 		currentWorld = null;
-
 		return instance;
 	}
 }

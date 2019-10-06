@@ -1,15 +1,14 @@
 package com.therandomlabs.vanilladeathchest;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.therandomlabs.randomlib.config.Config;
-import com.therandomlabs.randomlib.config.ConfigColor;
+import com.therandomlabs.utils.config.Config;
+import com.therandomlabs.utils.forge.config.ColorConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 
-@Config(modid = VanillaDeathChest.MOD_ID, comment = "VanillaDeathChest configuration")
+@Config(id = VanillaDeathChest.MOD_ID, comment = "VanillaDeathChest configuration")
 public final class VDCConfig {
 	public static final class Defense {
 		@Config.Property("Whether the unlocker should be damaged rather than consumed.")
@@ -43,7 +42,7 @@ public final class VDCConfig {
 				"If the defense entity can have a revenge target, then the revenge target will " +
 						"be set to the player that died."
 		})
-		public static String defenseEntityRegistryName = "";
+		public static EntityType<?> defenseEntityRegistryName = null;
 
 		@Config.RangeInt(min = 1)
 		@Config.Property("The number of defense entities to spawn.")
@@ -80,24 +79,11 @@ public final class VDCConfig {
 		)
 		public static boolean unlockFailedStatusMessage = true;
 
-		public static ResourceLocation defenseEntity;
-
-		@SuppressWarnings("Duplicates")
 		public static void onReload() {
 			try {
 				JsonToNBT.getTagFromJson(defenseEntityNBT);
 			} catch(CommandSyntaxException ex) {
 				defenseEntityNBT = "{}";
-			}
-
-			final ResourceLocation entityID = new ResourceLocation(defenseEntityRegistryName);
-
-			if(ForgeRegistries.ENTITIES.containsKey(entityID)) {
-				defenseEntity = entityID;
-				defenseEntityRegistryName = entityID.toString();
-			} else {
-				defenseEntity = null;
-				defenseEntityRegistryName = "";
 			}
 		}
 	}
@@ -118,7 +104,7 @@ public final class VDCConfig {
 		})
 		public static String gameRuleName = "disableDeathChests";
 
-		@Config.RequiresWorldReload
+		@Config.RequiresReload
 		@Config.Property("Whether to enable the /vdcreload command.")
 		public static boolean vdcreload = true;
 	}
@@ -181,7 +167,7 @@ public final class VDCConfig {
 		public static boolean mustBeOnSolidBlocks;
 
 		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
-		public static ConfigColor shulkerBoxColor = ConfigColor.WHITE;
+		public static ColorConfig shulkerBoxColor = ColorConfig.WHITE;
 	}
 
 	@Config.Category("Options related to death chest defense.")

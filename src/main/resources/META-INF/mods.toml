@@ -12,5 +12,5 @@ modId = "vanilladeathchest"
 version = "${file.jarVersion}"
 displayName = "VanillaDeathChest"
 description = '''
-Places chests (or shulker boxes) where players die that contain all of their items.
+VanillaDeathChest, a mod that places chests (or shulker boxes) where players die that contain all of their items.
 '''

@@ -1,6 +1,7 @@
 {
 	"homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
 	"1.14.4": {
+		"1.14.4-1.10.3.1": "Fixed shulker boxes in death chests being deleted when the death chests are broken.",
 		"1.14.4-1.10.3.0": "Fixed Cubic Chunks compatibility.\nThe unlocker item no longer needs to have the required durability in creative mode.\nThe Unbreaking enchantment is now taken into account when an unlocker item is used.",
 		"1.14.4-1.9.4.0": "Fixed a crash.\nAdded the disableDeathChests gamerule.",
 		"1.14.4-1.9.3.1": "Invalid configurations are now regenerated automatically.",
@@ -44,6 +45,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12.1": {
+		"1.12.2-1.10.3.1": "Fixed shulker boxes in death chests being deleted when the death chests are broken.",
 		"1.12.2-1.10.3.0": "The unlocker item no longer needs to have the required durability in creative mode.\nThe Unbreaking enchantment is now taken into account when an unlocker item is used.",
 		"1.12.2-1.9.3.0": "Death chests are now forcibly placed by default if no valid locations are found.\nDeath chests now disappear when emptied by default.",
 		"1.12.2-1.9.0.0": "Switched to RandomLib for configuration handling.\nFixed Baubles and Backpacks compatibility.\nAdded an option to make death chests disappear when they are emptied.",
@@ -80,6 +82,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12": {
+		"1.12.2-1.10.3.1": "Fixed shulker boxes in death chests being deleted when the death chests are broken.",
 		"1.12.2-1.10.3.0": "The unlocker item no longer needs to have the required durability in creative mode.\nThe Unbreaking enchantment is now taken into account when an unlocker item is used.",
 		"1.12.2-1.9.3.0": "Death chests are now forcibly placed by default if no valid locations are found.\nDeath chests now disappear when emptied by default.",
 		"1.12.2-1.9.0.0": "Switched to RandomLib for configuration handling.\nFixed Baubles and Backpacks compatibility.\nAdded an option to make death chests disappear when they are emptied.",
@@ -132,8 +135,8 @@
 		"1.10.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
 	},
 	"promos": {
-		"1.14.4-latest": "1.14.4-1.10.3.0",
-		"1.14.4-recommended": "1.14.4-1.10.3.0",
+		"1.14.4-latest": "1.14.4-1.10.3.1",
+		"1.14.4-recommended": "1.14.4-1.10.3.1",
 		"1.12.2-latest": "1.12.2-1.10.3.1",
 		"1.12.2-recommended": "1.12.2-1.10.3.1",
 		"1.12.1-latest": "1.12.2-1.10.3.1",

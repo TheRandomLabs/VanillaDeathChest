@@ -3,6 +3,7 @@ package com.therandomlabs.vanilladeathchest.world.storage;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import net.minecraft.nbt.CompoundNBT;
@@ -47,7 +48,7 @@ public class VDCSavedData extends WorldSavedData {
 
 		final ListNBT list = nbt.getList(DEATH_CHESTS_KEY, TAG_COMPOUND);
 
-		for(INBT tag : list) {
+		for (INBT tag : list) {
 			final CompoundNBT compound = (CompoundNBT) tag;
 
 			final UUID playerID = NBTUtil.readUniqueId(compound.getCompound(UUID_KEY));
@@ -66,7 +67,7 @@ public class VDCSavedData extends WorldSavedData {
 	public CompoundNBT write(CompoundNBT nbt) {
 		final ListNBT tagList = new ListNBT();
 
-		for(Map.Entry<BlockPos, DeathChest> entry : deathChests.entrySet()) {
+		for (Map.Entry<BlockPos, DeathChest> entry : deathChests.entrySet()) {
 			final DeathChest deathChest = entry.getValue();
 			final CompoundNBT compound = new CompoundNBT();
 

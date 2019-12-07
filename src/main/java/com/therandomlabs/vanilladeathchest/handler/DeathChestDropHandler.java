@@ -1,8 +1,9 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.event.DeathChestRemoveEvent;
@@ -25,23 +26,23 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestDropHandler {
-	private static final Set<BlockPos> justRemoved = new HashSet<>();
+	private static final Map<BlockPos, Block> justRemoved = new HashMap<>();
 
 	@SubscribeEvent
 	public static void onDeathChestRemove(DeathChestRemoveEvent event) {
-		if(VDCConfig.Misc.dropDeathChests) {
+		if (VDCConfig.Misc.dropDeathChests) {
 			return;
 		}
 
 		final BlockPos west = event.getWest();
 		final BlockPos east = event.getEast();
 
-		if(west != null) {
-			justRemoved.add(west);
+		if (west != null) {
+			justRemoved.put(west, event.getChest().getWorld().getBlockState(west).getBlock());
 		}
 
-		if(east != null) {
-			justRemoved.add(east);
+		if (east != null) {
+			justRemoved.put(east, event.getChest().getWorld().getBlockState(east).getBlock());
 		}
 	}
 
@@ -49,7 +50,7 @@ public final class DeathChestDropHandler {
 	public static void onBlockDrop(BlockEvent.HarvestDropsEvent event) {
 		final BlockPos pos = event.getPos();
 
-		if(!justRemoved.contains(pos)) {
+		if (!justRemoved.containsKey(pos)) {
 			return;
 		}
 
@@ -57,7 +58,7 @@ public final class DeathChestDropHandler {
 
 		final List<ItemStack> drops = event.getDrops();
 
-		if(!drops.isEmpty()) {
+		if (!drops.isEmpty()) {
 			drops.remove(0);
 		}
 	}
@@ -68,36 +69,47 @@ public final class DeathChestDropHandler {
 	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		final World world = event.getWorld();
 
-		if(world.isRemote) {
+		if (world.isRemote) {
 			return;
 		}
 
 		final Entity entity = event.getEntity();
 
-		if(!(entity instanceof ItemEntity)) {
+		if (!(entity instanceof ItemEntity)) {
 			return;
 		}
 
 		final ItemStack stack = ((ItemEntity) entity).getItem();
 
-		if(stack.getCount() != 1 ||
-				!(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock)) {
+		if (stack.getCount() != 1) {
+			return;
+		}
+
+		final Block block = Block.getBlockFromItem(stack.getItem());
+
+		if (!(block instanceof ShulkerBoxBlock)) {
 			return;
 		}
 
 		final Vec3d pos = event.getEntity().getPositionVector();
 
-		for(BlockPos chestPos : justRemoved) {
+		for (Map.Entry<BlockPos, Block> entry : justRemoved.entrySet()) {
+			if (block != entry.getValue()) {
+				continue;
+			}
+
+			final BlockPos chestPos = entry.getKey();
+
 			//Drops spawn a maximum of 0.75 blocks per axis away from the block position
 			//3 * 0.75^2 = 1.6875
-			if(pos.squareDistanceTo(chestPos.getX(), chestPos.getY(), chestPos.getZ()) <= 1.6875) {
+			if (pos.squareDistanceTo(chestPos.getX(), chestPos.getY(), chestPos.getZ()) <= 1.6875) {
 				final NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 				ItemStackHelper.loadAllItems(
 						stack.getTag().getCompound("BlockEntityTag"), inventory
 				);
 
-				for(ItemStack drop : inventory) {
-					if(!drop.isEmpty()) {
+				for (ItemStack drop : inventory) {
+					if (!drop.isEmpty()) {
 						Block.spawnAsEntity(world, chestPos, drop);
 					}
 				}
@@ -112,7 +124,7 @@ public final class DeathChestDropHandler {
 
 	@SubscribeEvent
 	public static void serverTick(TickEvent.ServerTickEvent event) {
-		if(event.phase == TickEvent.Phase.END) {
+		if (event.phase == TickEvent.Phase.END) {
 			justRemoved.clear();
 		}
 	}

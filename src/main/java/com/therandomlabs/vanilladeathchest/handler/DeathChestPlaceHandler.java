@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+
 import com.google.common.collect.Queues;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
@@ -30,33 +31,33 @@ public final class DeathChestPlaceHandler {
 	public static void onPlayerDrops(LivingDropsEvent event) {
 		final Entity entity = event.getEntity();
 
-		if(!(entity instanceof PlayerEntity)) {
+		if (!(entity instanceof PlayerEntity)) {
 			return;
 		}
 
 		final List<ItemEntity> drops = (List<ItemEntity>) event.getDrops();
 
-		if(drops.isEmpty()) {
+		if (drops.isEmpty()) {
 			return;
 		}
 
 		final PlayerEntity player = (PlayerEntity) entity;
 
-		if(player instanceof FakePlayer) {
+		if (player instanceof FakePlayer) {
 			return;
 		}
 
 		final ServerWorld world = (ServerWorld) player.getEntityWorld();
 		final GameRules gameRules = world.getGameRules();
 
-		if(gameRules.getBoolean(GameRules.KEEP_INVENTORY)) {
+		if (gameRules.getBoolean(GameRules.KEEP_INVENTORY)) {
 			return;
 		}
 
 		final GameRules.RuleKey<GameRules.BooleanValue> key =
 				VanillaDeathChest.getDisableDeathChestsKey();
 
-		if(key != null && gameRules.getBoolean(key)) {
+		if (key != null && gameRules.getBoolean(key)) {
 			return;
 		}
 
@@ -72,8 +73,8 @@ public final class DeathChestPlaceHandler {
 		final List<DeathChestPlacer> toReadd = new ArrayList<>();
 		DeathChestPlacer placer;
 
-		while((placer = placers.poll()) != null) {
-			if(!placer.run()) {
+		while ((placer = placers.poll()) != null) {
+			if (!placer.run()) {
 				toReadd.add(placer);
 			}
 		}
@@ -82,7 +83,7 @@ public final class DeathChestPlaceHandler {
 	}
 
 	public static Queue<DeathChestPlacer> getPlacers(World world) {
-		synchronized(PLACERS) {
+		synchronized (PLACERS) {
 			return PLACERS.computeIfAbsent(
 					world.getDimension().getType(),
 					key -> Queues.newConcurrentLinkedQueue()

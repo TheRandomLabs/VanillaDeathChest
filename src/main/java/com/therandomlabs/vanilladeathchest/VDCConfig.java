@@ -82,7 +82,7 @@ public final class VDCConfig {
 		public static void onReload() {
 			try {
 				JsonToNBT.getTagFromJson(defenseEntityNBT);
-			} catch(CommandSyntaxException ex) {
+			} catch (CommandSyntaxException ex) {
 				defenseEntityNBT = "{}";
 			}
 		}

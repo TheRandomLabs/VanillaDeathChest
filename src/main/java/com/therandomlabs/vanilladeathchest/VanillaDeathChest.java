@@ -23,7 +23,7 @@ public final class VanillaDeathChest {
 
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 
-		if(!VDCConfig.Misc.gameRuleName.isEmpty()) {
+		if (!VDCConfig.Misc.gameRuleName.isEmpty()) {
 			disableDeathChests = GameRules.register(
 					VDCConfig.Misc.gameRuleName, GameRules.BooleanValue.create(false)
 			);
@@ -31,7 +31,7 @@ public final class VanillaDeathChest {
 	}
 
 	private void serverStarting(FMLServerStartingEvent event) {
-		if(VDCConfig.Misc.vdcreload) {
+		if (VDCConfig.Misc.vdcreload) {
 			ConfigReloadCommand.server(
 					event.getCommandDispatcher(), "vdcreload", "vdcreloadclient", VDCConfig.class,
 					"VanillaDeathChest configuration reloaded!"

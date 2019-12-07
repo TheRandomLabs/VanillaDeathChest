@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.Map;
+
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
@@ -21,7 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 public final class DeathChestContentsChecker {
 	@SubscribeEvent
 	public static void onWorldTick(TickEvent.WorldTickEvent event) {
-		if(!VDCConfig.Misc.deathChestsDisappearWhenEmptied) {
+		if (!VDCConfig.Misc.deathChestsDisappearWhenEmptied) {
 			return;
 		}
 
@@ -30,38 +31,38 @@ public final class DeathChestContentsChecker {
 		final VDCSavedData savedData = VDCSavedData.get(world);
 		final ServerChunkProvider provider = world.getChunkProvider();
 
-		for(Map.Entry<BlockPos, DeathChest> entry : savedData.getDeathChests().entrySet()) {
+		for (Map.Entry<BlockPos, DeathChest> entry : savedData.getDeathChests().entrySet()) {
 			final BlockPos pos = entry.getKey();
 
 			//Make sure we don't unnecessarily load any chunks
 			final Chunk chunk = provider.func_225313_a(pos.getX() >> 4, pos.getZ() >> 4);
 
-			if(chunk == null || chunk.isEmpty()) {
+			if (chunk == null || chunk.isEmpty()) {
 				continue;
 			}
 
 			final TileEntity tileEntity = event.world.getTileEntity(pos);
 
-			if(!(tileEntity instanceof LockableLootTileEntity)) {
+			if (!(tileEntity instanceof LockableLootTileEntity)) {
 				continue;
 			}
 
 			final LockableLootTileEntity lockableLoot = (LockableLootTileEntity) tileEntity;
 			boolean empty = true;
 
-			for(int i = 0; i < lockableLoot.getSizeInventory(); i++) {
-				if(!lockableLoot.getStackInSlot(i).isEmpty()) {
+			for (int i = 0; i < lockableLoot.getSizeInventory(); i++) {
+				if (!lockableLoot.getStackInSlot(i).isEmpty()) {
 					empty = false;
 					break;
 				}
 			}
 
-			if(empty) {
+			if (empty) {
 				DeathChestManager.removeDeathChest(world, pos);
 
 				event.world.setBlockState(pos, Blocks.AIR.getDefaultState());
 
-				if(entry.getValue().isDoubleChest()) {
+				if (entry.getValue().isDoubleChest()) {
 					event.world.setBlockState(pos.east(), Blocks.AIR.getDefaultState());
 				}
 			}

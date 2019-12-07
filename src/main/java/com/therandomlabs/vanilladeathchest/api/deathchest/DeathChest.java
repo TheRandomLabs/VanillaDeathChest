@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest.api.deathchest;
 
 import java.util.UUID;
+
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.entity.player.PlayerEntity;
@@ -58,11 +59,11 @@ public class DeathChest {
 	}
 
 	public boolean canInteract(PlayerEntity player) {
-		if(player == null) {
+		if (player == null) {
 			return false;
 		}
 
-		if(!VDCConfig.Protection.enabled ||
+		if (!VDCConfig.Protection.enabled ||
 				playerID.equals(player.getUniqueID()) ||
 				(VDCConfig.Protection.bypassIfCreative && player.abilities.isCreativeMode)) {
 			return true;
@@ -71,9 +72,9 @@ public class DeathChest {
 		final OpEntry entry = player.getServer().getPlayerList().getOppedPlayers().
 				getEntry(player.getGameProfile());
 
-		if(entry == null ||
+		if (entry == null ||
 				entry.getPermissionLevel() < VDCConfig.Protection.bypassPermissionLevel) {
-			if(VDCConfig.Protection.period == 0) {
+			if (VDCConfig.Protection.period == 0) {
 				return false;
 			}
 

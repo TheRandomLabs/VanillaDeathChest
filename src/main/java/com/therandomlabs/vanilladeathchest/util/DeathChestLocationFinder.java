@@ -3,6 +3,7 @@ package com.therandomlabs.vanilladeathchest.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 import com.therandomlabs.utils.forge.BooleanWrapper;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
@@ -29,7 +30,7 @@ public class DeathChestLocationFinder {
 
 			translations = new ArrayList<>();
 
-			for(int x = 0; x <= size; x++) {
+			for (int x = 0; x <= size; x++) {
 				add(x);
 				add(-x);
 			}
@@ -43,14 +44,14 @@ public class DeathChestLocationFinder {
 		}
 
 		private void add(int x) {
-			for(int y = 0; y <= size; y++) {
+			for (int y = 0; y <= size; y++) {
 				add(x, y);
 				add(x, -y);
 			}
 		}
 
 		private void add(int x, int y) {
-			for(int z = 0; z <= size; z++) {
+			for (int z = 0; z <= size; z++) {
 				translations.add(new BlockPos(x, y, z));
 				translations.add(new BlockPos(x, y, -z));
 			}
@@ -60,7 +61,7 @@ public class DeathChestLocationFinder {
 	private static SearchOrder searchOrder;
 
 	public static Iterable<BlockPos> getSearchOrder(int size) {
-		if(searchOrder == null || searchOrder.size != size) {
+		if (searchOrder == null || searchOrder.size != size) {
 			searchOrder = new SearchOrder(size);
 		}
 
@@ -72,12 +73,12 @@ public class DeathChestLocationFinder {
 	) {
 		int y = pos.getY();
 
-		if(!ModList.get().isLoaded("cubicchunks")) {
-			if(y < 1) {
+		if (!ModList.get().isLoaded("cubicchunks")) {
+			if (y < 1) {
 				y = 1;
 			}
 
-			if(y > 256) {
+			if (y > 256) {
 				y = 256;
 			}
 		}
@@ -87,22 +88,22 @@ public class DeathChestLocationFinder {
 
 		BlockPos singleChestPos = null;
 
-		for(BlockPos translation : getSearchOrder(VDCConfig.Spawning.locationSearchRadius)) {
+		for (BlockPos translation : getSearchOrder(VDCConfig.Spawning.locationSearchRadius)) {
 			final BlockPos potentialPos = searchPos.add(translation);
 
-			if(canPlace(world, player, potentialPos)) {
-				if((!isDoubleChest || canPlace(world, player, potentialPos.east())) &&
+			if (canPlace(world, player, potentialPos)) {
+				if ((!isDoubleChest || canPlace(world, player, potentialPos.east())) &&
 						isOnSolidBlocks(world, player, potentialPos, isDoubleChest)) {
 					return potentialPos;
 				}
 
-				if(singleChestPos == null) {
+				if (singleChestPos == null) {
 					singleChestPos = potentialPos;
 				}
 			}
 		}
 
-		if(singleChestPos != null) {
+		if (singleChestPos != null) {
 			doubleChest.set(false);
 			return singleChestPos;
 		}
@@ -113,7 +114,7 @@ public class DeathChestLocationFinder {
 	public static boolean canPlace(
 			World world, PlayerEntity player, BlockPos pos, boolean doubleChest
 	) {
-		if(doubleChest) {
+		if (doubleChest) {
 			return canPlace(world, player, pos) && canPlace(world, player, pos.east());
 		}
 
@@ -122,7 +123,7 @@ public class DeathChestLocationFinder {
 
 	@SuppressWarnings("deprecation")
 	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos) {
-		if(!world.isBlockLoaded(pos) || !world.isBlockModifiable(player, pos)) {
+		if (!world.isBlockLoaded(pos) || !world.isBlockModifiable(player, pos)) {
 			return false;
 		}
 
@@ -137,7 +138,7 @@ public class DeathChestLocationFinder {
 				)
 		));
 
-		if(isReplaceable(world, pos, context) && isReplaceable(world, pos.up(), context)) {
+		if (isReplaceable(world, pos, context) && isReplaceable(world, pos.up(), context)) {
 			return isNotChest(world, pos.north()) && isNotChest(world, pos.east()) &&
 					isNotChest(world, pos.south()) && isNotChest(world, pos.west());
 		}
@@ -146,10 +147,10 @@ public class DeathChestLocationFinder {
 	}
 
 	private static boolean isReplaceable(World world, BlockPos pos, BlockItemUseContext context) {
-		if(!ModList.get().isLoaded("cubicchunks")) {
+		if (!ModList.get().isLoaded("cubicchunks")) {
 			final int y = pos.getY();
 
-			if(y < 1 || y > world.getActualHeight()) {
+			if (y < 1 || y > world.getActualHeight()) {
 				return false;
 			}
 		}
@@ -165,13 +166,13 @@ public class DeathChestLocationFinder {
 	private static boolean isOnSolidBlocks(
 			World world, PlayerEntity player, BlockPos pos, boolean isDoubleChest
 	) {
-		if(!VDCConfig.Spawning.mustBeOnSolidBlocks) {
+		if (!VDCConfig.Spawning.mustBeOnSolidBlocks) {
 			return true;
 		}
 
 		final BlockPos down = pos.down();
 
-		if(!world.func_217400_a(down, player)) {
+		if (!world.func_217400_a(down, player)) {
 			return false;
 		}
 

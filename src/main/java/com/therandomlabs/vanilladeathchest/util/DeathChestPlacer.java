@@ -3,6 +3,7 @@ package com.therandomlabs.vanilladeathchest.util;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
+
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.utils.forge.BooleanWrapper;
@@ -55,27 +56,27 @@ public final class DeathChestPlacer {
 
 	public final boolean run() {
 		//Delay by a tick to avoid conflicts with other mods that place blocks upon death
-		if(!alreadyCalled) {
+		if (!alreadyCalled) {
 			alreadyCalled = true;
 			return false;
 		}
 
 		final ServerWorld world = this.world.get();
 
-		if(world == null) {
+		if (world == null) {
 			return true;
 		}
 
 		final PlayerEntity player = this.player.get();
 
-		if(player == null) {
+		if (player == null) {
 			return true;
 		}
 
 		place(world, player);
 
 		//Drop any remaining items
-		for(ItemEntity drop : drops) {
+		for (ItemEntity drop : drops) {
 			world.addEntity(new ItemEntity(world, drop.posX, drop.posY, drop.posZ, drop.getItem()));
 		}
 
@@ -98,7 +99,7 @@ public final class DeathChestPlacer {
 
 		useDoubleChest = doubleChest.get();
 
-		if(pos == null) {
+		if (pos == null) {
 			VanillaDeathChest.LOGGER.warn(
 					"No death chest location found for player at [{}]", playerPos
 			);
@@ -107,9 +108,9 @@ public final class DeathChestPlacer {
 
 		final Block block;
 
-		if(type == DeathChestType.SHULKER_BOX) {
+		if (type == DeathChestType.SHULKER_BOX) {
 			block = ShulkerBoxBlock.getBlockByColor(VDCConfig.Spawning.shulkerBoxColor.get());
-		} else if(type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
+		} else if (type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
 			block = ShulkerBoxBlock.getBlockByColor(DyeColor.byId(random.nextInt(16)));
 		} else {
 			block = Blocks.CHEST;
@@ -118,7 +119,7 @@ public final class DeathChestPlacer {
 		final BlockState state = block.getDefaultState();
 		final BlockPos east = pos.east();
 
-		if(useDoubleChest) {
+		if (useDoubleChest) {
 			world.setBlockState(pos, state.with(ChestBlock.TYPE, ChestType.LEFT));
 			world.setBlockState(east, state.with(ChestBlock.TYPE, ChestType.RIGHT));
 		} else {
@@ -128,7 +129,7 @@ public final class DeathChestPlacer {
 		final TileEntity blockEntity = world.getTileEntity(pos);
 		final TileEntity blockEntity2 = useDoubleChest ? world.getTileEntity(east) : null;
 
-		if(!(blockEntity instanceof LockableLootTileEntity) ||
+		if (!(blockEntity instanceof LockableLootTileEntity) ||
 				(useDoubleChest && !(blockEntity2 instanceof LockableLootTileEntity))) {
 			VanillaDeathChest.LOGGER.warn(
 					"Failed to place death chest at [{}] due to invalid tile entity", pos
@@ -139,35 +140,35 @@ public final class DeathChestPlacer {
 		LockableLootTileEntity chest =
 				(LockableLootTileEntity) (useDoubleChest ? blockEntity2 : blockEntity);
 
-		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
+		for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
 			chest.setInventorySlotContents(i, drops.get(0).getItem());
 			drops.remove(0);
 		}
 
-		if(useDoubleChest) {
+		if (useDoubleChest) {
 			chest = (LockableLootTileEntity) blockEntity;
 
-			for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
+			for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
 				chest.setInventorySlotContents(i, drops.get(0).getItem());
 				drops.remove(0);
 			}
 		}
 
-		if(!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
+		if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
 			chest.setCustomName(new StringTextComponent(VDCConfig.Spawning.containerDisplayName));
 		}
 
-		if(VDCConfig.Defense.defenseEntityRegistryName != null) {
+		if (VDCConfig.Defense.defenseEntityRegistryName != null) {
 			final double x = pos.getX() + 0.5;
 			final double y = pos.getY() + 1.0;
 			final double z = pos.getZ() + 0.5;
 
-			for(int i = 0; i < VDCConfig.Defense.defenseEntitySpawnCount; i++) {
+			for (int i = 0; i < VDCConfig.Defense.defenseEntitySpawnCount; i++) {
 				CompoundNBT compound = null;
 
 				try {
 					compound = JsonToNBT.getTagFromJson(VDCConfig.Defense.defenseEntityNBT);
-				} catch(CommandSyntaxException ignored) {}
+				} catch (CommandSyntaxException ignored) {}
 
 				compound.putString(
 						"id",
@@ -181,7 +182,7 @@ public final class DeathChestPlacer {
 						}
 				);
 
-				if(entity instanceof MobEntity) {
+				if (entity instanceof MobEntity) {
 					final MobEntity living = (MobEntity) entity;
 
 					living.enablePersistence();

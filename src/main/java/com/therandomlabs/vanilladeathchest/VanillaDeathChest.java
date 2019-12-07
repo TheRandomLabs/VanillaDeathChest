@@ -36,8 +36,10 @@ public final class VanillaDeathChest {
 	public static final boolean CUBIC_CHUNKS_LOADED = Loader.isModLoaded("cubicchunks");
 	public static final boolean GAME_STAGES_LOADED = Loader.isModLoaded("gamestages");
 
-	@SidedProxy(clientSide = "com.therandomlabs.vanilladeathchest.ClientProxy",
-			serverSide = "com.therandomlabs.vanilladeathchest.CommonProxy")
+	@SidedProxy(
+			clientSide = "com.therandomlabs.vanilladeathchest.ClientProxy",
+			serverSide = "com.therandomlabs.vanilladeathchest.CommonProxy"
+	)
 	public static CommonProxy proxy;
 
 	@Mod.EventHandler
@@ -52,7 +54,7 @@ public final class VanillaDeathChest {
 
 	@Mod.EventHandler
 	public static void serverStarting(FMLServerStartingEvent event) {
-		if(VDCConfig.Misc.vdcreload) {
+		if (VDCConfig.Misc.vdcreload) {
 			event.registerServerCommand(CommandConfigReload.server(
 					"vdcreload",
 					"vdcreloadclient",

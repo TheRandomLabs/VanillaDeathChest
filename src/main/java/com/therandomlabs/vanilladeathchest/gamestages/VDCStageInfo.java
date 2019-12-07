@@ -2,6 +2,7 @@ package com.therandomlabs.vanilladeathchest.gamestages;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import net.darkhax.gamestages.GameStageHelper;
@@ -56,7 +57,7 @@ public class VDCStageInfo {
 		try {
 			JsonToNBT.getTagFromJson(nbt);
 			defenseEntityNBT = nbt;
-		} catch(NBTException ex) {
+		} catch (NBTException ex) {
 			defenseEntityNBT = "{}";
 		}
 	}
@@ -74,7 +75,7 @@ public class VDCStageInfo {
 				entityNames, new ResourceLocation(registryName)
 		);
 
-		if(index == ArrayUtils.INDEX_NOT_FOUND) {
+		if (index == ArrayUtils.INDEX_NOT_FOUND) {
 			defenseEntity = null;
 			defenseEntityRegistryName = "";
 		} else {
@@ -122,8 +123,8 @@ public class VDCStageInfo {
 	public void setUnlockerRegistryName(String registryName) {
 		unlocker = ITEM_REGISTRY.getValue(new ResourceLocation(registryName));
 
-		if(unlocker != null) {
-			if(unlocker == Items.AIR) {
+		if (unlocker != null) {
+			if (unlocker == Items.AIR) {
 				unlocker = null;
 				unlockerRegistryName = "";
 			} else {
@@ -163,14 +164,14 @@ public class VDCStageInfo {
 	}
 
 	public static VDCStageInfo get(EntityPlayer player) {
-		if(!VanillaDeathChest.GAME_STAGES_LOADED) {
+		if (!VanillaDeathChest.GAME_STAGES_LOADED) {
 			return new VDCStageInfo();
 		}
 
 		VDCStageInfo info = null;
 
-		for(Map.Entry<String, VDCStageInfo> entry : STAGES.entrySet()) {
-			if(GameStageHelper.hasStage(player, entry.getKey())) {
+		for (Map.Entry<String, VDCStageInfo> entry : STAGES.entrySet()) {
+			if (GameStageHelper.hasStage(player, entry.getKey())) {
 				info = entry.getValue();
 			}
 		}

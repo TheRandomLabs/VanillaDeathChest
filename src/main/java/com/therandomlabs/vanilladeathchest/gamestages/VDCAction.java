@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest.gamestages;
 
 import java.util.function.Consumer;
+
 import crafttweaker.IAction;
 
 public class VDCAction implements IAction {

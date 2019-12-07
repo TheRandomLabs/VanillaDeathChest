@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest.api.deathchest;
 
 import java.util.UUID;
+
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,8 +17,10 @@ public class DeathChest {
 	private final boolean isDoubleChest;
 	private boolean unlocked;
 
-	public DeathChest(World world, UUID playerID, long creationTime, BlockPos pos,
-			boolean isDoubleChest, boolean unlocked) {
+	public DeathChest(
+			World world, UUID playerID, long creationTime, BlockPos pos,
+			boolean isDoubleChest, boolean unlocked
+	) {
 		this.world = world;
 		this.playerID = playerID;
 		this.creationTime = creationTime;
@@ -56,11 +59,11 @@ public class DeathChest {
 	}
 
 	public boolean canInteract(EntityPlayer player) {
-		if(player == null) {
+		if (player == null) {
 			return false;
 		}
 
-		if(!VDCConfig.Protection.enabled ||
+		if (!VDCConfig.Protection.enabled ||
 				playerID.equals(player.getUniqueID()) ||
 				(VDCConfig.Protection.bypassIfCreative && player.capabilities.isCreativeMode)) {
 			return true;
@@ -69,9 +72,9 @@ public class DeathChest {
 		final UserListOpsEntry entry = player.getServer().getPlayerList().getOppedPlayers().
 				getEntry(player.getGameProfile());
 
-		if(entry == null ||
+		if (entry == null ||
 				entry.getPermissionLevel() < VDCConfig.Protection.bypassPermissionLevel) {
-			if(VDCConfig.Protection.period == 0) {
+			if (VDCConfig.Protection.period == 0) {
 				return false;
 			}
 

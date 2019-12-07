@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest.api.deathchest;
 
 import java.util.Map;
+
 import com.therandomlabs.vanilladeathchest.api.event.DeathChestRemoveEvent;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.block.Block;
@@ -14,8 +15,10 @@ import net.minecraftforge.common.MinecraftForge;
 public final class DeathChestManager {
 	private DeathChestManager() {}
 
-	public static void addDeathChest(World world, EntityPlayer player, BlockPos pos,
-			boolean isDoubleChest) {
+	public static void addDeathChest(
+			World world, EntityPlayer player, BlockPos pos,
+			boolean isDoubleChest
+	) {
 		final VDCSavedData data = VDCSavedData.get(world);
 		final Map<BlockPos, DeathChest> deathChests = data.getDeathChests();
 		final DeathChest deathChest = new DeathChest(
@@ -24,7 +27,7 @@ public final class DeathChestManager {
 
 		deathChests.put(pos, deathChest);
 
-		if(isDoubleChest) {
+		if (isDoubleChest) {
 			deathChests.put(pos.east(), deathChest);
 		}
 
@@ -43,7 +46,7 @@ public final class DeathChestManager {
 	public static DeathChest getDeathChest(World world, BlockPos pos) {
 		final Block block = world.getBlockState(pos).getBlock();
 
-		if(block != Blocks.CHEST && !(block instanceof BlockShulkerBox)) {
+		if (block != Blocks.CHEST && !(block instanceof BlockShulkerBox)) {
 			return null;
 		}
 
@@ -58,8 +61,8 @@ public final class DeathChestManager {
 		final BlockPos west;
 		final BlockPos east;
 
-		if(chest.isDoubleChest()) {
-			if(chest.getPos().equals(pos)) {
+		if (chest.isDoubleChest()) {
+			if (chest.getPos().equals(pos)) {
 				west = pos;
 				east = pos.east();
 

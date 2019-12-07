@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+
 import com.google.common.collect.Queues;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.config.VDCConfig;
@@ -30,24 +31,24 @@ public final class DeathChestPlaceHandler {
 	public static void onPlayerDrops(PlayerDropsEvent event) {
 		final List<EntityItem> drops = event.getDrops();
 
-		if(drops.isEmpty()) {
+		if (drops.isEmpty()) {
 			return;
 		}
 
 		final EntityPlayer player = event.getEntityPlayer();
 
-		if(player instanceof FakePlayer) {
+		if (player instanceof FakePlayer) {
 			return;
 		}
 
 		final World world = player.getEntityWorld();
 		final GameRules gameRules = world.getGameRules();
 
-		if(gameRules.getBoolean("keepInventory")) {
+		if (gameRules.getBoolean("keepInventory")) {
 			return;
 		}
 
-		if(!(VDCConfig.Misc.gameRuleName.isEmpty() ||
+		if (!(VDCConfig.Misc.gameRuleName.isEmpty() ||
 				gameRules.getBoolean(VDCConfig.Misc.gameRuleName))) {
 			return;
 		}
@@ -64,8 +65,8 @@ public final class DeathChestPlaceHandler {
 		final List<DeathChestPlacer> toReadd = new ArrayList<>();
 		DeathChestPlacer placer;
 
-		while((placer = placers.poll()) != null) {
-			if(!placer.run()) {
+		while ((placer = placers.poll()) != null) {
+			if (!placer.run()) {
 				toReadd.add(placer);
 			}
 		}
@@ -74,7 +75,7 @@ public final class DeathChestPlaceHandler {
 	}
 
 	public static Queue<DeathChestPlacer> getPlacers(World world) {
-		synchronized(PLACERS) {
+		synchronized (PLACERS) {
 			return PLACERS.computeIfAbsent(
 					world.provider.getDimensionType(),
 					key -> Queues.newConcurrentLinkedQueue()

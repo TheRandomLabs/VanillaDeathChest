@@ -1,6 +1,7 @@
 package com.therandomlabs.vanilladeathchest.api.event;
 
 import javax.annotation.Nullable;
+
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.Event;

@@ -12,19 +12,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public final class VDCGameRuleAdder {
 	@SubscribeEvent
 	public static void onWorldLoad(WorldEvent.Load event) {
-		if(VDCConfig.Misc.gameRuleName.isEmpty()) {
+		if (VDCConfig.Misc.gameRuleName.isEmpty()) {
 			return;
 		}
 
 		final World world = event.getWorld();
 
-		if(world.isRemote) {
+		if (world.isRemote) {
 			return;
 		}
 
 		final GameRules gameRules = world.getGameRules();
 
-		if(!gameRules.hasRule(VDCConfig.Misc.gameRuleName)) {
+		if (!gameRules.hasRule(VDCConfig.Misc.gameRuleName)) {
 			gameRules.setOrCreateGameRule(
 					VDCConfig.Misc.gameRuleName,
 					Boolean.toString(VDCConfig.Misc.gameRuleDefaultValue)

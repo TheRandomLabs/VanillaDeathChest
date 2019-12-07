@@ -9,7 +9,7 @@ public final class ClientProxy extends CommonProxy {
 	public void preInit() {
 		super.preInit();
 
-		if(VDCConfig.Misc.vdcreloadclient) {
+		if (VDCConfig.Misc.vdcreloadclient) {
 			ClientCommandHandler.instance.registerCommand(CommandConfigReload.client(
 					"vdcreloadclient",
 					VDCConfig.class

@@ -90,7 +90,7 @@ public final class VDCConfig {
 		public static void onReload() {
 			try {
 				JsonToNBT.getTagFromJson(defenseEntityNBT);
-			} catch(NBTException ex) {
+			} catch (NBTException ex) {
 				defenseEntityNBT = "{}";
 			}
 
@@ -100,7 +100,7 @@ public final class VDCConfig {
 					entityNames, new ResourceLocation(defenseEntityRegistryName)
 			);
 
-			if(index == ArrayUtils.INDEX_NOT_FOUND) {
+			if (index == ArrayUtils.INDEX_NOT_FOUND) {
 				defenseEntity = null;
 				defenseEntityRegistryName = "";
 			} else {

@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
+
 import com.mojang.authlib.GameProfile;
 import com.therandomlabs.randomlib.BooleanWrapper;
 import com.therandomlabs.randomlib.TRLUtils;
@@ -72,27 +73,27 @@ public final class DeathChestPlacer {
 
 	public final boolean run() {
 		//Delay by a tick to avoid conflicts with other mods that place blocks upon death
-		if(!alreadyCalled) {
+		if (!alreadyCalled) {
 			alreadyCalled = true;
 			return false;
 		}
 
 		final World world = this.world.get();
 
-		if(world == null) {
+		if (world == null) {
 			return true;
 		}
 
 		final EntityPlayer player = this.player.get();
 
-		if(player == null) {
+		if (player == null) {
 			return true;
 		}
 
 		place(world, player);
 
 		//Drop any remaining items
-		for(EntityItem drop : drops) {
+		for (EntityItem drop : drops) {
 			world.spawnEntity(drop);
 		}
 
@@ -115,7 +116,7 @@ public final class DeathChestPlacer {
 
 		useDoubleChest = doubleChest.get();
 
-		if(pos == null) {
+		if (pos == null) {
 			VanillaDeathChest.LOGGER.warn(
 					"No death chest location found for player at [{}]", playerPos
 			);
@@ -124,9 +125,9 @@ public final class DeathChestPlacer {
 
 		final Block block;
 
-		if(type == DeathChestType.SHULKER_BOX) {
+		if (type == DeathChestType.SHULKER_BOX) {
 			block = BlockShulkerBox.getBlockByColor(VDCConfig.Spawning.shulkerBoxColor.get());
-		} else if(type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
+		} else if (type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
 			block = BlockShulkerBox.getBlockByColor(EnumDyeColor.byMetadata(random.nextInt(16)));
 		} else {
 			block = Blocks.CHEST;
@@ -137,14 +138,14 @@ public final class DeathChestPlacer {
 
 		world.setBlockState(pos, state);
 
-		if(useDoubleChest) {
+		if (useDoubleChest) {
 			world.setBlockState(east, state);
 		}
 
 		final TileEntity tile = world.getTileEntity(pos);
 		final TileEntity tile2 = useDoubleChest ? world.getTileEntity(east) : null;
 
-		if(!(tile instanceof TileEntityLockableLoot) ||
+		if (!(tile instanceof TileEntityLockableLoot) ||
 				(useDoubleChest && !(tile2 instanceof TileEntityLockableLoot))) {
 			VanillaDeathChest.LOGGER.warn(
 					"Failed to place death chest at [{}] due to invalid tile entity", pos
@@ -154,15 +155,15 @@ public final class DeathChestPlacer {
 
 		TileEntityLockableLoot chest = (TileEntityLockableLoot) tile;
 
-		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
+		for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
 			chest.setInventorySlotContents(i, drops.get(0).getItem());
 			drops.remove(0);
 		}
 
-		if(useDoubleChest) {
+		if (useDoubleChest) {
 			chest = (TileEntityLockableLoot) tile2;
 
-			for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
+			for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
 				chest.setInventorySlotContents(i, drops.get(0).getItem());
 				drops.remove(0);
 			}
@@ -171,11 +172,11 @@ public final class DeathChestPlacer {
 		final VDCStageInfo info = VDCStageInfo.get(player);
 		final String displayName = info.getContainerDisplayName();
 
-		if(!displayName.isEmpty()) {
+		if (!displayName.isEmpty()) {
 			chest.setCustomName(displayName);
 		}
 
-		if(info.getDefenseEntity() != null) {
+		if (info.getDefenseEntity() != null) {
 			final double x = pos.getX() + 0.5;
 			final double y = pos.getY() + 1.0;
 			final double z = pos.getZ() + 0.5;
@@ -184,28 +185,28 @@ public final class DeathChestPlacer {
 			final String nbt = info.getDefenseEntityNBT();
 			final String registryName = info.getDefenseEntityRegistryName();
 
-			for(int i = 0; i < count; i++) {
+			for (int i = 0; i < count; i++) {
 				NBTTagCompound compound = null;
 
 				try {
 					compound = JsonToNBT.getTagFromJson(nbt);
-				} catch(NBTException ignored) {}
+				} catch (NBTException ignored) {}
 
 				compound.setString("id", registryName);
 
 				final Entity entity =
 						AnvilChunkLoader.readWorldEntityPos(compound, world, x, y, z, true);
 
-				if(entity instanceof EntityLiving) {
+				if (entity instanceof EntityLiving) {
 					final EntityLiving living = (EntityLiving) entity;
 
 					living.enablePersistence();
 					living.onInitialSpawn(world.getDifficultyForLocation(pos), null);
 
-					if(living instanceof EntityPigZombie) {
+					if (living instanceof EntityPigZombie) {
 						try {
 							BECOME_ANGRY_AT.invoke(living, player);
-						} catch(IllegalAccessException | InvocationTargetException ex) {
+						} catch (IllegalAccessException | InvocationTargetException ex) {
 							VanillaDeathChest.LOGGER.error(
 									"Failed to make zombie pigman angry", ex
 							);
@@ -226,7 +227,7 @@ public final class DeathChestPlacer {
 
 		final String chatMessage = info.getChatMessage();
 
-		if(!chatMessage.isEmpty()) {
+		if (!chatMessage.isEmpty()) {
 			player.sendMessage(new TextComponentString(String.format(
 					chatMessage, pos.getX(), pos.getY(), pos.getZ()
 			)));

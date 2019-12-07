@@ -27,32 +27,32 @@ public final class DeathChestInteractionHandler {
 	public static void onBlockBreak(BlockEvent.BreakEvent event) {
 		final World world = event.getWorld();
 
-		if(world.isRemote) {
+		if (world.isRemote) {
 			return;
 		}
 
 		final BlockPos pos = event.getPos();
 
-		if(harvesting == pos) {
+		if (harvesting == pos) {
 			return;
 		}
 
 		final DeathChest deathChest = DeathChestManager.getDeathChest(world, pos);
 
-		if(deathChest == null) {
+		if (deathChest == null) {
 			return;
 		}
 
 		final EntityPlayerMP player = (EntityPlayerMP) event.getPlayer();
 
-		if(!canInteract(player, deathChest)) {
+		if (!canInteract(player, deathChest)) {
 			event.setCanceled(true);
 			return;
 		}
 
 		final DeathChest chest = DeathChestManager.removeDeathChest(world, pos);
 
-		if(chest.isDoubleChest()) {
+		if (chest.isDoubleChest()) {
 			harvesting = chest.getPos().equals(pos) ? pos.east() : pos.west();
 			player.interactionManager.tryHarvestBlock(harvesting);
 		}
@@ -62,17 +62,17 @@ public final class DeathChestInteractionHandler {
 	public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		final World world = event.getWorld();
 
-		if(world.isRemote) {
+		if (world.isRemote) {
 			return;
 		}
 
 		final DeathChest deathChest = DeathChestManager.getDeathChest(world, event.getPos());
 
-		if(deathChest == null) {
+		if (deathChest == null) {
 			return;
 		}
 
-		if(!canInteract((EntityPlayerMP) event.getEntityPlayer(), deathChest)) {
+		if (!canInteract((EntityPlayerMP) event.getEntityPlayer(), deathChest)) {
 			event.setCanceled(true);
 		}
 	}
@@ -84,41 +84,41 @@ public final class DeathChestInteractionHandler {
 	}
 
 	private static boolean canInteract(EntityPlayerMP player, DeathChest deathChest) {
-		if(!deathChest.canInteract(player)) {
+		if (!deathChest.canInteract(player)) {
 			return false;
 		}
 
 		final VDCStageInfo info = VDCStageInfo.get(player);
 		final Item unlocker = info.getUnlocker();
 
-		if(unlocker == null || deathChest.isUnlocked()) {
+		if (unlocker == null || deathChest.isUnlocked()) {
 			return true;
 		}
 
 		final ItemStack stack = player.getHeldItem(player.getActiveHand());
 		final int amount = info.getUnlockerConsumeAmount();
 
-		if(stack.getItem() == unlocker) {
-			if(amount == 0) {
+		if (stack.getItem() == unlocker) {
+			if (amount == 0) {
 				deathChest.setUnlocked(true);
 				return true;
 			}
 
-			if(info.damageUnlockerInsteadOfConsume()) {
+			if (info.damageUnlockerInsteadOfConsume()) {
 				boolean unlocked = player.capabilities.isCreativeMode;
 
-				if(!unlocked && stack.isItemStackDamageable() &&
+				if (!unlocked && stack.isItemStackDamageable() &&
 						stack.getItemDamage() + amount < stack.getMaxDamage()) {
 					stack.attemptDamageItem(amount, player.getRNG(), player);
 					unlocked = true;
 				}
 
-				if(unlocked) {
+				if (unlocked) {
 					deathChest.setUnlocked(true);
 					return true;
 				}
-			} else if(stack.getCount() >= amount) {
-				if(!player.capabilities.isCreativeMode) {
+			} else if (stack.getCount() >= amount) {
+				if (!player.capabilities.isCreativeMode) {
 					stack.shrink(amount);
 				}
 
@@ -129,7 +129,7 @@ public final class DeathChestInteractionHandler {
 
 		final String message = info.getUnlockFailedMessage();
 
-		if(!message.isEmpty()) {
+		if (!message.isEmpty()) {
 			final TextComponentString component = new TextComponentString(String.format(
 					message,
 					amount,
@@ -138,7 +138,7 @@ public final class DeathChestInteractionHandler {
 					).getFormattedText().trim()
 			));
 
-			if(VDCConfig.Defense.unlockFailedStatusMessage) {
+			if (VDCConfig.Defense.unlockFailedStatusMessage) {
 				player.sendStatusMessage(component, true);
 			} else {
 				player.sendMessage(component);

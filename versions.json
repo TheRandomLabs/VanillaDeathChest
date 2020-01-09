@@ -1,6 +1,7 @@
 {
 	"homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
 	"1.14.4": {
+		"1.14.4-1.10.3.2": "Fixed a crash related to death chest removal.",
 		"1.14.4-1.10.3.1": "Fixed shulker boxes in death chests being deleted when the death chests are broken.",
 		"1.14.4-1.10.3.0": "Fixed Cubic Chunks compatibility.\nThe unlocker item no longer needs to have the required durability in creative mode.\nThe Unbreaking enchantment is now taken into account when an unlocker item is used.",
 		"1.14.4-1.9.4.0": "Fixed a crash.\nAdded the disableDeathChests gamerule.",

@@ -57,13 +57,13 @@ public final class DeathChestContentsChecker {
 				}
 			}
 
-			if (empty) {
-				DeathChestManager.removeDeathChest(world, pos);
-
-				event.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+			if (empty && DeathChestManager.removeDeathChest(world, pos) != null) {
+				event.world.setBlockState(entry.getValue().getPos(), Blocks.AIR.getDefaultState());
 
 				if (entry.getValue().isDoubleChest()) {
-					event.world.setBlockState(pos.east(), Blocks.AIR.getDefaultState());
+					event.world.setBlockState(
+							entry.getValue().getPos().east(), Blocks.AIR.getDefaultState()
+					);
 				}
 			}
 		}

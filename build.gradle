@@ -23,7 +23,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
 compileJava.targetCompatibility = JavaVersion.VERSION_1_8
 
-version = "1.14.4-1.10.3.2"
+version = "1.14.4-1.10.3.3"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 

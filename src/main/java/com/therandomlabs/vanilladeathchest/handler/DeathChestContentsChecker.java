@@ -10,6 +10,7 @@ import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerChunkProvider;
@@ -17,6 +18,8 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestContentsChecker {
@@ -47,11 +50,13 @@ public final class DeathChestContentsChecker {
 				continue;
 			}
 
-			final LockableLootTileEntity lockableLoot = (LockableLootTileEntity) tileEntity;
+			final IItemHandler itemHandler = tileEntity.getCapability(
+					CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.NORTH
+			).orElse(null);
 			boolean empty = true;
 
-			for (int i = 0; i < lockableLoot.getSizeInventory(); i++) {
-				if (!lockableLoot.getStackInSlot(i).isEmpty()) {
+			for (int i = 0; i < itemHandler.getSlots(); i++) {
+				if (!itemHandler.getStackInSlot(i).isEmpty()) {
 					empty = false;
 					break;
 				}

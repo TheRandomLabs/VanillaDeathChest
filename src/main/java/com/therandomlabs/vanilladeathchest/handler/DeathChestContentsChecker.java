@@ -9,12 +9,15 @@ import com.therandomlabs.vanilladeathchest.config.VDCConfig;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityLockableLoot;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 @Mod.EventBusSubscriber(modid = VanillaDeathChest.MOD_ID)
 public final class DeathChestContentsChecker {
@@ -43,23 +46,23 @@ public final class DeathChestContentsChecker {
 				continue;
 			}
 
-			final TileEntityLockableLoot lockableLoot = (TileEntityLockableLoot) tileEntity;
+			final IItemHandler itemHandler = tileEntity.getCapability(
+					CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH
+			);
 			boolean empty = true;
 
-			for (int i = 0; i < lockableLoot.getSizeInventory(); i++) {
-				if (!lockableLoot.getStackInSlot(i).isEmpty()) {
+			for (int i = 0; i < itemHandler.getSlots(); i++) {
+				if (!itemHandler.getStackInSlot(i).isEmpty()) {
 					empty = false;
 					break;
 				}
 			}
 
-			if (empty) {
-				DeathChestManager.removeDeathChest(event.world, pos);
-
-				event.world.setBlockToAir(pos);
+			if (empty && DeathChestManager.removeDeathChest(event.world, pos) != null) {
+				event.world.setBlockToAir(entry.getValue().getPos());
 
 				if (entry.getValue().isDoubleChest()) {
-					event.world.setBlockToAir(pos.east());
+					event.world.setBlockToAir(entry.getValue().getPos().east());
 				}
 			}
 		}

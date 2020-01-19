@@ -1,13 +1,13 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.event.DeathChestRemoveEvent;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
@@ -19,7 +19,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -46,25 +45,8 @@ public final class DeathChestDropHandler {
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public static void onBlockDrop(BlockEvent.HarvestDropsEvent event) {
-		final BlockPos pos = event.getPos();
-
-		if (!justRemoved.containsKey(pos)) {
-			return;
-		}
-
-		justRemoved.remove(pos);
-
-		final List<ItemStack> drops = event.getDrops();
-
-		if (!drops.isEmpty()) {
-			drops.remove(0);
-		}
-	}
-
-	//Because HarvestDropsEvent doesn't capture shulker boxes and I don't want to write a coremod
-	//just for this
+	//Because HarvestDropsEvent doesn't capture named containers or shulker boxes, and
+	//I don't want to write a coremod just for this.
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		final World world = event.getWorld();
@@ -86,8 +68,9 @@ public final class DeathChestDropHandler {
 		}
 
 		final Block block = Block.getBlockFromItem(stack.getItem());
+		final boolean isChest = block == Blocks.CHEST;
 
-		if (!(block instanceof ShulkerBoxBlock)) {
+		if (!isChest && !(block instanceof ShulkerBoxBlock)) {
 			return;
 		}
 
@@ -103,14 +86,17 @@ public final class DeathChestDropHandler {
 			//Drops spawn a maximum of 0.75 blocks per axis away from the block position
 			//3 * 0.75^2 = 1.6875
 			if (pos.squareDistanceTo(chestPos.getX(), chestPos.getY(), chestPos.getZ()) <= 1.6875) {
-				final NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
-				ItemStackHelper.loadAllItems(
-						stack.getTag().getCompound("BlockEntityTag"), inventory
-				);
+				if (!isChest) {
+					final NonNullList<ItemStack> inventory =
+							NonNullList.withSize(27, ItemStack.EMPTY);
+					ItemStackHelper.loadAllItems(
+							stack.getTag().getCompound("BlockEntityTag"), inventory
+					);
 
-				for (ItemStack drop : inventory) {
-					if (!drop.isEmpty()) {
-						Block.spawnAsEntity(world, chestPos, drop);
+					for (ItemStack drop : inventory) {
+						if (!drop.isEmpty()) {
+							Block.spawnAsEntity(world, chestPos, drop);
+						}
 					}
 				}
 

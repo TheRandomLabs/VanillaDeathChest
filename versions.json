@@ -10,6 +10,7 @@
 		"1.14.4-1.9.3.0": "Initial port to Forge 1.14.4."
 	},
 	"1.12.2": {
+		"1.12.2-1.10.3.4": "Fixed death chests dropping when broken.",
 		"1.12.2-1.10.3.3": "Fixed automatic death chest removal.",
 		"1.12.2-1.10.3.1": "Fixed shulker boxes in death chests being deleted when the death chests are broken.",
 		"1.12.2-1.10.3.0": "The unlocker item no longer needs to have the required durability in creative mode.\nThe Unbreaking enchantment is now taken into account when an unlocker item is used.",
@@ -48,6 +49,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12.1": {
+		"1.12.2-1.10.3.4": "Fixed death chests dropping when broken.",
 		"1.12.2-1.10.3.3": "Fixed automatic death chest removal.",
 		"1.12.2-1.10.3.1": "Fixed shulker boxes in death chests being deleted when the death chests are broken.",
 		"1.12.2-1.10.3.0": "The unlocker item no longer needs to have the required durability in creative mode.\nThe Unbreaking enchantment is now taken into account when an unlocker item is used.",
@@ -86,6 +88,7 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12": {
+		"1.12.2-1.10.3.4": "Fixed death chests dropping when broken.",
 		"1.12.2-1.10.3.3": "Fixed automatic death chest removal.",
 		"1.12.2-1.10.3.1": "Fixed shulker boxes in death chests being deleted when the death chests are broken.",
 		"1.12.2-1.10.3.0": "The unlocker item no longer needs to have the required durability in creative mode.\nThe Unbreaking enchantment is now taken into account when an unlocker item is used.",
@@ -142,12 +145,12 @@
 	"promos": {
 		"1.14.4-latest": "1.14.4-1.10.3.3",
 		"1.14.4-recommended": "1.14.4-1.10.3.3",
-		"1.12.2-latest": "1.12.2-1.10.3.3",
-		"1.12.2-recommended": "1.12.2-1.10.3.3",
-		"1.12.1-latest": "1.12.2-1.10.3.3",
-		"1.12.1-recommended": "1.12.2-1.10.3.3",
-		"1.12-latest": "1.12.2-1.10.3.3",
-		"1.12-recommended": "1.12.2-1.10.3.3",
+		"1.12.2-latest": "1.12.2-1.10.3.4",
+		"1.12.2-recommended": "1.12.2-1.10.3.4",
+		"1.12.1-latest": "1.12.2-1.10.3.4",
+		"1.12.1-recommended": "1.12.2-1.10.3.4",
+		"1.12-latest": "1.12.2-1.10.3.4",
+		"1.12-recommended": "1.12.2-1.10.3.4",
 		"1.11.2-latest": "1.11.2-1.9.3.0",
 		"1.11.2-recommended": "1.11.2-1.9.3.0",
 		"1.11-latest": "1.11.2-1.9.3.0",

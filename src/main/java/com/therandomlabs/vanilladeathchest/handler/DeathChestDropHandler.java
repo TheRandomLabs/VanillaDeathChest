@@ -47,25 +47,8 @@ public final class DeathChestDropHandler {
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public static void onBlockDrop(BlockEvent.HarvestDropsEvent event) {
-		final BlockPos pos = event.getPos();
-
-		if (!justRemoved.containsKey(pos)) {
-			return;
-		}
-
-		justRemoved.remove(pos);
-
-		final List<ItemStack> drops = event.getDrops();
-
-		if (!drops.isEmpty()) {
-			drops.remove(0);
-		}
-	}
-
 	//Because HarvestDropsEvent doesn't capture named containers or shulker boxes, and
-	//I don't want to write a coremod just for this
+	//I don't want to write a coremod just for this.
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		final World world = event.getWorld();

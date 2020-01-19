@@ -1,6 +1,7 @@
 {
 	"homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
 	"1.14.4": {
+		"1.14.4-1.10.3.4": "Fixed death chests dropping when broken.",
 		"1.14.4-1.10.3.3": "Fixed automatic death chest removal.",
 		"1.14.4-1.10.3.2": "Fixed a crash related to death chest removal.",
 		"1.14.4-1.10.3.1": "Fixed shulker boxes in death chests being deleted when the death chests are broken.",
@@ -143,8 +144,8 @@
 		"1.10.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
 	},
 	"promos": {
-		"1.14.4-latest": "1.14.4-1.10.3.3",
-		"1.14.4-recommended": "1.14.4-1.10.3.3",
+		"1.14.4-latest": "1.14.4-1.10.3.4",
+		"1.14.4-recommended": "1.14.4-1.10.3.4",
 		"1.12.2-latest": "1.12.2-1.10.3.4",
 		"1.12.2-recommended": "1.12.2-1.10.3.4",
 		"1.12.1-latest": "1.12.2-1.10.3.4",

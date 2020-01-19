@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -63,8 +64,8 @@ public final class DeathChestDropHandler {
 		}
 	}
 
-	//Because HarvestDropsEvent doesn't capture shulker boxes and I don't want to write a coremod
-	//just for this
+	//Because HarvestDropsEvent doesn't capture named containers or shulker boxes, and
+	//I don't want to write a coremod just for this
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		final World world = event.getWorld();
@@ -86,8 +87,9 @@ public final class DeathChestDropHandler {
 		}
 
 		final Block block = Block.getBlockFromItem(stack.getItem());
+		final boolean isChest = block == Blocks.CHEST;
 
-		if (!(block instanceof BlockShulkerBox)) {
+		if (!isChest && !(block instanceof BlockShulkerBox)) {
 			return;
 		}
 
@@ -100,17 +102,20 @@ public final class DeathChestDropHandler {
 
 			final BlockPos chestPos = entry.getKey();
 
-			//Drops spawn a maximum of 0.75 blocks per axis away from the block position
+			//Drops spawn a maximum of 0.75 blocks per axis away from the block position.
 			//3 * 0.75^2 = 1.6875
 			if (pos.squareDistanceTo(chestPos.getX(), chestPos.getY(), chestPos.getZ()) <= 1.6875) {
-				final NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
-				ItemStackHelper.loadAllItems(
-						stack.getTagCompound().getCompoundTag("BlockEntityTag"), inventory
-				);
+				if (!isChest) {
+					final NonNullList<ItemStack> inventory =
+							NonNullList.withSize(27, ItemStack.EMPTY);
+					ItemStackHelper.loadAllItems(
+							stack.getTagCompound().getCompoundTag("BlockEntityTag"), inventory
+					);
 
-				for (ItemStack drop : inventory) {
-					if (!drop.isEmpty()) {
-						Block.spawnAsEntity(world, chestPos, drop);
+					for (ItemStack drop : inventory) {
+						if (!drop.isEmpty()) {
+							Block.spawnAsEntity(world, chestPos, drop);
+						}
 					}
 				}
 

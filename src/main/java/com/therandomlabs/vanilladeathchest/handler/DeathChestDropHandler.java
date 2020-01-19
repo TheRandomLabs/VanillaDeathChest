@@ -1,7 +1,6 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
@@ -19,7 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

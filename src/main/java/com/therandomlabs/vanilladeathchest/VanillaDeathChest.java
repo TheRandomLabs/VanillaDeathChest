@@ -1,12 +1,9 @@
 package com.therandomlabs.vanilladeathchest;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import com.mojang.brigadier.CommandDispatcher;
 import com.therandomlabs.utils.config.ConfigManager;
-import com.therandomlabs.utils.fabric.config.config.CommandConfigReload;
-import com.therandomlabs.utils.fabric.config.config.FabricConfig;
+import com.therandomlabs.utils.fabric.config.CommandConfigReload;
+import com.therandomlabs.utils.fabric.config.FabricConfig;
 import com.therandomlabs.vanilladeathchest.api.event.block.BreakBlockCallback;
 import com.therandomlabs.vanilladeathchest.api.event.block.ExplosionDetonationCallback;
 import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
@@ -15,11 +12,7 @@ import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDr
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityTickCallback;
 import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
-import com.therandomlabs.vanilladeathchest.handler.DeathChestContentsChecker;
-import com.therandomlabs.vanilladeathchest.handler.DeathChestDropHandler;
-import com.therandomlabs.vanilladeathchest.handler.DeathChestInteractionHandler;
-import com.therandomlabs.vanilladeathchest.handler.DeathChestPlaceHandler;
-import com.therandomlabs.vanilladeathchest.handler.DefenseEntityHandler;
+import com.therandomlabs.vanilladeathchest.handler.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
@@ -30,6 +23,10 @@ import net.minecraft.util.crash.CrashReport;
 import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public final class VanillaDeathChest implements ModInitializer {
 	public static final String MOD_ID = "vanilladeathchest";

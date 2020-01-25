@@ -1,20 +1,13 @@
 package com.therandomlabs.vanilladeathchest.util;
 
-import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Random;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.therandomlabs.utils.fabric.config.BooleanWrapper;
+import com.therandomlabs.utils.fabric.BooleanWrapper;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.block.enums.ChestType;
@@ -30,6 +23,10 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
+import java.util.Random;
 
 public final class DeathChestPlacer {
 	public enum DeathChestType {
@@ -76,7 +73,7 @@ public final class DeathChestPlacer {
 
 		//Drop any remaining items
 		for(ItemEntity drop : drops) {
-			world.spawnEntity(new ItemEntity(world, drop.x, drop.y, drop.z, drop.getStack()));
+			world.spawnEntity(new ItemEntity(world, drop.getX(), drop.getY(), drop.getZ(), drop.getStack()));
 		}
 
 		return true;
@@ -176,8 +173,8 @@ public final class DeathChestPlacer {
 
 				final Entity entity = EntityType.loadEntityWithPassengers(
 						compound, world, spawnedEntity -> {
-							spawnedEntity.setPosition(x, y, z);
-							return !world.method_18768(spawnedEntity) ? null : spawnedEntity;
+							spawnedEntity.setPos(x, y, z);
+							return !world.tryLoadEntity(spawnedEntity) ? null : spawnedEntity;
 						}
 				);
 

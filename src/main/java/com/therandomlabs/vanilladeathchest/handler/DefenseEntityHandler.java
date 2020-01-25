@@ -1,6 +1,5 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
-import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
@@ -12,6 +11,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.UUID;
 
 public class DefenseEntityHandler implements
 		LivingEntityTickCallback, LivingEntityDropCallback, LivingEntityDropExperienceCallback {
@@ -56,7 +57,7 @@ public class DefenseEntityHandler implements
 					VDCConfig.Defense.defenseEntityMaxDistanceSquaredFromPlayer;
 
 			if(maxDistanceSqFromPlayer == 0.0 || distanceSqFromPlayer > maxDistanceSqFromPlayer) {
-				entity.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+				entity.setPos(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
 			}
 		}
 	}

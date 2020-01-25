@@ -1,6 +1,5 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
-import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
@@ -10,7 +9,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.TagHelper;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.UUID;
 
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity implements DeathChestDefenseEntity {
@@ -56,16 +57,17 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	@Inject(method = "writeCustomDataToTag", at = @At("HEAD"))
 	public void writeCustomDataToTag(CompoundTag tag, CallbackInfo callback) {
 		if((Object) this instanceof MobEntity && deathChestPlayer != null) {
-			tag.put("DeathChestPlayer", TagHelper.serializeUuid(deathChestPlayer));
-			tag.put("DeathChestPos", TagHelper.serializeBlockPos(deathChestPos));
+			tag.put("DeathChestPlayer", NbtHelper.fromUuid(deathChestPlayer));
+			tag.put("DeathChestPos", NbtHelper.fromBlockPos(deathChestPos));
 		}
 	}
 
 	@Inject(method = "readCustomDataFromTag", at = @At("HEAD"))
 	public void readCustomDataFromTag(CompoundTag tag, CallbackInfo callback) {
-		if(((Object) this instanceof MobEntity && tag.containsKey("DeathChestPlayer"))) {
-			deathChestPlayer = TagHelper.deserializeUuid(tag.getCompound("DeathChestPlayer"));
-			deathChestPos = TagHelper.deserializeBlockPos(tag.getCompound("DeathChestPos"));
+		//noinspection ConstantConditions
+		if((Object) this instanceof MobEntity && tag.contains("DeathChestPlayer")) {
+			deathChestPlayer = NbtHelper.toUuid(tag.getCompound("DeathChestPlayer"));
+			deathChestPos = NbtHelper.toBlockPos(tag.getCompound("DeathChestPos"));
 		}
 	}
 
@@ -73,6 +75,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	public void dropLoot(DamageSource source, boolean recentlyHit, CallbackInfo callback) {
 		final Object object = this;
 
+		//noinspection ConstantConditions
 		if(!(object instanceof MobEntity)) {
 			return;
 		}
@@ -89,6 +92,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 			CallbackInfo callback) {
 		final Object object = this;
 
+		//noinspection ConstantConditions
 		if(!(object instanceof MobEntity)) {
 			return;
 		}
@@ -100,7 +104,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 		}
 	}
 
-	@Redirect(method = "updatePostDeath", at = @At(
+	@Redirect(method = "dropXp", at = @At(
 			value = "INVOKE",
 			target = "net/minecraft/entity/LivingEntity.getCurrentExperience(" +
 					"Lnet/minecraft/entity/player/PlayerEntity;)I"
@@ -108,6 +112,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	public int getExperience(LivingEntity entity, PlayerEntity player) {
 		final int experience = getCurrentExperience(player);
 
+		//noinspection ConstantConditions
 		if((Object) this instanceof MobEntity) {
 			return LivingEntityDropExperienceCallback.EVENT.invoker().
 					onLivingEntityDropExperience((MobEntity) (Object) this, this, experience);

@@ -99,7 +99,7 @@ public class DeathChestInteractionHandler implements
 
 				if(!unlocked && stack.isDamageable() &&
 						stack.getDamage() + amount < stack.getDamage()) {
-					stack.damage(amount, player.getRand(), player);
+					stack.damage(amount, player.getRandom(), player);
 					unlocked = true;
 				}
 

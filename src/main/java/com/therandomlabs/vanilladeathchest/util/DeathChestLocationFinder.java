@@ -1,10 +1,7 @@
 package com.therandomlabs.vanilladeathchest.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import com.google.common.collect.ImmutableList;
-import com.therandomlabs.utils.fabric.config.BooleanWrapper;
+import com.therandomlabs.utils.fabric.BooleanWrapper;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -17,6 +14,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class DeathChestLocationFinder {
 	private static class SearchOrder implements Iterable<BlockPos> {
@@ -112,7 +113,7 @@ public class DeathChestLocationFinder {
 
 	@SuppressWarnings("deprecation")
 	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos) {
-		if(!world.isBlockLoaded(pos) || !world.canPlayerModifyAt(player, pos)) {
+		if(!world.isChunkLoaded(pos) || !world.canPlayerModifyAt(player, pos)) {
 			return false;
 		}
 
@@ -156,10 +157,10 @@ public class DeathChestLocationFinder {
 
 		final BlockPos down = pos.down();
 
-		if(!world.doesBlockHaveSolidTopSurface(down, player)) {
+		if(!world.isTopSolid(down, player)) {
 			return false;
 		}
 
-		return !isDoubleChest || world.doesBlockHaveSolidTopSurface(down.east(), player);
+		return !isDoubleChest || world.isTopSolid(down.east(), player);
 	}
 }

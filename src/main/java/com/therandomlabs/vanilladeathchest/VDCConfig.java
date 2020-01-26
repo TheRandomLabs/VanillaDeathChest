@@ -2,7 +2,7 @@ package com.therandomlabs.vanilladeathchest;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.utils.config.Config;
-import com.therandomlabs.utils.fabric.config.config.ColorConfig;
+import com.therandomlabs.utils.fabric.config.ColorConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.StringNbtReader;

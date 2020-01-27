@@ -13,10 +13,9 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class VDCSavedData extends WorldSavedData {
-	public static final int TAG_COMPOUND = ArrayUtils.indexOf(INBT.NBT_TYPES, "COMPOUND");
+	public static final int TAG_COMPOUND = new CompoundNBT().getId();
 
 	public static final String ID = VanillaDeathChest.MOD_ID;
 
@@ -31,7 +30,7 @@ public class VDCSavedData extends WorldSavedData {
 	private static ServerWorld currentWorld;
 
 	private final ServerWorld world;
-	private Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
+	private final Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
 
 	public VDCSavedData() {
 		this(ID);

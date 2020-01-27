@@ -172,10 +172,10 @@ public class DeathChestLocationFinder {
 
 		final BlockPos down = pos.down();
 
-		if (!world.func_217400_a(down, player)) {
+		if (!world.isTopSolid(down, player)) {
 			return false;
 		}
 
-		return !isDoubleChest || world.func_217400_a(down.east(), player);
+		return !isDoubleChest || world.isTopSolid(down.east(), player);
 	}
 }

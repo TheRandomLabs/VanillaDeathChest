@@ -77,7 +77,9 @@ public final class DeathChestPlacer {
 
 		//Drop any remaining items
 		for (ItemEntity drop : drops) {
-			world.addEntity(new ItemEntity(world, drop.posX, drop.posY, drop.posZ, drop.getItem()));
+			world.addEntity(new ItemEntity(
+					world, drop.getPosX(), drop.getPosY(), drop.getPosZ(), drop.getItem()
+			));
 		}
 
 		return true;

@@ -27,10 +27,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.utils.config.Config;
 import com.therandomlabs.utils.fabric.config.ColorProperty;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 @SuppressWarnings("NullAway")
 @Config(id = VanillaDeathChest.MOD_ID, comment = "VanillaDeathChest configuration")
@@ -67,7 +67,7 @@ public final class VDCConfig {
 				"If the defense entity can have a revenge target, then the revenge target will " +
 						"be set to the player that died."
 		})
-		public static String defenseEntityRegistryName = "";
+		public static EntityType<? extends Entity> defenseEntityRegistryName;
 
 		@Config.RangeInt(min = 1)
 		@Config.Property("The number of defense entities to spawn.")
@@ -105,24 +105,12 @@ public final class VDCConfig {
 		)
 		public static boolean unlockFailedStatusMessage = true;
 
-		public static Identifier defenseEntity;
-
 		@SuppressWarnings("Duplicates")
 		public static void onReload() {
 			try {
 				StringNbtReader.parse(defenseEntityNBT);
 			} catch(CommandSyntaxException ignored) {
 				defenseEntityNBT = "{}";
-			}
-
-			final Identifier entityID = new Identifier(defenseEntityRegistryName);
-
-			if(Registry.ENTITY_TYPE.containsId(entityID)) {
-				defenseEntity = entityID;
-				defenseEntityRegistryName = entityID.toString();
-			} else {
-				defenseEntity = null;
-				defenseEntityRegistryName = "";
 			}
 		}
 	}

@@ -176,29 +176,29 @@ public final class DeathChestPlacer {
 		if(useDoubleChest) {
 			chest = (LootableContainerBlockEntity) blockEntity;
 
-			for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
+			for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
 				chest.setInvStack(i, drops.get(0).getStack());
 				drops.remove(0);
 			}
 		}
 
-		if(!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
+		if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
 			chest.setCustomName(new LiteralText(VDCConfig.Spawning.containerDisplayName));
 		}
 
-		if(VDCConfig.Defense.defenseEntity != null) {
+		if (VDCConfig.Defense.defenseEntityRegistryName != null) {
 			final double x = pos.getX() + 0.5;
 			final double y = pos.getY() + 1.0;
 			final double z = pos.getZ() + 0.5;
 
-			for(int i = 0; i < VDCConfig.Defense.defenseEntitySpawnCount; i++) {
+			for (int i = 0; i < VDCConfig.Defense.defenseEntitySpawnCount; i++) {
 				CompoundTag compound = null;
 
 				try {
 					compound = StringNbtReader.parse(VDCConfig.Defense.defenseEntityNBT);
-				} catch(CommandSyntaxException ignored) {}
+				} catch (CommandSyntaxException ignored) {}
 
-				compound.putString("id", VDCConfig.Defense.defenseEntityRegistryName);
+				compound.putString("id", VDCConfig.Defense.defenseEntityRegistryName.toString());
 
 				final Entity entity = EntityType.loadEntityWithPassengers(
 						compound, world, spawnedEntity -> {
@@ -207,7 +207,7 @@ public final class DeathChestPlacer {
 						}
 				);
 
-				if(entity instanceof MobEntity) {
+				if (entity instanceof MobEntity) {
 					final MobEntity living = (MobEntity) entity;
 
 					living.setPersistent();

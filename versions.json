@@ -1,5 +1,8 @@
 {
 	"homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
+	"1.15.2": {
+		"1.15.2-1.10.3.5": "Initial 1.15.2 port."
+	},
 	"1.14.4": {
 		"1.14.4-1.10.3.4": "Fixed death chests dropping when broken.",
 		"1.14.4-1.10.3.3": "Fixed automatic death chest removal.",
@@ -144,6 +147,8 @@
 		"1.10.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
 	},
 	"promos": {
+		"1.15.2-latest": "1.15.2-1.10.3.5",
+		"1.15.2-recommended": "1.15.2-1.10.3.5",
 		"1.14.4-latest": "1.14.4-1.10.3.4",
 		"1.14.4-recommended": "1.14.4-1.10.3.4",
 		"1.12.2-latest": "1.12.2-1.10.3.4",

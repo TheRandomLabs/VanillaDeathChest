@@ -1,6 +1,30 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018-2019 TheRandomLabs
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package com.therandomlabs.vanilladeathchest.mixin;
 
 import java.util.UUID;
+
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
@@ -19,6 +43,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("NullAway")
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity implements DeathChestDefenseEntity {
 	private UUID deathChestPlayer;
@@ -63,7 +88,8 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 
 	@Inject(method = "readCustomDataFromTag", at = @At("HEAD"))
 	public void readCustomDataFromTag(CompoundTag tag, CallbackInfo callback) {
-		if(((Object) this instanceof MobEntity && tag.containsKey("DeathChestPlayer"))) {
+		//noinspection ConstantConditions
+		if ((Object) this instanceof MobEntity && tag.containsKey("DeathChestPlayer")) {
 			deathChestPlayer = TagHelper.deserializeUuid(tag.getCompound("DeathChestPlayer"));
 			deathChestPos = TagHelper.deserializeBlockPos(tag.getCompound("DeathChestPos"));
 		}
@@ -73,11 +99,12 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	public void dropLoot(DamageSource source, boolean recentlyHit, CallbackInfo callback) {
 		final Object object = this;
 
-		if(!(object instanceof MobEntity)) {
+		//noinspection ConstantConditions
+		if (!(object instanceof MobEntity)) {
 			return;
 		}
 
-		if(!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
+		if (!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
 				(MobEntity) object, this, recentlyHit, 0, source
 		)) {
 			callback.cancel();
@@ -89,11 +116,12 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 			CallbackInfo callback) {
 		final Object object = this;
 
-		if(!(object instanceof MobEntity)) {
+		//noinspection ConstantConditions
+		if (!(object instanceof MobEntity)) {
 			return;
 		}
 
-		if(!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
+		if (!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
 				(MobEntity) object, this, recentlyHit, lootingModifier, source
 		)) {
 			callback.cancel();
@@ -108,7 +136,8 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	public int getExperience(LivingEntity entity, PlayerEntity player) {
 		final int experience = getCurrentExperience(player);
 
-		if((Object) this instanceof MobEntity) {
+		//noinspection ConstantConditions
+		if ((Object) this instanceof MobEntity) {
 			return LivingEntityDropExperienceCallback.EVENT.invoker().
 					onLivingEntityDropExperience((MobEntity) (Object) this, this, experience);
 		}

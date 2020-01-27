@@ -1,10 +1,34 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018-2019 TheRandomLabs
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package com.therandomlabs.vanilladeathchest.util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.google.common.collect.ImmutableList;
-import com.therandomlabs.utils.fabric.config.BooleanWrapper;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -17,6 +41,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class DeathChestLocationFinder {
 	private static class SearchOrder implements Iterable<BlockPos> {
@@ -49,25 +74,28 @@ public class DeathChestLocationFinder {
 		}
 
 		private void add(int x, int y) {
-			for(int z = 0; z <= size; z++) {
+			for (int z = 0; z <= size; z++) {
 				translations.add(new BlockPos(x, y, z));
 				translations.add(new BlockPos(x, y, -z));
 			}
 		}
 	}
 
+	@Nullable
 	private static SearchOrder searchOrder;
 
 	public static Iterable<BlockPos> getSearchOrder(int size) {
-		if(searchOrder == null || searchOrder.size != size) {
+		if (searchOrder == null || searchOrder.size != size) {
 			searchOrder = new SearchOrder(size);
 		}
 
 		return searchOrder;
 	}
 
-	public static BlockPos findLocation(World world, PlayerEntity player, BlockPos pos,
-			BooleanWrapper doubleChest) {
+	@Nullable
+	public static BlockPos findLocation(
+			World world, PlayerEntity player, BlockPos pos, AtomicBoolean doubleChest
+	) {
 		final boolean isDoubleChest = doubleChest.get();
 
 		final BlockPos searchPos = new BlockPos(
@@ -82,18 +110,18 @@ public class DeathChestLocationFinder {
 			final BlockPos potentialPos = searchPos.add(translation);
 
 			if(canPlace(world, player, potentialPos)) {
-				if((!isDoubleChest || canPlace(world, player, potentialPos.east())) &&
+				if ((!isDoubleChest || canPlace(world, player, potentialPos.east())) &&
 						isOnSolidBlocks(world, player, potentialPos, isDoubleChest)) {
 					return potentialPos;
 				}
 
-				if(singleChestPos == null) {
+				if (singleChestPos == null) {
 					singleChestPos = potentialPos;
 				}
 			}
 		}
 
-		if(singleChestPos != null) {
+		if (singleChestPos != null) {
 			doubleChest.set(false);
 			return singleChestPos;
 		}
@@ -101,9 +129,10 @@ public class DeathChestLocationFinder {
 		return VDCConfig.Spawning.forcePlaceIfLocationNotFound ? pos : null;
 	}
 
-	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos,
-			boolean doubleChest) {
-		if(doubleChest) {
+	public static boolean canPlace(
+			World world, PlayerEntity player, BlockPos pos, boolean doubleChest
+	) {
+		if (doubleChest) {
 			return canPlace(world, player, pos) && canPlace(world, player, pos.east());
 		}
 
@@ -112,7 +141,7 @@ public class DeathChestLocationFinder {
 
 	@SuppressWarnings("deprecation")
 	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos) {
-		if(!world.isBlockLoaded(pos) || !world.canPlayerModifyAt(player, pos)) {
+		if (!world.isBlockLoaded(pos) || !world.canPlayerModifyAt(player, pos)) {
 			return false;
 		}
 

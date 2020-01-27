@@ -1,11 +1,35 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018-2019 TheRandomLabs
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package com.therandomlabs.vanilladeathchest.util;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.therandomlabs.utils.fabric.config.BooleanWrapper;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
@@ -62,26 +86,28 @@ public final class DeathChestPlacer {
 
 		final ServerWorld world = this.world.get();
 
-		if(world == null) {
+		if (world == null) {
 			return true;
 		}
 
 		final PlayerEntity player = this.player.get();
 
-		if(player == null) {
+		if (player == null) {
 			return true;
 		}
 
 		place(world, player);
 
 		//Drop any remaining items
-		for(ItemEntity drop : drops) {
-			world.spawnEntity(new ItemEntity(world, drop.x, drop.y, drop.z, drop.getStack()));
+		for (ItemEntity drop : drops) {
+			world.spawnEntity(
+					new ItemEntity(world, drop.x, drop.y, drop.z, drop.getStack()));
 		}
 
 		return true;
 	}
 
+	@SuppressWarnings("NullAway")
 	private void place(ServerWorld world, PlayerEntity player) {
 		final DeathChestType type = VDCConfig.Spawning.chestType;
 
@@ -91,15 +117,15 @@ public final class DeathChestPlacer {
 		boolean useDoubleChest =
 				type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
 
-		final BooleanWrapper doubleChest = new BooleanWrapper(useDoubleChest);
+		final AtomicBoolean doubleChest = new AtomicBoolean(useDoubleChest);
 
 		final BlockPos pos =
 				DeathChestLocationFinder.findLocation(world, player, playerPos, doubleChest);
 
 		useDoubleChest = doubleChest.get();
 
-		if(pos == null) {
-			VanillaDeathChest.LOGGER.warn(
+		if (pos == null) {
+			VanillaDeathChest.logger.warn(
 					"No death chest location found for player at [{}]", playerPos
 			);
 			return;
@@ -107,12 +133,12 @@ public final class DeathChestPlacer {
 
 		final Block block;
 
-		if(type == DeathChestType.SHULKER_BOX) {
+		if (type == DeathChestType.SHULKER_BOX) {
 			//TODO ColorConfig.get()
 			block = ShulkerBoxBlock.get(DyeColor.valueOf(
 					VDCConfig.Spawning.shulkerBoxColor.name()
 			));
-		} else if(type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
+		} else if (type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
 			block = ShulkerBoxBlock.get(DyeColor.byId(random.nextInt(16)));
 		} else {
 			block = Blocks.CHEST;
@@ -133,7 +159,7 @@ public final class DeathChestPlacer {
 
 		if(!(blockEntity instanceof LootableContainerBlockEntity) ||
 				(useDoubleChest && !(blockEntity2 instanceof LootableContainerBlockEntity))) {
-			VanillaDeathChest.LOGGER.warn(
+			VanillaDeathChest.logger.warn(
 					"Failed to place death chest at [{}] due to invalid block entity", pos
 			);
 			return;
@@ -200,7 +226,7 @@ public final class DeathChestPlacer {
 
 		DeathChestManager.addDeathChest(world, player, pos, useDoubleChest);
 
-		VanillaDeathChest.LOGGER.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
+		VanillaDeathChest.logger.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
 
 		player.addChatMessage(new LiteralText(String.format(
 				VDCConfig.Spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()

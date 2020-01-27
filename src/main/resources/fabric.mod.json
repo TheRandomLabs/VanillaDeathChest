@@ -11,7 +11,7 @@
 		"homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
 		"sources": "https://github.com/TheRandomLabs/VanillaDeathChest"
 	},
-	"license": "MIT License",
+	"license": "MIT",
 	"icon": "assets/vanilladeathchest/icon.png",
 	"environment": "*",
 	"entrypoints": {

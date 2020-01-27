@@ -1,14 +1,38 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018-2019 TheRandomLabs
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package com.therandomlabs.vanilladeathchest;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.utils.config.Config;
-import com.therandomlabs.utils.fabric.config.config.ColorConfig;
+import com.therandomlabs.utils.fabric.config.ColorProperty;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+@SuppressWarnings("NullAway")
 @Config(id = VanillaDeathChest.MOD_ID, comment = "VanillaDeathChest configuration")
 public final class VDCConfig {
 	public static final class Defense {
@@ -74,6 +98,7 @@ public final class VDCConfig {
 		public static String unlockFailedMessage =
 				"You need %s of the following item to retrieve your items: %s";
 
+		@SuppressWarnings("GrazieInspection")
 		@Config.Property(
 				"Whether the unlock failed message should be a status message rather than a " +
 						"chat message."
@@ -103,7 +128,7 @@ public final class VDCConfig {
 	}
 
 	public static final class Misc {
-		@Config.Property("Whether death chets should disappear when they are emptied.")
+		@Config.Property("Whether death chests should disappear when they are emptied.")
 		public static boolean deathChestsDisappearWhenEmptied = true;
 
 		@Config.Property({
@@ -131,7 +156,7 @@ public final class VDCConfig {
 		public static boolean bypassIfCreative = true;
 
 		@Config.RangeInt(min = 0)
-		@Config.Property("The required permission level to bypass death chest proteciton.")
+		@Config.Property("The required permission level to bypass death chest protection.")
 		public static int bypassPermissionLevel = 3;
 
 		@Config.Property({
@@ -151,7 +176,7 @@ public final class VDCConfig {
 
 	public static final class Spawning {
 		@Config.Property({
-				"The message sent to a player when they die and a death chest is placed.",
+				"The message sent to a player a death chest is placed after they die.",
 				"%s refers to the X, Y and Z coordinates.",
 				"Set this to an empty string to disable the message."
 		})
@@ -177,11 +202,11 @@ public final class VDCConfig {
 		@Config.Property("The death chest location search radius.")
 		public static int locationSearchRadius = 8;
 
-		@Config.Property("Whether death chests can only spwan on solid blocks.")
+		@Config.Property("Whether death chests can only spawn on solid blocks.")
 		public static boolean mustBeOnSolidBlocks;
 
 		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
-		public static ColorConfig shulkerBoxColor = ColorConfig.WHITE;
+		public static ColorProperty shulkerBoxColor = ColorProperty.WHITE;
 	}
 
 	@Config.Category("Options related to death chest defense.")

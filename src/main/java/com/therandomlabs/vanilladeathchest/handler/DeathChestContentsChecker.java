@@ -44,12 +44,11 @@ public class DeathChestContentsChecker implements ServerTickCallback {
 				continue;
 			}
 
-			if(((LockableContainerBlockEntity) blockEntity).isInvEmpty()) {
-				DeathChestManager.removeDeathChest(world, pos);
-
+			if (((LockableContainerBlockEntity) blockEntity).isInvEmpty() &&
+					DeathChestManager.removeDeathChest(world, pos) != null) {
 				world.setBlockState(pos, Blocks.AIR.getDefaultState());
 
-				if(entry.getValue().isDoubleChest()) {
+				if (entry.getValue().isDoubleChest()) {
 					world.setBlockState(pos.east(), Blocks.AIR.getDefaultState());
 				}
 			}

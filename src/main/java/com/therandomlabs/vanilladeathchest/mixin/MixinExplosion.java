@@ -43,7 +43,7 @@ public class MixinExplosion {
 
 	@Inject(
 			method = "collectBlocksAndDamageEntities",
-			at = @At(value = "NEW", target = "net/minecraft/util/math/Vec3d")
+			at = @At(value = "TAIL")
 	)
 	public void collectBlocksAndDamageEntities(CallbackInfo callback) {
 		ExplosionDetonationCallback.EVENT.invoker().onExplosionDetonate(

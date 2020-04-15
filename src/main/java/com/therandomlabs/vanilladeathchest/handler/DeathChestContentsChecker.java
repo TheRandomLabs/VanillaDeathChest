@@ -64,12 +64,6 @@ public final class DeathChestContentsChecker {
 
 			if (empty && DeathChestManager.removeDeathChest(world, pos) != null) {
 				event.world.setBlockState(entry.getValue().getPos(), Blocks.AIR.getDefaultState());
-
-				if (entry.getValue().isDoubleChest()) {
-					event.world.setBlockState(
-							entry.getValue().getPos().east(), Blocks.AIR.getDefaultState()
-					);
-				}
 			}
 		}
 	}

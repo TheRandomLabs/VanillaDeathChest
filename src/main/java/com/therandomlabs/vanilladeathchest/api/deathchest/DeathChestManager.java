@@ -68,13 +68,9 @@ public final class DeathChestManager {
 			if (chest.getPos().equals(pos)) {
 				west = pos;
 				east = pos.east();
-
-				deathChests.remove(east);
 			} else {
 				west = pos.west();
 				east = pos;
-
-				deathChests.remove(west);
 			}
 		} else {
 			west = pos;

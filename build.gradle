@@ -19,7 +19,7 @@ apply plugin: "com.github.johnrengelman.shadow"
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-version = "1.12.2-1.10.3.4"
+version = "1.12.2-1.10.3.8"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 

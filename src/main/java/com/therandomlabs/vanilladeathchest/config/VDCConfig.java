@@ -207,7 +207,10 @@ public final class VDCConfig {
 		})
 		public static boolean useContainerInInventory;
 
-		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
+		@Config.Property(
+				"The color of the shulker box if chestType is set to SHULKER_BOX or" +
+						" DOUBLE_SHULKER_BOX."
+		)
 		public static ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
 	}
 

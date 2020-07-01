@@ -1,7 +1,6 @@
 package com.therandomlabs.vanilladeathchest.config;
 
 import com.therandomlabs.randomlib.config.Config;
-import com.therandomlabs.randomlib.config.ConfigColor;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.entity.EntityList;
@@ -202,7 +201,7 @@ public final class VDCConfig {
 		public static String registryNameRegex = ".+";
 
 		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
-		public static ConfigColor shulkerBoxColor = ConfigColor.WHITE;
+		public static ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
 	}
 
 	@Config.Category("Options related to death chest defense.")
@@ -216,10 +215,4 @@ public final class VDCConfig {
 
 	@Config.Category("Options related to death chest spawning.")
 	public static final Spawning spawning = null;
-
-	static {
-		ConfigColor.setTranslationKeyPrefix(
-				"vanilladeathchest.config.spawning.chestType.randomShulkerBoxColor."
-		);
-	}
 }

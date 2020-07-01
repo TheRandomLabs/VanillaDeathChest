@@ -4,7 +4,6 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,7 +39,7 @@ public final class DeathChestPlacer {
 		SINGLE_ONLY("singleOnly"),
 		SINGLE_OR_DOUBLE("singleOrDouble"),
 		SHULKER_BOX("shulkerBox"),
-		RANDOM_SHULKER_BOX_COLOR("randomShulkerBoxColor");
+		DOUBLE_SHULKER_BOX("doubleShulkerBox");
 
 		private final String translationKey;
 
@@ -58,8 +56,6 @@ public final class DeathChestPlacer {
 	private static final Method BECOME_ANGRY_AT = TRLUtils.findMethod(
 			EntityPigZombie.class, "becomeAngryAt", "func_70835_c", Entity.class
 	);
-
-	private static final Random random = new Random();
 
 	private final WeakReference<World> world;
 	private final WeakReference<EntityPlayer> player;
@@ -118,8 +114,8 @@ public final class DeathChestPlacer {
 				).matches()).
 				collect(Collectors.toList());
 
-		boolean useDoubleChest =
-				type == DeathChestType.SINGLE_OR_DOUBLE && filtered.size() > 27;
+		boolean useDoubleChest = (type == DeathChestType.SINGLE_OR_DOUBLE ||
+				type == DeathChestType.DOUBLE_SHULKER_BOX) && filtered.size() > 27;
 
 		final BooleanWrapper doubleChest = new BooleanWrapper(useDoubleChest);
 
@@ -137,10 +133,8 @@ public final class DeathChestPlacer {
 
 		final Block block;
 
-		if (type == DeathChestType.SHULKER_BOX) {
+		if (type == DeathChestType.SHULKER_BOX || type == DeathChestType.DOUBLE_SHULKER_BOX) {
 			block = BlockShulkerBox.getBlockByColor(VDCConfig.Spawning.shulkerBoxColor.get());
-		} else if (type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
-			block = BlockShulkerBox.getBlockByColor(EnumDyeColor.byMetadata(random.nextInt(16)));
 		} else {
 			block = Blocks.CHEST;
 		}

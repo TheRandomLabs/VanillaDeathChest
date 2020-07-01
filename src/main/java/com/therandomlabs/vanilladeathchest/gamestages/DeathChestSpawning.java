@@ -25,4 +25,9 @@ public final class DeathChestSpawning {
 	public static void setRegistryNameRegex(String stage, String regex) {
 		CraftTweakerAPI.apply(new ActionSetRegistryNameRegex(stage, regex));
 	}
+
+	@ZenMethod
+	public static void setUseContainerInInventory(String stage, boolean flag) {
+		CraftTweakerAPI.apply(new ActionSetUseContainerInInventory(stage, flag));
+	}
 }

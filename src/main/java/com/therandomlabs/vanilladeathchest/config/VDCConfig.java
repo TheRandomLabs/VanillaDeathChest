@@ -200,6 +200,13 @@ public final class VDCConfig {
 		)
 		public static String registryNameRegex = ".+";
 
+		@Config.Property({
+				"Whether death chests should only be spawned if the container can be found in " +
+						"the player's inventory.",
+				"If this is enabled, the container is consumed if it is found."
+		})
+		public static boolean useContainerInInventory;
+
 		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
 		public static ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
 	}

@@ -3,6 +3,7 @@ package com.therandomlabs.vanilladeathchest.util;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,6 +24,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
@@ -116,6 +119,75 @@ public final class DeathChestPlacer {
 
 		boolean useDoubleChest = (type == DeathChestType.SINGLE_OR_DOUBLE ||
 				type == DeathChestType.DOUBLE_SHULKER_BOX) && filtered.size() > 27;
+
+		if (info.useContainerInInventory()) {
+			final List<EntityItem> empty = new ArrayList<>();
+
+			boolean foundOne = false;
+			boolean foundAll = false;
+
+			for (EntityItem item : drops) {
+				final ItemStack stack = item.getItem();
+
+				if (type == DeathChestType.SINGLE_ONLY || type == DeathChestType.SINGLE_OR_DOUBLE) {
+					if (stack.getItem() != Item.getItemFromBlock(Blocks.CHEST)) {
+						continue;
+					}
+				} else if (!(Block.getBlockFromItem(stack.getItem()) instanceof BlockShulkerBox)) {
+					continue;
+				}
+
+				if (!useDoubleChest) {
+					stack.shrink(1);
+
+					if (stack.isEmpty()) {
+						empty.add(item);
+					}
+
+					foundAll = true;
+					break;
+				}
+
+				if (stack.getCount() > 1) {
+					stack.shrink(2);
+
+					if (stack.isEmpty()) {
+						empty.add(item);
+					}
+
+					foundAll = true;
+					break;
+				}
+
+				stack.shrink(1);
+
+				if (stack.isEmpty()) {
+					empty.add(item);
+				}
+
+				if (foundOne) {
+					foundAll = true;
+					break;
+				}
+
+				foundOne = true;
+			}
+
+			if (useDoubleChest) {
+				if (!foundAll) {
+					if (!foundOne) {
+						return;
+					}
+
+					useDoubleChest = false;
+				}
+			} else if (!foundAll) {
+				return;
+			}
+
+			drops.removeAll(empty);
+			filtered.removeAll(empty);
+		}
 
 		final BooleanWrapper doubleChest = new BooleanWrapper(useDoubleChest);
 

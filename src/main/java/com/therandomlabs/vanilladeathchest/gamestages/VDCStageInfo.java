@@ -39,6 +39,8 @@ public class VDCStageInfo {
 	private String chatMessage;
 	private String containerDisplayName;
 	private String registryNameRegex;
+	private boolean useContainerInInventorySet;
+	private boolean useContainerInInventory;
 
 	public boolean damageUnlockerInsteadOfConsume() {
 		return damageUnlockerSet ?
@@ -170,6 +172,16 @@ public class VDCStageInfo {
 
 	public void setRegistryNameRegex(String regex) {
 		registryNameRegex = regex;
+	}
+
+	public boolean useContainerInInventory() {
+		return useContainerInInventorySet ?
+				useContainerInInventory : VDCConfig.Spawning.useContainerInInventory;
+	}
+
+	public void setUseContainerInInventory(boolean flag) {
+		useContainerInInventory = flag;
+		useContainerInInventorySet = true;
 	}
 
 	public static VDCStageInfo get(EntityPlayer player) {

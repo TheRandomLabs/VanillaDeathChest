@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.mojang.authlib.GameProfile;
 import com.therandomlabs.randomlib.BooleanWrapper;
@@ -100,14 +102,24 @@ public final class DeathChestPlacer {
 		return true;
 	}
 
+	@SuppressWarnings("Duplicates")
 	private void place(World world, EntityPlayer player) {
 		final DeathChestType type = VDCConfig.Spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = player.getPosition();
 
+		final VDCStageInfo info = VDCStageInfo.get(player);
+
+		final Pattern pattern = Pattern.compile(info.getRegistryNameRegex());
+		final List<EntityItem> filtered = drops.stream().
+				filter(item -> pattern.matcher(
+						item.getItem().getItem().getRegistryName().toString()
+				).matches()).
+				collect(Collectors.toList());
+
 		boolean useDoubleChest =
-				type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
+				type == DeathChestType.SINGLE_OR_DOUBLE && filtered.size() > 27;
 
 		final BooleanWrapper doubleChest = new BooleanWrapper(useDoubleChest);
 
@@ -155,21 +167,24 @@ public final class DeathChestPlacer {
 
 		TileEntityLockableLoot chest = (TileEntityLockableLoot) tile;
 
-		for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
-			chest.setInventorySlotContents(i, drops.get(0).getItem());
-			drops.remove(0);
+		for (int i = 0; i < 27 && !filtered.isEmpty(); i++) {
+			final EntityItem item = filtered.get(0);
+			chest.setInventorySlotContents(i, item.getItem());
+			filtered.remove(0);
+			drops.remove(item);
 		}
 
 		if (useDoubleChest) {
 			chest = (TileEntityLockableLoot) tile2;
 
-			for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
-				chest.setInventorySlotContents(i, drops.get(0).getItem());
-				drops.remove(0);
+			for (int i = 0; i < 27 && !filtered.isEmpty(); i++) {
+				final EntityItem item = filtered.get(0);
+				chest.setInventorySlotContents(i, item.getItem());
+				filtered.remove(0);
+				drops.remove(item);
 			}
 		}
 
-		final VDCStageInfo info = VDCStageInfo.get(player);
 		final String displayName = info.getContainerDisplayName();
 
 		if (!displayName.isEmpty()) {

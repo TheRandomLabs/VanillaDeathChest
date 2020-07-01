@@ -54,6 +54,7 @@ vanilladeathchest.config.spawning.chestType.randomShulkerBoxColor.black=§0Black
 vanilladeathchest.config.spawning.forcePlaceIfLocationNotFound=Force place if location not found
 vanilladeathchest.config.spawning.locationSearchRadius=Location search radius
 vanilladeathchest.config.spawning.mustBeOnSolidBlocks=Must be on solid blocks
+vanilladeathchest.config.spawning.registryNameRegex=Registry name regex
 vanilladeathchest.config.spawning.shulkerBoxColor=Shulker box color
 
 commands.vdcreloadclient.usage=/vdcreloadclient

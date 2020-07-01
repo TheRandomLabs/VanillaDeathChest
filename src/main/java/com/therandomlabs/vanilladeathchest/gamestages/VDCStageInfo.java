@@ -38,6 +38,7 @@ public class VDCStageInfo {
 
 	private String chatMessage;
 	private String containerDisplayName;
+	private String registryNameRegex;
 
 	public boolean damageUnlockerInsteadOfConsume() {
 		return damageUnlockerSet ?
@@ -90,7 +91,7 @@ public class VDCStageInfo {
 	}
 
 	public void setDefenseEntitySpawnCount(int count) {
-		defenseEntitySpawnCount = count < 1 ? 1 : count;
+		defenseEntitySpawnCount = Math.max(count, 1);
 	}
 
 	public ResourceLocation getDefenseEntity() {
@@ -161,6 +162,14 @@ public class VDCStageInfo {
 
 	public void setContainerDisplayName(String name) {
 		containerDisplayName = name;
+	}
+
+	public String getRegistryNameRegex() {
+		return registryNameRegex == null ? VDCConfig.Spawning.registryNameRegex : registryNameRegex;
+	}
+
+	public void setRegistryNameRegex(String regex) {
+		registryNameRegex = regex;
 	}
 
 	public static VDCStageInfo get(EntityPlayer player) {

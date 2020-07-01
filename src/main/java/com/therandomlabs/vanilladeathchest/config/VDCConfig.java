@@ -195,6 +195,12 @@ public final class VDCConfig {
 		@Config.Property("Whether death chests can only spwan on solid blocks.")
 		public static boolean mustBeOnSolidBlocks;
 
+		@Config.Property(
+				"A regular expression that matches the registry names of items that can be " +
+						"placed in death chests."
+		)
+		public static String registryNameRegex = ".+";
+
 		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
 		public static ConfigColor shulkerBoxColor = ConfigColor.WHITE;
 	}

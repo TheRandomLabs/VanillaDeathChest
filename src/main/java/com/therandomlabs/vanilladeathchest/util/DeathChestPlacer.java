@@ -231,6 +231,10 @@ public final class DeathChestPlacer {
 			drops.remove(item);
 		}
 
+		if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
+			chest.setCustomName(new StringTextComponent(VDCConfig.Spawning.containerDisplayName));
+		}
+
 		if (useDoubleChest) {
 			chest = (LockableLootTileEntity) blockEntity;
 
@@ -240,10 +244,11 @@ public final class DeathChestPlacer {
 				filtered.remove(0);
 				drops.remove(item);
 			}
-		}
 
-		if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
-			chest.setCustomName(new StringTextComponent(VDCConfig.Spawning.containerDisplayName));
+			//If this is a shulker box, this has to be set separately.
+			if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
+				chest.setCustomName(new StringTextComponent(VDCConfig.Spawning.containerDisplayName));
+			}
 		}
 
 		if (VDCConfig.Defense.defenseEntityRegistryName != null) {

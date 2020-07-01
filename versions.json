@@ -1,10 +1,13 @@
 {
 	"homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
 	"1.15.2": {
+		"1.12.2-1.11.0.1": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
 		"1.15.2-1.10.3.8": "Fixed automatic death chest removal.",
 		"1.15.2-1.10.3.5": "Initial 1.15.2 port."
 	},
 	"1.14.4": {
+		"1.14.4-1.11.0.1": "Fixed double shulker box display names.",
+		"1.14.4-1.11.0.0": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
 		"1.14.4-1.10.3.8": "Fixed automatic death chest removal.",
 		"1.14.4-1.10.3.4": "Fixed death chests dropping when broken.",
 		"1.14.4-1.10.3.3": "Fixed automatic death chest removal.",
@@ -16,6 +19,8 @@
 		"1.14.4-1.9.3.0": "Initial port to Forge 1.14.4."
 	},
 	"1.12.2": {
+		"1.12.2-1.11.0.1": "Fixed double shulker box display names.",
+		"1.12.2-1.11.0.0": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
 		"1.12.2-1.10.3.8": "Fixed automatic death chest removal.",
 		"1.12.2-1.10.3.4": "Fixed death chests dropping when broken.",
 		"1.12.2-1.10.3.3": "Fixed automatic death chest removal.",
@@ -56,6 +61,8 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12.1": {
+		"1.12.2-1.11.0.1": "Fixed double shulker box display names.",
+		"1.12.2-1.11.0.0": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
 		"1.12.2-1.10.3.8": "Fixed automatic death chest removal.",
 		"1.12.2-1.10.3.4": "Fixed death chests dropping when broken.",
 		"1.12.2-1.10.3.3": "Fixed automatic death chest removal.",
@@ -96,6 +103,8 @@
 		"1.12.2-1.0.0.0": "Initial release."
 	},
 	"1.12": {
+		"1.12.2-1.11.0.1": "Fixed double shulker box display names.",
+		"1.12.2-1.11.0.0": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
 		"1.12.2-1.10.3.8": "Fixed automatic death chest removal.",
 		"1.12.2-1.10.3.4": "Fixed death chests dropping when broken.",
 		"1.12.2-1.10.3.3": "Fixed automatic death chest removal.",
@@ -152,16 +161,16 @@
 		"1.10.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
 	},
 	"promos": {
-		"1.15.2-latest": "1.15.2-1.10.3.8",
-		"1.15.2-recommended": "1.15.2-1.10.3.8",
-		"1.14.4-latest": "1.14.4-1.10.3.8",
-		"1.14.4-recommended": "1.14.4-1.10.3.8",
-		"1.12.2-latest": "1.12.2-1.10.3.8",
-		"1.12.2-recommended": "1.12.2-1.10.3.8",
-		"1.12.1-latest": "1.12.2-1.10.3.8",
-		"1.12.1-recommended": "1.12.2-1.10.3.8",
-		"1.12-latest": "1.12.2-1.10.3.8",
-		"1.12-recommended": "1.12.2-1.10.3.8",
+		"1.15.2-latest": "1.15.2-1.11.0.1",
+		"1.15.2-recommended": "1.15.2-1.11.0.1",
+		"1.14.4-latest": "1.14.4-1.11.0.1",
+		"1.14.4-recommended": "1.14.4-1.11.0.1",
+		"1.12.2-latest": "1.12.2-1.11.0.1",
+		"1.12.2-recommended": "1.12.2-1.11.0.1",
+		"1.12.1-latest": "1.12.2-1.11.0.1",
+		"1.12.1-recommended": "1.12.2-1.11.0.1",
+		"1.12-latest": "1.12.2-1.11.0.1",
+		"1.12-recommended": "1.12.2-1.11.0.1",
 		"1.11.2-latest": "1.11.2-1.9.3.0",
 		"1.11.2-recommended": "1.11.2-1.9.3.0",
 		"1.11-latest": "1.11.2-1.9.3.0",

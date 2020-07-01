@@ -2,7 +2,6 @@ package com.therandomlabs.vanilladeathchest;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.utils.config.Config;
-import com.therandomlabs.utils.forge.config.ColorConfig;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -166,8 +165,24 @@ public final class VDCConfig {
 		@Config.Property("Whether death chests can only spwan on solid blocks.")
 		public static boolean mustBeOnSolidBlocks;
 
-		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
-		public static ColorConfig shulkerBoxColor = ColorConfig.WHITE;
+		@Config.Property(
+				"A regular expression that matches the registry names of items that can be " +
+						"placed in death chests."
+		)
+		public static String registryNameRegex = ".+";
+
+		@Config.Property({
+				"Whether death chests should only be spawned if the container can be found in " +
+						"the player's inventory.",
+				"If this is enabled, the container is consumed if it is found."
+		})
+		public static boolean useContainerInInventory;
+
+		@Config.Property(
+				"The color of the shulker box if chestType is set to SHULKER_BOX or " +
+						"DOUBLE_SHULKER_BOX."
+		)
+		public static ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
 	}
 
 	@Config.Category("Options related to death chest defense.")

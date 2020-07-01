@@ -32,6 +32,7 @@ import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
@@ -69,12 +70,9 @@ public class DeathChestContentsChecker implements ServerTickCallback {
 			}
 
 			if (((LockableContainerBlockEntity) blockEntity).isInvEmpty() &&
+					ChestBlockEntity.getPlayersLookingInChestCount(world, pos) == 0 &&
 					DeathChestManager.removeDeathChest(world, pos) != null) {
 				world.setBlockState(pos, Blocks.AIR.getDefaultState());
-
-				if (entry.getValue().isDoubleChest()) {
-					world.setBlockState(pos.east(), Blocks.AIR.getDefaultState());
-				}
 			}
 		}
 	}

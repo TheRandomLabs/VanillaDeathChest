@@ -240,6 +240,12 @@ public final class DeathChestPlacer {
 			drops.remove(item);
 		}
 
+		final String displayName = info.getContainerDisplayName();
+
+		if (!displayName.isEmpty()) {
+			chest.setCustomName(displayName);
+		}
+
 		if (useDoubleChest) {
 			chest = (TileEntityLockableLoot) tile2;
 
@@ -249,12 +255,11 @@ public final class DeathChestPlacer {
 				filtered.remove(0);
 				drops.remove(item);
 			}
-		}
 
-		final String displayName = info.getContainerDisplayName();
-
-		if (!displayName.isEmpty()) {
-			chest.setCustomName(displayName);
+			//If this is a shulker box, this has to be set separately.
+			if (!displayName.isEmpty()) {
+				chest.setCustomName(displayName);
+			}
 		}
 
 		if (info.getDefenseEntity() != null) {

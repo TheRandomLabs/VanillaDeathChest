@@ -25,7 +25,6 @@ package com.therandomlabs.vanilladeathchest;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.utils.config.Config;
-import com.therandomlabs.utils.fabric.config.ColorProperty;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -98,7 +97,6 @@ public final class VDCConfig {
 		public static String unlockFailedMessage =
 				"You need %s of the following item to retrieve your items: %s";
 
-		@SuppressWarnings("GrazieInspection")
 		@Config.Property(
 				"Whether the unlock failed message should be a status message rather than a " +
 						"chat message."
@@ -193,8 +191,22 @@ public final class VDCConfig {
 		@Config.Property("Whether death chests can only spawn on solid blocks.")
 		public static boolean mustBeOnSolidBlocks;
 
-		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX.")
-		public static ColorProperty shulkerBoxColor = ColorProperty.WHITE;
+		@Config.Property(
+				"A regular expression that matches the registry names of items that can be " +
+						"placed in death chests."
+		)
+		public static String registryNameRegex = ".+";
+
+		@Config.Property({
+				"Whether death chests should only be spawned if the container can be found in " +
+						"the player's inventory.",
+				"If this is enabled, the container is consumed if it is found."
+		})
+		public static boolean useContainerInInventory;
+
+		@Config.Property("The color of the shulker box if chestType is set to SHULKER_BOX or " +
+				"DOUBLE_SHULKER_BOX.")
+		public static ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
 	}
 
 	@Config.Category("Options related to death chest defense.")

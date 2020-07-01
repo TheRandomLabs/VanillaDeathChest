@@ -21,10 +21,43 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.therandomlabs.vanilladeathchest.api;
+package com.therandomlabs.vanilladeathchest;
 
-import net.minecraft.entity.ItemEntity;
+import java.util.Random;
 
-public interface DropsList {
-	void addDrop(ItemEntity entity);
+import net.minecraft.util.DyeColor;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+public enum ShulkerBoxColor {
+	WHITE,
+	ORANGE,
+	MAGENTA,
+	LIGHT_BLUE,
+	YELLOW,
+	LIME,
+	PINK,
+	GRAY,
+	LIGHT_GRAY,
+	CYAN,
+	PURPLE,
+	BLUE,
+	BROWN,
+	GREEN,
+	RED,
+	BLACK,
+	RANDOM;
+
+	private static final Random random = new Random();
+
+	@Nullable
+	private final DyeColor color;
+
+	ShulkerBoxColor() {
+		color = "RANDOM".equals(name()) ? null : DyeColor.valueOf(name());
+	}
+
+	@SuppressWarnings("NullAway")
+	public DyeColor get() {
+		return this == RANDOM ? DyeColor.byId(random.nextInt(16)) : color;
+	}
 }

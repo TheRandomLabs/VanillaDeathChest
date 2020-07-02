@@ -3,7 +3,6 @@ package com.therandomlabs.vanilladeathchest.util;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -24,6 +23,7 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,6 +32,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
@@ -43,8 +44,6 @@ public final class DeathChestPlacer {
 		SHULKER_BOX,
 		DOUBLE_SHULKER_BOX
 	}
-
-	private static final Random random = new Random();
 
 	private final WeakReference<ServerWorld> world;
 	private final WeakReference<PlayerEntity> player;
@@ -117,8 +116,23 @@ public final class DeathChestPlacer {
 					if (stack.getItem() != Item.BLOCK_TO_ITEM.get(Blocks.CHEST)) {
 						continue;
 					}
-				} else if (!(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock)) {
-					continue;
+				} else {
+					if (!(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock)) {
+						continue;
+					}
+
+					final CompoundNBT tag = stack.getTag();
+
+					if (tag != null) {
+						final NonNullList<ItemStack> inventory =
+								NonNullList.withSize(27, ItemStack.EMPTY);
+						ItemStackHelper.loadAllItems(tag.getCompound("BlockEntityTag"), inventory);
+
+						//Shulker box must be empty.
+						if (inventory.stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
+							continue;
+						}
+					}
 				}
 
 				if (!useDoubleChest) {

@@ -2,7 +2,7 @@
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
     "1.15.2": {
         "1.15.2-1.11.0.2": "Only empty shulker boxes are now consumed.",
-        "1.12.2-1.11.0.1": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
+        "1.15.2-1.11.0.1": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
         "1.15.2-1.10.3.8": "Fixed automatic death chest removal.",
         "1.15.2-1.10.3.5": "Initial 1.15.2 port."
     },

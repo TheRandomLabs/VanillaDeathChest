@@ -16,7 +16,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.ModList;
 
@@ -131,7 +131,7 @@ public class DeathChestLocationFinder {
 				player,
 				Hand.MAIN_HAND,
 				new BlockRayTraceResult(
-						new Vec3d(0.0, 0.0, 0.0),
+						new Vector3d(0.0, 0.0, 0.0),
 						Direction.DOWN,
 						pos,
 						false
@@ -150,7 +150,7 @@ public class DeathChestLocationFinder {
 		if (!ModList.get().isLoaded("cubicchunks")) {
 			final int y = pos.getY();
 
-			if (y < 1 || y > world.getActualHeight()) {
+			if (y < 1 || y > world.getHeight()) {
 				return false;
 			}
 		}

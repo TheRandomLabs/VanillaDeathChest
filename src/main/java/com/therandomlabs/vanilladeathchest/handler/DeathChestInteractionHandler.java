@@ -6,6 +6,7 @@ import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -135,13 +136,13 @@ public final class DeathChestInteractionHandler {
 					amount,
 					new TranslationTextComponent(
 							VDCConfig.Defense.unlocker.getTranslationKey()
-					).getFormattedText().trim()
+					).getString().trim()
 			));
 
 			if (VDCConfig.Defense.unlockFailedStatusMessage) {
 				player.sendStatusMessage(component, true);
 			} else {
-				player.sendMessage(component);
+				player.sendMessage(component, Util.field_240973_b_);
 			}
 		}
 

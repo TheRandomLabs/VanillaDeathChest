@@ -70,7 +70,7 @@ public class VDCSavedData extends WorldSavedData {
 			final DeathChest deathChest = entry.getValue();
 			final CompoundNBT compound = new CompoundNBT();
 
-			compound.put(UUID_KEY, NBTUtil.writeUniqueId(deathChest.getPlayerID()));
+			compound.put(UUID_KEY, NBTUtil.func_240626_a_(deathChest.getPlayerID()));
 			compound.putLong(CREATION_TIME_KEY, deathChest.getCreationTime());
 			compound.put(POS_KEY, NBTUtil.writeBlockPos(entry.getKey()));
 			compound.putBoolean(IS_DOUBLE_CHEST_KEY, deathChest.isDoubleChest());

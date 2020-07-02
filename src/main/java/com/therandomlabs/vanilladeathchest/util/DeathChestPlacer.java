@@ -3,7 +3,6 @@ package com.therandomlabs.vanilladeathchest.util;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -94,7 +93,7 @@ public final class DeathChestPlacer {
 		final DeathChestType type = VDCConfig.Spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
-		final BlockPos playerPos = new BlockPos(player.getPosition());
+		final BlockPos playerPos = new BlockPos(player.getPositionVec());
 
 		final Pattern pattern = Pattern.compile(VDCConfig.Spawning.registryNameRegex);
 		final List<ItemEntity> filtered = drops.stream().
@@ -304,7 +303,7 @@ public final class DeathChestPlacer {
 
 					final CompoundNBT data = living.getPersistentData();
 
-					data.put("DeathChestPlayer", NBTUtil.writeUniqueId(player.getUniqueID()));
+					data.put("DeathChestPlayer", NBTUtil.func_240626_a_(player.getUniqueID()));
 					data.put("DeathChestPos", NBTUtil.writeBlockPos(pos));
 				}
 			}

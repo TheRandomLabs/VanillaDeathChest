@@ -12,9 +12,9 @@ import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.TickEvent;
@@ -85,7 +85,7 @@ public final class DeathChestPlaceHandler {
 	public static Queue<DeathChestPlacer> getPlacers(World world) {
 		synchronized (PLACERS) {
 			return PLACERS.computeIfAbsent(
-					world.getDimension().getType(),
+					world.func_230315_m_(),
 					key -> Queues.newConcurrentLinkedQueue()
 			);
 		}

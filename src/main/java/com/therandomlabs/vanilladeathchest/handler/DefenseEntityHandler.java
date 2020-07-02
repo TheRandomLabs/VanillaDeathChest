@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -46,15 +47,15 @@ public final class DefenseEntityHandler {
 		}
 
 		final BlockPos pos = NBTUtil.readBlockPos(data.getCompound("DeathChestPos"));
-		final BlockPos entityPos = entity.getPosition();
+		final Vector3d entityPos = entity.getPositionVec();
 
-		final double distanceSq = entityPos.distanceSq(pos);
+		final double distanceSq = entityPos.squareDistanceTo(pos.getX(), pos.getY(), pos.getZ());
 		final double distanceSqFromPlayer;
 
 		if (player == null) {
 			distanceSqFromPlayer = Double.MAX_VALUE;
 		} else {
-			distanceSqFromPlayer = entityPos.distanceSq(player.getPosition());
+			distanceSqFromPlayer = entityPos.squareDistanceTo(player.getPositionVec());
 		}
 
 		if (distanceSq > VDCConfig.Defense.defenseEntityMaxDistanceSquared) {

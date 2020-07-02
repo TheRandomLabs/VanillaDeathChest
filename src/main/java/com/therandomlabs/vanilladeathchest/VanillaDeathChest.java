@@ -24,8 +24,10 @@ public final class VanillaDeathChest {
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 
 		if (!VDCConfig.Misc.gameRuleName.isEmpty()) {
-			disableDeathChests = GameRules.register(
-					VDCConfig.Misc.gameRuleName, GameRules.BooleanValue.create(false)
+			disableDeathChests = GameRules.func_234903_a_(
+					VDCConfig.Misc.gameRuleName,
+					GameRules.Category.DROPS,
+					GameRules.BooleanValue.create(false)
 			);
 		}
 	}

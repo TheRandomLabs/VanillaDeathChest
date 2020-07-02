@@ -15,7 +15,7 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -74,7 +74,7 @@ public final class DeathChestDropHandler {
 			return;
 		}
 
-		final Vec3d pos = event.getEntity().getPositionVector();
+		final Vector3d pos = event.getEntity().getPositionVec();
 
 		for (Map.Entry<BlockPos, Block> entry : justRemoved.entrySet()) {
 			if (block != entry.getValue()) {

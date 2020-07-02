@@ -38,7 +38,7 @@ public final class DeathChestContentsChecker {
 			final BlockPos pos = entry.getKey();
 
 			//Make sure we don't unnecessarily load any chunks
-			final Chunk chunk = provider.func_225313_a(pos.getX() >> 4, pos.getZ() >> 4);
+			final Chunk chunk = provider.getChunkWithoutLoading(pos.getX() >> 4, pos.getZ() >> 4);
 
 			if (chunk == null || chunk.isEmpty()) {
 				continue;

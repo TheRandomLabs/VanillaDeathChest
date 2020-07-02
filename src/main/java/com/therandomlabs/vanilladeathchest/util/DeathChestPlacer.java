@@ -24,9 +24,11 @@
 package com.therandomlabs.vanilladeathchest.util;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -48,22 +50,24 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.DyeColor;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 
 public final class DeathChestPlacer {
 	public enum DeathChestType {
 		SINGLE_ONLY,
 		SINGLE_OR_DOUBLE,
 		SHULKER_BOX,
-		RANDOM_SHULKER_BOX_COLOR
+		DOUBLE_SHULKER_BOX
 	}
-
-	private static final Random random = new Random();
 
 	private final WeakReference<ServerWorld> world;
 	private final WeakReference<PlayerEntity> player;
@@ -107,15 +111,106 @@ public final class DeathChestPlacer {
 		return true;
 	}
 
-	@SuppressWarnings("NullAway")
+	@SuppressWarnings({"Duplicates", "NullAway"})
 	private void place(ServerWorld world, PlayerEntity player) {
 		final DeathChestType type = VDCConfig.Spawning.chestType;
 
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = new BlockPos(player.getPos());
 
-		boolean useDoubleChest =
-				type == DeathChestType.SINGLE_OR_DOUBLE && drops.size() > 27;
+		final Pattern pattern = Pattern.compile(VDCConfig.Spawning.registryNameRegex);
+		final List<ItemEntity> filtered = drops.stream().
+				filter(item -> pattern.matcher(
+						Registry.ITEM.getId(item.getStack().getItem()).toString()
+				).matches()).
+				collect(Collectors.toList());
+
+		boolean useDoubleChest = (type == DeathChestType.SINGLE_OR_DOUBLE ||
+				type == DeathChestType.DOUBLE_SHULKER_BOX) && filtered.size() > 27;
+
+		if (VDCConfig.Spawning.useContainerInInventory) {
+			final List<ItemEntity> empty = new ArrayList<>();
+
+			boolean foundOne = false;
+			boolean foundAll = false;
+
+			for (ItemEntity item : drops) {
+				final ItemStack stack = item.getStack();
+
+				if (type == DeathChestType.SINGLE_ONLY || type == DeathChestType.SINGLE_OR_DOUBLE) {
+					if (stack.getItem() != Item.BLOCK_ITEMS.get(Blocks.CHEST)) {
+						continue;
+					}
+				} else {
+					if (!(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock)) {
+						continue;
+					}
+
+					final CompoundTag tag = stack.getTag();
+
+					if (tag != null) {
+						final DefaultedList<ItemStack> inventory =
+								DefaultedList.ofSize(27, ItemStack.EMPTY);
+						Inventories.fromTag(tag.getCompound("BlockEntityTag"), inventory);
+
+						//Shulker box must be empty.
+						if (inventory.stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
+							continue;
+						}
+					}
+				}
+
+				if (!useDoubleChest) {
+					stack.decrement(1);
+
+					if (stack.isEmpty()) {
+						empty.add(item);
+					}
+
+					foundAll = true;
+					break;
+				}
+
+				if (stack.getCount() > 1) {
+					stack.decrement(2);
+
+					if (stack.isEmpty()) {
+						empty.add(item);
+					}
+
+					foundAll = true;
+					break;
+				}
+
+				stack.decrement(1);
+
+				if (stack.isEmpty()) {
+					empty.add(item);
+				}
+
+				if (foundOne) {
+					foundAll = true;
+					break;
+				}
+
+				foundOne = true;
+			}
+
+			if (useDoubleChest) {
+				if (!foundAll) {
+					if (!foundOne) {
+						return;
+					}
+
+					useDoubleChest = false;
+				}
+			} else if (!foundAll) {
+				return;
+			}
+
+			drops.removeAll(empty);
+			filtered.removeAll(empty);
+		}
 
 		final AtomicBoolean doubleChest = new AtomicBoolean(useDoubleChest);
 
@@ -133,13 +228,8 @@ public final class DeathChestPlacer {
 
 		final Block block;
 
-		if (type == DeathChestType.SHULKER_BOX) {
-			//TODO ColorConfig.get()
-			block = ShulkerBoxBlock.get(DyeColor.valueOf(
-					VDCConfig.Spawning.shulkerBoxColor.name()
-			));
-		} else if (type == DeathChestType.RANDOM_SHULKER_BOX_COLOR) {
-			block = ShulkerBoxBlock.get(DyeColor.byId(random.nextInt(16)));
+		if (type == DeathChestType.SHULKER_BOX || type == DeathChestType.DOUBLE_SHULKER_BOX) {
+			block = ShulkerBoxBlock.get(VDCConfig.Spawning.shulkerBoxColor.get());
 		} else {
 			block = Blocks.CHEST;
 		}
@@ -147,9 +237,14 @@ public final class DeathChestPlacer {
 		final BlockState state = block.getDefaultState();
 		final BlockPos east = pos.east();
 
-		if(useDoubleChest) {
-			world.setBlockState(pos, state.with(ChestBlock.CHEST_TYPE, ChestType.LEFT));
-			world.setBlockState(east, state.with(ChestBlock.CHEST_TYPE, ChestType.RIGHT));
+		if (useDoubleChest) {
+			if (block == Blocks.CHEST) {
+				world.setBlockState(pos, state.with(ChestBlock.CHEST_TYPE, ChestType.LEFT));
+				world.setBlockState(east, state.with(ChestBlock.CHEST_TYPE, ChestType.RIGHT));
+			} else {
+				world.setBlockState(pos, state);
+				world.setBlockState(east, state);
+			}
 		} else {
 			world.setBlockState(pos, state);
 		}
@@ -157,7 +252,7 @@ public final class DeathChestPlacer {
 		final BlockEntity blockEntity = world.getBlockEntity(pos);
 		final BlockEntity blockEntity2 = useDoubleChest ? world.getBlockEntity(east) : null;
 
-		if(!(blockEntity instanceof LootableContainerBlockEntity) ||
+		if (!(blockEntity instanceof LootableContainerBlockEntity) ||
 				(useDoubleChest && !(blockEntity2 instanceof LootableContainerBlockEntity))) {
 			VanillaDeathChest.logger.warn(
 					"Failed to place death chest at [{}] due to invalid block entity", pos
@@ -168,22 +263,31 @@ public final class DeathChestPlacer {
 		LootableContainerBlockEntity chest =
 				(LootableContainerBlockEntity) (useDoubleChest ? blockEntity2 : blockEntity);
 
-		for(int i = 0; i < 27 && !drops.isEmpty(); i++) {
-			chest.setInvStack(i, drops.get(0).getStack());
-			drops.remove(0);
-		}
-
-		if(useDoubleChest) {
-			chest = (LootableContainerBlockEntity) blockEntity;
-
-			for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
-				chest.setInvStack(i, drops.get(0).getStack());
-				drops.remove(0);
-			}
+		for (int i = 0; i < 27 && !filtered.isEmpty(); i++) {
+			final ItemEntity item = filtered.get(0);
+			chest.setInvStack(i, item.getStack());
+			filtered.remove(0);
+			drops.remove(item);
 		}
 
 		if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
 			chest.setCustomName(new LiteralText(VDCConfig.Spawning.containerDisplayName));
+		}
+
+		if (useDoubleChest) {
+			chest = (LootableContainerBlockEntity) blockEntity;
+
+			for (int i = 0; i < 27 && !filtered.isEmpty(); i++) {
+				final ItemEntity item = filtered.get(0);
+				chest.setInvStack(i, item.getStack());
+				filtered.remove(0);
+				drops.remove(item);
+			}
+
+			//If this is a shulker box, this has to be set separately.
+			if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
+				chest.setCustomName(new LiteralText(VDCConfig.Spawning.containerDisplayName));
+			}
 		}
 
 		if (VDCConfig.Defense.defenseEntityRegistryName != null) {

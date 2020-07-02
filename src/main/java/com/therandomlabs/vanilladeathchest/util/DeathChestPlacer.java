@@ -50,12 +50,14 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
@@ -139,8 +141,23 @@ public final class DeathChestPlacer {
 					if (stack.getItem() != Item.BLOCK_ITEMS.get(Blocks.CHEST)) {
 						continue;
 					}
-				} else if (!(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock)) {
-					continue;
+				} else {
+					if (!(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock)) {
+						continue;
+					}
+
+					final CompoundTag tag = stack.getTag();
+
+					if (tag != null) {
+						final DefaultedList<ItemStack> inventory =
+								DefaultedList.ofSize(27, ItemStack.EMPTY);
+						Inventories.fromTag(tag.getCompound("BlockEntityTag"), inventory);
+
+						//Shulker box must be empty.
+						if (inventory.stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
+							continue;
+						}
+					}
 				}
 
 				if (!useDoubleChest) {
@@ -246,9 +263,11 @@ public final class DeathChestPlacer {
 		LootableContainerBlockEntity chest =
 				(LootableContainerBlockEntity) (useDoubleChest ? blockEntity2 : blockEntity);
 
-		for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
-			chest.setInvStack(i, drops.get(0).getStack());
-			drops.remove(0);
+		for (int i = 0; i < 27 && !filtered.isEmpty(); i++) {
+			final ItemEntity item = filtered.get(0);
+			chest.setInvStack(i, item.getStack());
+			filtered.remove(0);
+			drops.remove(item);
 		}
 
 		if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
@@ -258,9 +277,11 @@ public final class DeathChestPlacer {
 		if (useDoubleChest) {
 			chest = (LootableContainerBlockEntity) blockEntity;
 
-			for (int i = 0; i < 27 && !drops.isEmpty(); i++) {
-				chest.setInvStack(i, drops.get(0).getStack());
-				drops.remove(0);
+			for (int i = 0; i < 27 && !filtered.isEmpty(); i++) {
+				final ItemEntity item = filtered.get(0);
+				chest.setInvStack(i, item.getStack());
+				filtered.remove(0);
+				drops.remove(item);
 			}
 
 			//If this is a shulker box, this has to be set separately.

@@ -6,9 +6,10 @@
 		"MixinBlock",
 		"MixinExplosion",
 		"MixinLivingEntity",
-		"MixinPlayerEntity",,
+		"MixinPlayerEntity",
 		"MixinPlayerInventory",
-		"MixinServerPlayerInteractionManager"
+		"MixinServerPlayerInteractionManager",
+		"MixinShulkerBoxBlock"
 	],
 	"client": [],
 	"injectors": {

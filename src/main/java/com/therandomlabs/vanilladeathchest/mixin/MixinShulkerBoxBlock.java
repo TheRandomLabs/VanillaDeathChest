@@ -27,37 +27,39 @@ import java.util.Collections;
 import java.util.List;
 
 import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
-import net.minecraft.block.Block;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @SuppressWarnings("UnusedMethod")
-@Mixin(Block.class)
-public class MixinBlock {
+@Mixin(ShulkerBoxBlock.class)
+public class MixinShulkerBoxBlock {
 	@SuppressWarnings("Duplicates")
-	@Inject(
-			method = "dropStack",
+	@Redirect(
+			method = "onBreak",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;" +
-					"spawnEntity(Lnet/minecraft/entity/Entity;)Z"),
-			cancellable = true
+					"spawnEntity(Lnet/minecraft/entity/Entity;)Z")
 	)
-	private static void dropStack(
-			World world, BlockPos pos, ItemStack stack, CallbackInfo callbackInfo
-	) {
+	public boolean onBreak(World world, Entity entity) {
+		final BlockPos pos = entity.getBlockPos();
+		final ItemStack stack = ((ItemEntity) entity).getStack();
+
 		List<ItemStack> drops = GetBlockDropCallback.EVENT.invoker().getDrop(world, pos, stack);
 
-		if(drops == null) {
+		if (drops == null) {
 			drops = Collections.singletonList(stack);
 		}
 
-		for(ItemStack drop : drops) {
-			if(!drop.isEmpty()) {
+		boolean dropped = false;
+
+		for (ItemStack drop : drops) {
+			if (!drop.isEmpty()) {
 				final ItemEntity item = new ItemEntity(
 						world,
 						pos.getX() + world.random.nextFloat() * 0.5F + 0.25,
@@ -67,8 +69,10 @@ public class MixinBlock {
 				);
 				item.setToDefaultPickupDelay();
 				world.spawnEntity(item);
+				dropped = true;
 			}
 		}
-		callbackInfo.cancel();
+
+		return dropped;
 	}
 }

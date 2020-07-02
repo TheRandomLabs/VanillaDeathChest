@@ -203,7 +203,8 @@ public final class VDCConfig {
 		@Config.Property({
 				"Whether death chests should only be spawned if the container can be found in " +
 						"the player's inventory.",
-				"If this is enabled, the container is consumed if it is found."
+				"If this is enabled, the container is consumed if it is found.",
+				"If the container is a shulker box, it must be empty."
 		})
 		public static boolean useContainerInInventory;
 

@@ -24,6 +24,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -32,6 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityLockableLoot;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -133,8 +135,25 @@ public final class DeathChestPlacer {
 					if (stack.getItem() != Item.getItemFromBlock(Blocks.CHEST)) {
 						continue;
 					}
-				} else if (!(Block.getBlockFromItem(stack.getItem()) instanceof BlockShulkerBox)) {
-					continue;
+				} else {
+					if (!(Block.getBlockFromItem(stack.getItem()) instanceof BlockShulkerBox)) {
+						continue;
+					}
+
+					final NBTTagCompound compound = stack.getTagCompound();
+
+					if (compound != null) {
+						final NonNullList<ItemStack> inventory =
+								NonNullList.withSize(27, ItemStack.EMPTY);
+						ItemStackHelper.loadAllItems(
+								compound.getCompoundTag("BlockEntityTag"), inventory
+						);
+
+						//Shulker box must be empty.
+						if (inventory.stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
+							continue;
+						}
+					}
 				}
 
 				if (!useDoubleChest) {

@@ -38,7 +38,7 @@ import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.checkerframework.checker.nullness.qual.Nullable;

@@ -31,7 +31,6 @@ import com.therandomlabs.vanilladeathchest.api.event.block.ExplosionDetonationCa
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.MessageType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
@@ -154,11 +153,7 @@ public class DeathChestInteractionHandler implements
 					).formatted().asString().trim()
 			));
 
-			if(VDCConfig.Defense.unlockFailedStatusMessage) {
-				player.addChatMessage(component, true);
-			} else {
-				player.sendChatMessage(component, MessageType.CHAT);
-			}
+			player.sendMessage(component, VDCConfig.Defense.unlockFailedStatusMessage);
 		}
 
 		return false;

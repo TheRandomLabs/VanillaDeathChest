@@ -47,7 +47,7 @@ import net.minecraft.block.enums.ChestType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.SpawnType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
@@ -57,7 +57,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
@@ -265,7 +265,7 @@ public final class DeathChestPlacer {
 
 		for (int i = 0; i < 27 && !filtered.isEmpty(); i++) {
 			final ItemEntity item = filtered.get(0);
-			chest.setInvStack(i, item.getStack());
+			chest.setStack(i, item.getStack());
 			filtered.remove(0);
 			drops.remove(item);
 		}
@@ -279,7 +279,7 @@ public final class DeathChestPlacer {
 
 			for (int i = 0; i < 27 && !filtered.isEmpty(); i++) {
 				final ItemEntity item = filtered.get(0);
-				chest.setInvStack(i, item.getStack());
+				chest.setStack(i, item.getStack());
 				filtered.remove(0);
 				drops.remove(item);
 			}
@@ -316,7 +316,7 @@ public final class DeathChestPlacer {
 
 					living.setPersistent();
 					living.initialize(
-							world, world.getLocalDifficulty(pos), SpawnType.EVENT, null, null
+							world, world.getLocalDifficulty(pos), SpawnReason.EVENT, null, null
 					);
 					living.setAttacker(player);
 
@@ -332,7 +332,7 @@ public final class DeathChestPlacer {
 
 		VanillaDeathChest.logger.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
 
-		player.addChatMessage(new LiteralText(String.format(
+		player.sendMessage(new LiteralText(String.format(
 				VDCConfig.Spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
 		)), false);
 	}

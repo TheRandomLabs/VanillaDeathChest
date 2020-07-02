@@ -69,7 +69,7 @@ public class DeathChestContentsChecker implements ServerTickCallback {
 				continue;
 			}
 
-			if (((LockableContainerBlockEntity) blockEntity).isInvEmpty() &&
+			if (((LockableContainerBlockEntity) blockEntity).isEmpty() &&
 					ChestBlockEntity.getPlayersLookingInChestCount(world, pos) == 0 &&
 					DeathChestManager.removeDeathChest(world, pos) != null) {
 				world.setBlockState(pos, Blocks.AIR.getDefaultState());

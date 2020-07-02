@@ -165,7 +165,7 @@ public class DeathChestLocationFinder {
 	}
 
 	private static boolean isReplaceable(World world, BlockPos pos, ItemPlacementContext context) {
-		if(pos.getY() < 1 || pos.getY() > world.getEffectiveHeight()) {
+		if (pos.getY() < 1 || pos.getY() > world.getHeight()) {
 			return false;
 		}
 

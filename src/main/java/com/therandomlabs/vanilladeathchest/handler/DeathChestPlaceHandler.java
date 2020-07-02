@@ -49,20 +49,20 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsCallback, Serve
 	public boolean onPlayerDropAllItems(
 			ServerWorld world, PlayerEntity player, List<ItemEntity> drops
 	) {
-		if(drops.isEmpty()) {
+		if (drops.isEmpty()) {
 			return true;
 		}
 
 		final GameRules gameRules = world.getGameRules();
 
-		if(gameRules.getBoolean(GameRules.KEEP_INVENTORY)) {
+		if (gameRules.getBoolean(GameRules.KEEP_INVENTORY)) {
 			return true;
 		}
 
-		final GameRules.RuleKey<GameRules.BooleanRule> key =
+		final GameRules.Key<GameRules.BooleanRule> key =
 				VanillaDeathChest.getDisableDeathChestsKey();
 
-		if(key != null && gameRules.getBoolean(key)) {
+		if (key != null && gameRules.getBoolean(key)) {
 			return true;
 		}
 
@@ -81,7 +81,7 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsCallback, Serve
 	public static Queue<DeathChestPlacer> getPlacers(World world) {
 		synchronized(PLACERS) {
 			return PLACERS.computeIfAbsent(
-					world.dimension.getType(),
+					world.getDimension(),
 					key -> Queues.newConcurrentLinkedQueue()
 			);
 		}

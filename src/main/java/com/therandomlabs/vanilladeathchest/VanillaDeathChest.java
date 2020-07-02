@@ -74,14 +74,15 @@ public final class VanillaDeathChest implements ModInitializer {
 					serverSuccessMessage("VanillaDeathChest configuration reloaded!");
 
 	private static final Method REGISTER = FabricUtils.findMethod(
-			GameRules.class, "register", "method_8359", String.class, GameRules.RuleType.class
+			GameRules.class, "register", "method_8359", String.class, GameRules.Category.class,
+			GameRules.Type.class
 	);
 
-	private static final Method OF = FabricUtils.findMethod(
+	private static final Method CREATE = FabricUtils.findMethod(
 			GameRules.BooleanRule.class, "create", "method_20759", boolean.class
 	);
 
-	private static GameRules.RuleKey<GameRules.BooleanRule> disableDeathChests;
+	private static GameRules.Key<GameRules.BooleanRule> disableDeathChests;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -91,8 +92,9 @@ public final class VanillaDeathChest implements ModInitializer {
 
 		if (!VDCConfig.Misc.gameRuleName.isEmpty()) {
 			try {
-				disableDeathChests = (GameRules.RuleKey<GameRules.BooleanRule>) REGISTER.invoke(
-						null, VDCConfig.Misc.gameRuleName, OF.invoke(null, false)
+				disableDeathChests = (GameRules.Key<GameRules.BooleanRule>) REGISTER.invoke(
+						null, VDCConfig.Misc.gameRuleName, GameRules.Category.DROPS,
+						CREATE.invoke(null, false)
 				);
 			} catch (IllegalAccessException | InvocationTargetException ex) {
 				crashReport("Failed to register disableDeathChests gamerule", ex);
@@ -133,7 +135,7 @@ public final class VanillaDeathChest implements ModInitializer {
 		ServerTickCallback.EVENT.register(new DeathChestContentsChecker());
 	}
 
-	public static GameRules.RuleKey<GameRules.BooleanRule> getDisableDeathChestsKey() {
+	public static GameRules.Key<GameRules.BooleanRule> getDisableDeathChestsKey() {
 		return disableDeathChests;
 	}
 

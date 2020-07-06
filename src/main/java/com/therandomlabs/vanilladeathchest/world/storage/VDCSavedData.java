@@ -50,7 +50,7 @@ public class VDCSavedData extends WorldSavedData {
 		for (INBT tag : list) {
 			final CompoundNBT compound = (CompoundNBT) tag;
 
-			final UUID playerID = NBTUtil.readUniqueId(compound.getCompound(UUID_KEY));
+			final UUID playerID = NBTUtil.readUniqueId(compound.get(UUID_KEY));
 			final long creationTime = compound.getLong(CREATION_TIME_KEY);
 			final BlockPos pos = NBTUtil.readBlockPos(compound.getCompound(POS_KEY));
 			final boolean isDoubleChest = compound.getBoolean(IS_DOUBLE_CHEST_KEY);

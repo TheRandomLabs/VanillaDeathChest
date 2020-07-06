@@ -1,4 +1,4 @@
-version = "1.16.1-1.11.0.2-fabric"
+version = "1.16.1-1.11.0.3-fabric"
 group = "com.therandomlabs.vanilladeathchest"
 
 apply from: "https://raw.githubusercontent.com/TheRandomLabs/Common-Gradle/master/fabric/1.16.gradle"

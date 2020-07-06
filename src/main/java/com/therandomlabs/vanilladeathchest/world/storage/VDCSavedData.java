@@ -80,7 +80,7 @@ public class VDCSavedData extends PersistentState {
 		for(Tag tag : list) {
 			final CompoundTag compound = (CompoundTag) tag;
 
-			final UUID playerID = NbtHelper.toUuid(compound.getCompound(UUID_KEY));
+			final UUID playerID = NbtHelper.toUuid(compound.get(UUID_KEY));
 			final long creationTime = compound.getLong(CREATION_TIME_KEY);
 			final BlockPos pos = NbtHelper.toBlockPos(compound.getCompound(POS_KEY));
 			final boolean isDoubleChest = compound.getBoolean(IS_DOUBLE_CHEST_KEY);

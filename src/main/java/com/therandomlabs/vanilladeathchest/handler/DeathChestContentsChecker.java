@@ -29,33 +29,26 @@ import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.ChunkManager;
 
-public class DeathChestContentsChecker implements ServerTickCallback {
+public class DeathChestContentsChecker implements ServerTickEvents.EndWorldTick {
 	@Override
-	public void tick(MinecraftServer server) {
-		for(ServerWorld world : server.getWorlds()) {
-			worldTick(world);
-		}
-	}
-
-	private static void worldTick(ServerWorld world) {
-		if(!VDCConfig.Misc.deathChestsDisappearWhenEmptied) {
+	public void onEndTick(ServerWorld world) {
+		if (!VDCConfig.Misc.deathChestsDisappearWhenEmptied) {
 			return;
 		}
 
 		final VDCSavedData savedData = VDCSavedData.get(world);
 		final ChunkManager provider = world.getChunkManager();
 
-		for(Map.Entry<BlockPos, DeathChest> entry : savedData.getDeathChests().entrySet()) {
+		for (Map.Entry<BlockPos, DeathChest> entry : savedData.getDeathChests().entrySet()) {
 			final BlockPos pos = entry.getKey();
 
 			//Make sure we don't unnecessarily load any chunks

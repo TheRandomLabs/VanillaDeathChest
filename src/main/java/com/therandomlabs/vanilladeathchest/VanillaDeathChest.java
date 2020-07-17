@@ -45,9 +45,10 @@ import com.therandomlabs.vanilladeathchest.handler.DeathChestInteractionHandler;
 import com.therandomlabs.vanilladeathchest.handler.DeathChestPlaceHandler;
 import com.therandomlabs.vanilladeathchest.handler.DefenseEntityHandler;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.world.GameRules;
@@ -58,7 +59,7 @@ import org.apache.logging.log4j.Logger;
  * The main VanillaDeathChest class.
  */
 @SuppressWarnings("NullAway")
-public final class VanillaDeathChest implements ModInitializer {
+public final class VanillaDeathChest implements ModInitializer, CommandRegistrationCallback {
 	/**
 	 * The VanillaDeathChest mod ID.
 	 */
@@ -101,18 +102,10 @@ public final class VanillaDeathChest implements ModInitializer {
 			}
 		}
 
-		if (VDCConfig.Misc.vdcreload) {
-			CommandRegistry.INSTANCE.register(
-					false,
-					dispatcher ->
-							configReloadCommand.registerServer((CommandDispatcher) dispatcher)
-			);
-		}
-
 		final DeathChestPlaceHandler placeHandler = new DeathChestPlaceHandler();
 
 		PlayerDropAllItemsCallback.EVENT.register(placeHandler);
-		ServerTickCallback.EVENT.register(placeHandler);
+		ServerTickEvents.END_WORLD_TICK.register(placeHandler);
 
 		final DeathChestInteractionHandler interactionHandler = new DeathChestInteractionHandler();
 
@@ -123,7 +116,7 @@ public final class VanillaDeathChest implements ModInitializer {
 		final DeathChestDropHandler dropHandler = new DeathChestDropHandler();
 
 		GetBlockDropCallback.EVENT.register(dropHandler);
-		ServerTickCallback.EVENT.register(dropHandler);
+		ServerTickEvents.END_SERVER_TICK.register(dropHandler);
 		DeathChestRemoveCallback.EVENT.register(dropHandler);
 
 		final DefenseEntityHandler defenseEntityHandler = new DefenseEntityHandler();
@@ -132,7 +125,14 @@ public final class VanillaDeathChest implements ModInitializer {
 		LivingEntityDropExperienceCallback.EVENT.register(defenseEntityHandler);
 		LivingEntityTickCallback.EVENT.register(defenseEntityHandler);
 
-		ServerTickCallback.EVENT.register(new DeathChestContentsChecker());
+		ServerTickEvents.END_WORLD_TICK.register(new DeathChestContentsChecker());
+	}
+
+	@Override
+	public void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+		if (VDCConfig.Misc.vdcreload) {
+			configReloadCommand.registerServer((CommandDispatcher) dispatcher);
+		}
 	}
 
 	public static GameRules.Key<GameRules.BooleanRule> getDisableDeathChestsKey() {

@@ -32,7 +32,7 @@ import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.deathchest.DeathChestRemoveCallback;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.inventory.Inventories;
@@ -44,7 +44,7 @@ import net.minecraft.world.World;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class DeathChestDropHandler implements
-		DeathChestRemoveCallback, GetBlockDropCallback, ServerTickCallback {
+		DeathChestRemoveCallback, GetBlockDropCallback, ServerTickEvents.EndTick {
 	private static final Set<BlockPos> justRemoved = new HashSet<>();
 
 	@Override
@@ -81,7 +81,7 @@ public class DeathChestDropHandler implements
 	}
 
 	@Override
-	public void tick(MinecraftServer server) {
+	public void onEndTick(MinecraftServer server) {
 		justRemoved.clear();
 	}
 }

@@ -33,16 +33,16 @@ import com.google.common.collect.Queues;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
 import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
-public class DeathChestPlaceHandler implements PlayerDropAllItemsCallback, ServerTickCallback {
+public class DeathChestPlaceHandler
+		implements PlayerDropAllItemsCallback, ServerTickEvents.EndWorldTick {
 	private static final Map<DimensionType, Queue<DeathChestPlacer>> PLACERS = new HashMap<>();
 
 	@Override
@@ -72,32 +72,26 @@ public class DeathChestPlaceHandler implements PlayerDropAllItemsCallback, Serve
 	}
 
 	@Override
-	public void tick(MinecraftServer server) {
-		for(World world : server.getWorlds()) {
-			worldTick(world);
-		}
-	}
-
-	public static Queue<DeathChestPlacer> getPlacers(World world) {
-		synchronized(PLACERS) {
-			return PLACERS.computeIfAbsent(
-					world.getDimension(),
-					key -> Queues.newConcurrentLinkedQueue()
-			);
-		}
-	}
-
-	private static void worldTick(World world) {
+	public void onEndTick(ServerWorld world) {
 		final Queue<DeathChestPlacer> placers = getPlacers(world);
 		final List<DeathChestPlacer> toReadd = new ArrayList<>();
 		DeathChestPlacer placer;
 
-		while((placer = placers.poll()) != null) {
-			if(!placer.run()) {
+		while ((placer = placers.poll()) != null) {
+			if (!placer.run()) {
 				toReadd.add(placer);
 			}
 		}
 
 		placers.addAll(toReadd);
+	}
+
+	public static Queue<DeathChestPlacer> getPlacers(World world) {
+		synchronized (PLACERS) {
+			return PLACERS.computeIfAbsent(
+					world.getDimension(),
+					key -> Queues.newConcurrentLinkedQueue()
+			);
+		}
 	}
 }

@@ -5,8 +5,8 @@ import com.therandomlabs.utils.forge.config.ConfigReloadCommand;
 import com.therandomlabs.utils.forge.config.ForgeConfig;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,7 @@ public final class VanillaDeathChest {
 		ForgeConfig.initialize();
 		ConfigManager.register(VDCConfig.class);
 
-		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 
 		if (!VDCConfig.Misc.gameRuleName.isEmpty()) {
 			disableDeathChests = GameRules.func_234903_a_(
@@ -32,13 +32,11 @@ public final class VanillaDeathChest {
 		}
 	}
 
-	private void serverStarting(FMLServerStartingEvent event) {
-		if (VDCConfig.Misc.vdcreload) {
-			ConfigReloadCommand.server(
-					event.getCommandDispatcher(), "vdcreload", "vdcreloadclient", VDCConfig.class,
-					"VanillaDeathChest configuration reloaded!"
-			);
-		}
+	private void registerCommands(RegisterCommandsEvent event) {
+		ConfigReloadCommand.server(
+				event.getDispatcher(), "vdcreload", "vdcreloadclient", VDCConfig.class,
+				"VanillaDeathChest configuration reloaded!"
+		);
 	}
 
 	public static GameRules.RuleKey<GameRules.BooleanValue> getDisableDeathChestsKey() {

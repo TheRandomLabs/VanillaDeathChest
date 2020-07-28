@@ -34,7 +34,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.TagHelper;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -81,17 +81,17 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	@Inject(method = "writeCustomDataToTag", at = @At("HEAD"))
 	public void writeCustomDataToTag(CompoundTag tag, CallbackInfo callback) {
 		if((Object) this instanceof MobEntity && deathChestPlayer != null) {
-			tag.put("DeathChestPlayer", TagHelper.serializeUuid(deathChestPlayer));
-			tag.put("DeathChestPos", TagHelper.serializeBlockPos(deathChestPos));
+			tag.put("DeathChestPlayer", NbtHelper.fromUuid(deathChestPlayer));
+			tag.put("DeathChestPos", NbtHelper.fromBlockPos(deathChestPos));
 		}
 	}
 
 	@Inject(method = "readCustomDataFromTag", at = @At("HEAD"))
 	public void readCustomDataFromTag(CompoundTag tag, CallbackInfo callback) {
 		//noinspection ConstantConditions
-		if ((Object) this instanceof MobEntity && tag.containsKey("DeathChestPlayer")) {
-			deathChestPlayer = TagHelper.deserializeUuid(tag.getCompound("DeathChestPlayer"));
-			deathChestPos = TagHelper.deserializeBlockPos(tag.getCompound("DeathChestPos"));
+		if ((Object) this instanceof MobEntity && tag.contains("DeathChestPlayer")) {
+			deathChestPlayer = NbtHelper.toUuid(tag.getCompound("DeathChestPlayer"));
+			deathChestPos = NbtHelper.toBlockPos(tag.getCompound("DeathChestPos"));
 		}
 	}
 

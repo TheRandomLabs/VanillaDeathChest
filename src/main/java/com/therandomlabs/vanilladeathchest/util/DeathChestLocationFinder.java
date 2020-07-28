@@ -179,16 +179,16 @@ public class DeathChestLocationFinder {
 
 	private static boolean isOnSolidBlocks(World world, PlayerEntity player, BlockPos pos,
 			boolean isDoubleChest) {
-		if(!VDCConfig.Spawning.mustBeOnSolidBlocks) {
+		if (!VDCConfig.Spawning.mustBeOnSolidBlocks) {
 			return true;
 		}
 
 		final BlockPos down = pos.down();
 
-		if(!world.doesBlockHaveSolidTopSurface(down, player)) {
+		if (!world.isTopSolid(down, player)) {
 			return false;
 		}
 
-		return !isDoubleChest || world.doesBlockHaveSolidTopSurface(down.east(), player);
+		return !isDoubleChest || world.isTopSolid(down.east(), player);
 	}
 }

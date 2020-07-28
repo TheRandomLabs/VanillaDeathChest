@@ -80,7 +80,7 @@ public class DefenseEntityHandler implements
 					VDCConfig.Defense.defenseEntityMaxDistanceSquaredFromPlayer;
 
 			if(maxDistanceSqFromPlayer == 0.0 || distanceSqFromPlayer > maxDistanceSqFromPlayer) {
-				entity.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+				entity.updatePosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
 			}
 		}
 	}

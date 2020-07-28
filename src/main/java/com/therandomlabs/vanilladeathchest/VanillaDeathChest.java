@@ -126,6 +126,8 @@ public final class VanillaDeathChest implements ModInitializer, CommandRegistrat
 		LivingEntityTickCallback.EVENT.register(defenseEntityHandler);
 
 		ServerTickEvents.END_WORLD_TICK.register(new DeathChestContentsChecker());
+
+		CommandRegistrationCallback.EVENT.register(this);
 	}
 
 	@Override

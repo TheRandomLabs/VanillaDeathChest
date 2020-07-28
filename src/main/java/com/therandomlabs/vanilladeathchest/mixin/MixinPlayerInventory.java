@@ -41,7 +41,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("NullAway")
-@Mixin(PlayerInventory.class)
+@Mixin(value = PlayerInventory.class, priority = Integer.MAX_VALUE)
 public class MixinPlayerInventory implements DropsList {
 	@Shadow
 	@Final

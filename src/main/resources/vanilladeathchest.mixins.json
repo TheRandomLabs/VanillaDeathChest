@@ -7,7 +7,6 @@
 		"MixinExplosion",
 		"MixinLivingEntity",
 		"MixinPlayerEntity",
-		"MixinPlayerInventory",
 		"MixinServerPlayerInteractionManager",
 		"MixinShulkerBoxBlock"
 	],

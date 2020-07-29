@@ -48,7 +48,7 @@ public class MixinBlock {
 			cancellable = true
 	)
 	private static void dropStack(
-			World world, BlockPos pos, ItemStack stack, CallbackInfo callbackInfo
+			World world, BlockPos pos, ItemStack stack, CallbackInfo callback
 	) {
 		List<ItemStack> drops = GetBlockDropCallback.EVENT.invoker().getDrop(world, pos, stack);
 
@@ -69,6 +69,7 @@ public class MixinBlock {
 				world.spawnEntity(item);
 			}
 		}
-		callbackInfo.cancel();
+
+		callback.cancel();
 	}
 }

@@ -23,7 +23,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
 compileJava.targetCompatibility = JavaVersion.VERSION_1_8
 
-version = "1.16.1-1.11.0.4"
+version = "1.16.2-1.11.0.5"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 
@@ -78,7 +78,7 @@ repositories {
 }
 
 dependencies {
-	minecraft "net.minecraftforge:forge:1.16.1-32.0.68"
+	minecraft "net.minecraftforge:forge:1.16.2-33.0.5"
 
 	compile group: "com.github.TheRandomLabs", name: "TRLUtils-Forge", version: "1.16-SNAPSHOT", changing: true
 	nonModDep group: "com.github.TheRandomLabs", name: "TRLUtils-Forge", version: "1.16-SNAPSHOT", changing: true

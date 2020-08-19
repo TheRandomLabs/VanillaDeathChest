@@ -23,18 +23,25 @@
 
 package com.therandomlabs.vanilladeathchest.mixin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import com.therandomlabs.vanilladeathchest.api.DropsList;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityTickCallback;
+import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,10 +51,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("NullAway")
-@Mixin(LivingEntity.class)
-public class MixinLivingEntity implements DeathChestDefenseEntity {
+@Mixin(value = LivingEntity.class, priority = Integer.MAX_VALUE)
+public class MixinLivingEntity implements DeathChestDefenseEntity, DropsList {
 	private UUID deathChestPlayer;
 	private BlockPos deathChestPos;
+
+	private final ArrayList<ItemEntity> drops = new ArrayList<>();
 
 	@Override
 	public UUID getDeathChestPlayer() {
@@ -69,9 +78,37 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 		deathChestPos = pos;
 	}
 
+	@Override
+	public ArrayList<ItemEntity> getDrops() {
+		return drops;
+	}
+
+	@Inject(method = "drop", at = @At("HEAD"))
+	public void dropInventoryHead(CallbackInfo callback) {
+		if ((Object) this instanceof PlayerEntity) {
+			drops.clear();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Inject(method = "drop", at = @At("TAIL"))
+	public void dropInventoryTail(CallbackInfo callback) {
+		if (!((Object) this instanceof PlayerEntity)) {
+			return;
+		}
+
+		final PlayerEntity player = (PlayerEntity) (Object) this;
+
+		if (!PlayerDropAllItemsCallback.EVENT.invoker().onPlayerDropAllItems(
+				(ServerWorld) player.getEntityWorld(), player, (List<ItemEntity>) drops.clone()
+		)) {
+			drops.forEach(Entity::remove);
+		}
+	}
+
 	@Inject(method = "tick", at = @At("HEAD"))
 	public void tick(CallbackInfo callback) {
-		if((Object) this instanceof MobEntity) {
+		if ((Object) this instanceof MobEntity) {
 			LivingEntityTickCallback.EVENT.invoker().onLivingEntityTick(
 					(MobEntity) (Object) this, this
 			);
@@ -80,7 +117,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 
 	@Inject(method = "writeCustomDataToTag", at = @At("HEAD"))
 	public void writeCustomDataToTag(CompoundTag tag, CallbackInfo callback) {
-		if((Object) this instanceof MobEntity && deathChestPlayer != null) {
+		if ((Object) this instanceof MobEntity && deathChestPlayer != null) {
 			tag.put("DeathChestPlayer", NbtHelper.fromUuid(deathChestPlayer));
 			tag.put("DeathChestPos", NbtHelper.fromBlockPos(deathChestPos));
 		}
@@ -89,7 +126,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	@Inject(method = "readCustomDataFromTag", at = @At("HEAD"))
 	public void readCustomDataFromTag(CompoundTag tag, CallbackInfo callback) {
 		//noinspection ConstantConditions
-		if((Object) this instanceof MobEntity && tag.contains("DeathChestPlayer")) {
+		if ((Object) this instanceof MobEntity && tag.contains("DeathChestPlayer")) {
 			deathChestPlayer = NbtHelper.toUuid(tag.getCompound("DeathChestPlayer"));
 			deathChestPos = NbtHelper.toBlockPos(tag.getCompound("DeathChestPos"));
 		}
@@ -100,11 +137,11 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 		final Object object = this;
 
 		//noinspection ConstantConditions
-		if(!(object instanceof MobEntity)) {
+		if (!(object instanceof MobEntity)) {
 			return;
 		}
 
-		if(!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
+		if (!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
 				(MobEntity) object, this, recentlyHit, 0, source
 		)) {
 			callback.cancel();
@@ -112,16 +149,18 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 	}
 
 	@Inject(method = "dropEquipment", at = @At("HEAD"), cancellable = true)
-	public void dropEquipment(DamageSource source, int lootingModifier, boolean recentlyHit,
-			CallbackInfo callback) {
+	public void dropEquipment(
+			DamageSource source, int lootingModifier, boolean recentlyHit,
+			CallbackInfo callback
+	) {
 		final Object object = this;
 
 		//noinspection ConstantConditions
-		if(!(object instanceof MobEntity)) {
+		if (!(object instanceof MobEntity)) {
 			return;
 		}
 
-		if(!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
+		if (!LivingEntityDropCallback.EVENT.invoker().onLivingEntityDrop(
 				(MobEntity) object, this, recentlyHit, lootingModifier, source
 		)) {
 			callback.cancel();
@@ -137,7 +176,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity {
 		final int experience = getCurrentExperience(player);
 
 		//noinspection ConstantConditions
-		if((Object) this instanceof MobEntity) {
+		if ((Object) this instanceof MobEntity) {
 			return LivingEntityDropExperienceCallback.EVENT.invoker().
 					onLivingEntityDropExperience((MobEntity) (Object) this, this, experience);
 		}

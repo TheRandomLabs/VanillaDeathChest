@@ -23,49 +23,16 @@
 
 package com.therandomlabs.vanilladeathchest.mixin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
-import net.minecraft.entity.Entity;
+import com.therandomlabs.vanilladeathchest.api.DropsList;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.server.world.ServerWorld;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("NullAway")
 @Mixin(value = PlayerEntity.class, priority = Integer.MAX_VALUE)
 public class MixinPlayerEntity {
-	@Shadow
-	@Final
-	public PlayerInventory inventory;
-
-	private final ArrayList<ItemEntity> drops = new ArrayList<>();
-
-	@Inject(method = "dropInventory", at = @At("HEAD"))
-	public void dropInventoryHead(CallbackInfo callback) {
-		drops.clear();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Inject(method = "dropInventory", at = @At("TAIL"))
-	public void dropInventoryTail(CallbackInfo callback) {
-		final PlayerEntity player = (PlayerEntity) (Object) this;
-
-		if (!PlayerDropAllItemsCallback.EVENT.invoker().onPlayerDropAllItems(
-				(ServerWorld) player.getEntityWorld(), player, (List<ItemEntity>) drops.clone()
-		)) {
-			drops.forEach(Entity::remove);
-		}
-	}
-
 	//We don't directly redirect PlayerEntity#dropItem because other mods do this and cause
 	//conflicts.
 	@Redirect(
@@ -77,6 +44,6 @@ public class MixinPlayerEntity {
 	)
 	public void setPickupDelay(ItemEntity entity, int pickupDelay) {
 		entity.setPickupDelay(pickupDelay);
-		drops.add(entity);
+		((DropsList) this).getDrops().add(entity);
 	}
 }

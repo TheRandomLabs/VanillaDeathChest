@@ -1,7 +1,7 @@
 {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
     "1.16.3": {
-        "1.16.3-1.11.0.6": "Localized the disableDeathChests gamerule.",
+        "1.16.3-1.11.0.7": "Localized the disableDeathChests gamerule.",
         "1.16.2-1.11.0.5": "Added a license to mods.toml."
     },
     "1.16.2": {
@@ -33,7 +33,7 @@
         "1.14.4-1.9.3.0": "Initial port to Forge 1.14.4."
     },
     "1.12.2": {
-        "1.12.2-1.11.0.6": "Fixed CatServer compatibility.",
+        "1.12.2-1.11.0.7": "Fixed CatServer compatibility.",
         "1.12.2-1.11.0.2": "Only empty shulker boxes are now consumed.",
         "1.12.2-1.11.0.1": "Fixed double shulker box display names.",
         "1.12.2-1.11.0.0": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
@@ -77,7 +77,7 @@
         "1.12.2-1.0.0.0": "Initial release."
     },
     "1.12.1": {
-        "1.12.2-1.11.0.6": "Fixed CatServer compatibility.",
+        "1.12.2-1.11.0.7": "Fixed CatServer compatibility.",
         "1.12.2-1.11.0.2": "Only empty shulker boxes are now consumed.",
         "1.12.2-1.11.0.1": "Fixed double shulker box display names.",
         "1.12.2-1.11.0.0": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
@@ -121,7 +121,7 @@
         "1.12.2-1.0.0.0": "Initial release."
     },
     "1.12": {
-        "1.12.2-1.11.0.6": "Fixed CatServer compatibility.",
+        "1.12.2-1.11.0.7": "Fixed CatServer compatibility.",
         "1.12.2-1.11.0.2": "Only empty shulker boxes are now consumed.",
         "1.12.2-1.11.0.1": "Fixed double shulker box display names.",
         "1.12.2-1.11.0.0": "Items can now be whitelisted or blacklisted using registry name regular expressions.\nDouble shulker boxes can now be used as death chests.\nAdded an option to consume container items in player inventories.",
@@ -181,8 +181,8 @@
         "1.10.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
     },
     "promos": {
-        "1.16.3-latest": "1.16.3-1.11.0.6",
-        "1.16.3-recommended": "1.16.3-1.11.0.6",
+        "1.16.3-latest": "1.16.3-1.11.0.7",
+        "1.16.3-recommended": "1.16.3-1.11.0.7",
         "1.16.2-latest": "1.16.2-1.11.0.5",
         "1.16.2-recommended": "1.16.2-1.11.0.5",
         "1.16.1-latest": "1.16.2-1.11.0.4",
@@ -191,12 +191,12 @@
         "1.15.2-recommended": "1.15.2-1.11.0.2",
         "1.14.4-latest": "1.14.4-1.11.0.2",
         "1.14.4-recommended": "1.14.4-1.11.0.2",
-        "1.12.2-latest": "1.12.2-1.11.0.6",
-        "1.12.2-recommended": "1.12.2-1.11.0.6",
-        "1.12.1-latest": "1.12.2-1.11.0.6",
-        "1.12.1-recommended": "1.12.2-1.11.0.6",
-        "1.12-latest": "1.12.2-1.11.0.6",
-        "1.12-recommended": "1.12.2-1.11.0.6",
+        "1.12.2-latest": "1.12.2-1.11.0.7",
+        "1.12.2-recommended": "1.12.2-1.11.0.7",
+        "1.12.1-latest": "1.12.2-1.11.0.7",
+        "1.12.1-recommended": "1.12.2-1.11.0.7",
+        "1.12-latest": "1.12.2-1.11.0.7",
+        "1.12-recommended": "1.12.2-1.11.0.7",
         "1.11.2-latest": "1.11.2-1.9.3.0",
         "1.11.2-recommended": "1.11.2-1.9.3.0",
         "1.11-latest": "1.11.2-1.9.3.0",

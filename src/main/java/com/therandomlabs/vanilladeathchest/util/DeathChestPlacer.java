@@ -71,7 +71,9 @@ public final class DeathChestPlacer {
 	public DeathChestPlacer(World world, EntityPlayer player, List<EntityItem> drops) {
 		this.world = new WeakReference<>(world);
 		this.player = new WeakReference<>(player);
-		this.drops = drops;
+		//Create a new ArrayList since CatServer seems to empty the drops List.
+		//Plus, it's probably good practice.
+		this.drops = new ArrayList<>(drops);
 	}
 
 	public final boolean run() {

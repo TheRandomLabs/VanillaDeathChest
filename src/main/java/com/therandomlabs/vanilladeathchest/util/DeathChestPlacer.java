@@ -54,7 +54,7 @@ public final class DeathChestPlacer {
 	public DeathChestPlacer(ServerWorld world, PlayerEntity player, List<ItemEntity> drops) {
 		this.world = new WeakReference<>(world);
 		this.player = new WeakReference<>(player);
-		this.drops = drops;
+		this.drops = new ArrayList<>(drops);
 	}
 
 	public final boolean run() {

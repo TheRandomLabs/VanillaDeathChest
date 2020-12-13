@@ -84,7 +84,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity, DropsList {
 	}
 
 	@Inject(method = "drop", at = @At("HEAD"))
-	public void dropInventoryHead(CallbackInfo callback) {
+	public void dropHead(CallbackInfo callback) {
 		if ((Object) this instanceof PlayerEntity) {
 			drops.clear();
 		}
@@ -92,7 +92,7 @@ public class MixinLivingEntity implements DeathChestDefenseEntity, DropsList {
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "drop", at = @At("TAIL"))
-	public void dropInventoryTail(CallbackInfo callback) {
+	public void dropTail(CallbackInfo callback) {
 		if (!((Object) this instanceof PlayerEntity)) {
 			return;
 		}

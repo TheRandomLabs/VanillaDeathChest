@@ -8,7 +8,7 @@
 		"TheRandomLabs"
 	],
 	"contact": {
-		"homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest-fabric",
 		"sources": "https://github.com/TheRandomLabs/VanillaDeathChest"
 	},
 	"license": "MIT",
@@ -23,8 +23,9 @@
 		"vanilladeathchest.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.4.0",
-		"fabric": "*"
+		"fabricloader": ">=0.7.4",
+		"fabric": "*",
+		"minecraft": "1.16.x"
 	},
 	"suggests": {}
 }

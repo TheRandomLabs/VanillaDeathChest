@@ -1,8 +1,15 @@
-version = "1.16.3-1.11.0.7-fabric"
+ext {
+	commonGradleBranch = "master"
+	loomVersion = "0.5-SNAPSHOT"
+	yarnMappings = "1.16.4+build.7"
+	loaderVersion = "0.10.8"
+	fabricAPIVersion = "0.28.1+1.16"
+	clothConfigVersion = "5.0.0"
+	autoconfigVersion = "3.3.1"
+}
+
+apply from: "https://raw.githubusercontent.com/TheRandomLabs/Common-Gradle/${project.commonGradleBranch}/fabric/1.16.4.gradle"
+
+version = "1.16.4-2.0.0.0"
 group = "com.therandomlabs.vanilladeathchest"
-
-ext.commonGradleBranch = "f41b12d11f1cf738db1868175336db97a1c024a0"
-
-apply from: "https://raw.githubusercontent.com/TheRandomLabs/Common-Gradle/${project.commonGradleBranch}/fabric/1.16.gradle"
-
 archivesBaseName = "vanilladeathchest"

@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.deathchest.DeathChestRemoveCallback;
@@ -49,7 +49,7 @@ public class DeathChestDropHandler implements
 
 	@Override
 	public void onRemove(DeathChest chest, BlockPos west, @Nullable BlockPos east) {
-		if (VDCConfig.Misc.dropDeathChests) {
+		if (VanillaDeathChest.config().misc.dropDeathChests) {
 			return;
 		}
 

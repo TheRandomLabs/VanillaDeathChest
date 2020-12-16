@@ -26,6 +26,7 @@ package com.therandomlabs.vanilladeathchest.api.deathchest;
 import java.util.UUID;
 
 import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.OperatorEntry;
@@ -86,9 +87,11 @@ public class DeathChest {
 			return false;
 		}
 
-		if(!VDCConfig.Protection.enabled ||
+		final VDCConfig.Protection config = VanillaDeathChest.config().protection;
+
+		if(!config.enabled ||
 				playerID.equals(player.getUuid()) ||
-				(VDCConfig.Protection.bypassIfCreative && player.abilities.creativeMode)) {
+				(config.bypassIfCreative && player.abilities.creativeMode)) {
 			return true;
 		}
 
@@ -96,13 +99,13 @@ public class DeathChest {
 				get(player.getGameProfile());
 
 		if(entry == null ||
-				entry.getPermissionLevel() < VDCConfig.Protection.bypassPermissionLevel) {
-			if(VDCConfig.Protection.period == 0) {
+				entry.getPermissionLevel() < config.bypassPermissionLevel) {
+			if(config.period == 0) {
 				return false;
 			}
 
 			final long timeElapsed = player.getEntityWorld().getTime() - creationTime;
-			return timeElapsed > VDCConfig.Protection.period;
+			return timeElapsed > config.period;
 		}
 
 		return true;

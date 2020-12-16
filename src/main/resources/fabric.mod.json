@@ -17,6 +17,9 @@
 	"entrypoints": {
 		"main": [
 			"com.therandomlabs.vanilladeathchest.VanillaDeathChest"
+		],
+		"modmenu": [
+			"com.therandomlabs.vanilladeathchest.VDCModMenuEntryPoint"
 		]
 	},
 	"mixins": [

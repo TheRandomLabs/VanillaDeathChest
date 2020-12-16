@@ -25,7 +25,7 @@ package com.therandomlabs.vanilladeathchest.handler;
 
 import java.util.Map;
 
-import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.world.storage.VDCSavedData;
@@ -41,7 +41,7 @@ import net.minecraft.world.chunk.ChunkManager;
 public class DeathChestContentsChecker implements ServerTickEvents.EndWorldTick {
 	@Override
 	public void onEndTick(ServerWorld world) {
-		if (!VDCConfig.Misc.deathChestsDisappearWhenEmptied) {
+		if (!VanillaDeathChest.config().misc.deathChestsDisappearWhenEmptied) {
 			return;
 		}
 

@@ -24,6 +24,7 @@
 package com.therandomlabs.vanilladeathchest.handler;
 
 import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestManager;
 import com.therandomlabs.vanilladeathchest.api.event.block.BreakBlockCallback;
@@ -106,20 +107,22 @@ public class DeathChestInteractionHandler implements
 			return false;
 		}
 
-		if(VDCConfig.Defense.unlocker == null || deathChest.isUnlocked()) {
+		final VDCConfig.Defense config = VanillaDeathChest.config().defense;
+
+		if(config.unlocker == null || deathChest.isUnlocked()) {
 			return true;
 		}
 
 		final ItemStack stack = player.getStackInHand(player.getActiveHand());
-		final int amount = VDCConfig.Defense.unlockerConsumeAmount;
+		final int amount = config.unlockerConsumeAmount;
 
-		if(stack.getItem() == VDCConfig.Defense.unlocker) {
+		if(stack.getItem() == config.unlockerItem) {
 			if(amount == 0) {
 				deathChest.setUnlocked(true);
 				return true;
 			}
 
-			if(VDCConfig.Defense.damageUnlockerInsteadOfConsume) {
+			if(config.damageUnlockerInsteadOfConsume) {
 				boolean unlocked = player.abilities.creativeMode;
 
 				if(!unlocked && stack.isDamageable() &&
@@ -142,18 +145,17 @@ public class DeathChestInteractionHandler implements
 			}
 		}
 
-		final String message = VDCConfig.Defense.unlockFailedMessage;
+		final String message = config.unlockFailedMessage;
 
 		if(!message.isEmpty()) {
 			final Text component = new LiteralText(String.format(
 					message,
 					amount,
-					new TranslatableText(
-							VDCConfig.Defense.unlocker.getTranslationKey()
-					).formatted().asString().trim()
+					new TranslatableText(config.unlockerItem.getTranslationKey()).
+							formatted().asString().trim()
 			));
 
-			player.sendMessage(component, VDCConfig.Defense.unlockFailedStatusMessage);
+			player.sendMessage(component, config.unlockFailedStatusMessage);
 		}
 
 		return false;

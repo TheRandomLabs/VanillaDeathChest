@@ -55,7 +55,7 @@ public class VDCSavedData extends PersistentState {
 	private static ServerWorld currentWorld;
 
 	private final ServerWorld world;
-	private Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
+	private final Map<BlockPos, DeathChest> deathChests = new ConcurrentHashMap<>();
 
 	public VDCSavedData() {
 		this(ID);

@@ -59,10 +59,8 @@ public class DeathChestPlaceHandler
 			return true;
 		}
 
-		final GameRules.Key<GameRules.BooleanRule> key =
-				VanillaDeathChest.getDisableDeathChestsKey();
-
-		if (key != null && gameRules.getBoolean(key)) {
+		if (VanillaDeathChest.DISABLE_DEATH_CHESTS != null &&
+				gameRules.getBoolean(VanillaDeathChest.DISABLE_DEATH_CHESTS)) {
 			return true;
 		}
 

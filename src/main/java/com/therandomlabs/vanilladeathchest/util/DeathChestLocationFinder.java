@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.common.collect.ImmutableList;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -96,6 +97,8 @@ public class DeathChestLocationFinder {
 	public static BlockPos findLocation(
 			World world, PlayerEntity player, BlockPos pos, AtomicBoolean doubleChest
 	) {
+		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
+
 		final boolean isDoubleChest = doubleChest.get();
 
 		final BlockPos searchPos = new BlockPos(
@@ -106,7 +109,7 @@ public class DeathChestLocationFinder {
 
 		BlockPos singleChestPos = null;
 
-		for(BlockPos translation : getSearchOrder(VDCConfig.Spawning.locationSearchRadius)) {
+		for(BlockPos translation : getSearchOrder(config.locationSearchRadius)) {
 			final BlockPos potentialPos = searchPos.add(translation);
 
 			if(canPlace(world, player, potentialPos)) {
@@ -126,7 +129,7 @@ public class DeathChestLocationFinder {
 			return singleChestPos;
 		}
 
-		return VDCConfig.Spawning.forcePlaceIfLocationNotFound ? pos : null;
+		return config.forcePlaceIfLocationNotFound ? pos : null;
 	}
 
 	public static boolean canPlace(
@@ -179,7 +182,7 @@ public class DeathChestLocationFinder {
 
 	private static boolean isOnSolidBlocks(World world, PlayerEntity player, BlockPos pos,
 			boolean isDoubleChest) {
-		if(!VDCConfig.Spawning.mustBeOnSolidBlocks) {
+		if(!VanillaDeathChest.config().spawning.mustBeOnSolidBlocks) {
 			return true;
 		}
 

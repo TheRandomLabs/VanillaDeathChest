@@ -26,6 +26,7 @@ package com.therandomlabs.vanilladeathchest.handler;
 import java.util.UUID;
 
 import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
 import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
@@ -59,7 +60,9 @@ public class DefenseEntityHandler implements
 			entity.setTarget(player);
 		}
 
-		if(VDCConfig.Defense.defenseEntityMaxDistanceSquared == 0.0) {
+		final VDCConfig.Defense config = VanillaDeathChest.config().defense;
+
+		if(config.defenseEntityMaxDistanceSquared == 0.0) {
 			return;
 		}
 
@@ -75,9 +78,8 @@ public class DefenseEntityHandler implements
 			distanceSqFromPlayer = entityPos.squaredDistanceTo(player.getPos());
 		}
 
-		if(distanceSq > VDCConfig.Defense.defenseEntityMaxDistanceSquared) {
-			final double maxDistanceSqFromPlayer =
-					VDCConfig.Defense.defenseEntityMaxDistanceSquaredFromPlayer;
+		if(distanceSq > config.defenseEntityMaxDistanceSquared) {
+			final double maxDistanceSqFromPlayer = config.defenseEntityMaxDistanceSquaredFromPlayer;
 
 			if(maxDistanceSqFromPlayer == 0.0 || distanceSqFromPlayer > maxDistanceSqFromPlayer) {
 				entity.setPos(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
@@ -90,7 +92,7 @@ public class DefenseEntityHandler implements
 			MobEntity entity, DeathChestDefenseEntity defenseEntity, boolean recentlyHit,
 			int lootingModifier, DamageSource source
 	) {
-		return VDCConfig.Defense.defenseEntityDropsItems ||
+		return VanillaDeathChest.config().defense.defenseEntityDropsItems ||
 				defenseEntity.getDeathChestPlayer() == null;
 	}
 
@@ -98,7 +100,7 @@ public class DefenseEntityHandler implements
 	public int onLivingEntityDropExperience(
 			MobEntity entity, DeathChestDefenseEntity defenseEntity, int experience
 	) {
-		if(!VDCConfig.Defense.defenseEntityDropsExperience &&
+		if(!VanillaDeathChest.config().defense.defenseEntityDropsExperience &&
 				defenseEntity.getDeathChestPlayer() != null) {
 			return 0;
 		}

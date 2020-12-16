@@ -1,5 +1,4 @@
 {
-	"commands.vdcreloadclient.usage": "/vdcreloadclient",
-	"commands.vdcreloadclient.success": "VanillaDeathChest client-sided configuration reloaded!",
+	"commands.vdcclientconfigreload.success": "VanillaDeathChest client-sided configuration reloaded!",
 	"gamerule.disableDeathChests": "Disable death chests"
 }

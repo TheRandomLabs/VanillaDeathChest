@@ -113,12 +113,14 @@ public final class DeathChestPlacer {
 
 	@SuppressWarnings({"Duplicates", "NullAway"})
 	private void place(ServerWorld world, PlayerEntity player) {
-		final DeathChestType type = VDCConfig.Spawning.chestType;
+		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
+
+		final DeathChestType type = config.chestType;
 
 		final GameProfile profile = player.getGameProfile();
 		final BlockPos playerPos = new BlockPos(player.getPos());
 
-		final Pattern pattern = Pattern.compile(VDCConfig.Spawning.registryNameRegex);
+		final Pattern pattern = Pattern.compile(config.registryNameRegex);
 		final List<ItemEntity> filtered = drops.stream().
 				filter(item -> pattern.matcher(
 						Registry.ITEM.getId(item.getStack().getItem()).toString()
@@ -128,7 +130,7 @@ public final class DeathChestPlacer {
 		boolean useDoubleChest = (type == DeathChestType.SINGLE_OR_DOUBLE ||
 				type == DeathChestType.DOUBLE_SHULKER_BOX) && filtered.size() > 27;
 
-		if (VDCConfig.Spawning.useContainerInInventory) {
+		if (config.useContainerInInventory) {
 			final List<ItemEntity> empty = new ArrayList<>();
 
 			boolean foundOne = false;
@@ -229,7 +231,7 @@ public final class DeathChestPlacer {
 		final Block block;
 
 		if (type == DeathChestType.SHULKER_BOX || type == DeathChestType.DOUBLE_SHULKER_BOX) {
-			block = ShulkerBoxBlock.get(VDCConfig.Spawning.shulkerBoxColor.get());
+			block = ShulkerBoxBlock.get(config.shulkerBoxColor.get());
 		} else {
 			block = Blocks.CHEST;
 		}
@@ -270,8 +272,8 @@ public final class DeathChestPlacer {
 			drops.remove(item);
 		}
 
-		if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
-			chest.setCustomName(new LiteralText(VDCConfig.Spawning.containerDisplayName));
+		if (!config.containerDisplayName.isEmpty()) {
+			chest.setCustomName(new LiteralText(config.containerDisplayName));
 		}
 
 		if (useDoubleChest) {
@@ -285,24 +287,26 @@ public final class DeathChestPlacer {
 			}
 
 			//If this is a shulker box, this has to be set separately.
-			if (!VDCConfig.Spawning.containerDisplayName.isEmpty()) {
-				chest.setCustomName(new LiteralText(VDCConfig.Spawning.containerDisplayName));
+			if (!config.containerDisplayName.isEmpty()) {
+				chest.setCustomName(new LiteralText(config.containerDisplayName));
 			}
 		}
 
-		if (VDCConfig.Defense.defenseEntityRegistryName != null) {
+		final VDCConfig.Defense defense = VanillaDeathChest.config().defense;
+
+		if (defense.defenseEntity != null) {
 			final double x = pos.getX() + 0.5;
 			final double y = pos.getY() + 1.0;
 			final double z = pos.getZ() + 0.5;
 
-			for (int i = 0; i < VDCConfig.Defense.defenseEntitySpawnCount; i++) {
+			for (int i = 0; i < defense.defenseEntitySpawnCount; i++) {
 				CompoundTag compound = null;
 
 				try {
-					compound = StringNbtReader.parse(VDCConfig.Defense.defenseEntityNBT);
+					compound = StringNbtReader.parse(defense.defenseEntityNBT);
 				} catch (CommandSyntaxException ignored) {}
 
-				compound.putString("id", VDCConfig.Defense.defenseEntityRegistryName.toString());
+				compound.putString("id", defense.defenseEntityRegistryName);
 
 				final Entity entity = EntityType.loadEntityWithPassengers(
 						compound, world, spawnedEntity -> {
@@ -333,7 +337,7 @@ public final class DeathChestPlacer {
 		VanillaDeathChest.logger.info("Death chest for {} spawned at [{}]", profile.getName(), pos);
 
 		player.sendMessage(new LiteralText(String.format(
-				VDCConfig.Spawning.chatMessage, pos.getX(), pos.getY(), pos.getZ()
+				config.chatMessage, pos.getX(), pos.getY(), pos.getZ()
 		)), false);
 	}
 }

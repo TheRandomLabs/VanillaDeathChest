@@ -1,6 +1,11 @@
+plugins {
+	id "fabric-loom" version "0.5-SNAPSHOT"
+	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "com.modrinth.minotaur" version "1.1.0"
+}
+
 ext {
 	commonGradleBranch = "master"
-	loomVersion = "0.5-SNAPSHOT"
 	yarnMappings = "1.16.4+build.7"
 	loaderVersion = "0.10.8"
 	fabricAPIVersion = "0.28.1+1.16"

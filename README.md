@@ -1,7 +1,7 @@
 # VanillaDeathChest
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Build](https://jitci.com/gh/TheRandomLabs/VanillaDeathChest/svg?branch=1.16-fabric)](https://jitci.com/gh/TheRandomLabs/VanillaDeathChest)
+![Build](https://github.com/TheRandomLabs/VanillaDeathChest/workflows/Build/badge.svg?branch=1.16-fabric)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/TheRandomLabs/VanillaDeathChest.svg)](http://isitmaintained.com/project/TheRandomLabs/VanillaDeathChest "Average time to resolve an issue")
 
 [![Downloads](http://cf.way2muchnoise.eu/full_vanilladeathchest_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest-fabric)

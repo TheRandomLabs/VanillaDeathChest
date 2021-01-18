@@ -117,20 +117,6 @@ public final class DeathChestsState extends PersistentState {
 		return queuedDeathChests;
 	}
 
-	private ListTag toTag(Collection<DeathChest> deathChests) {
-		final ListTag list = new ListTag();
-		deathChests.stream().
-				map(deathChest -> deathChest.toTag(new CompoundTag())).
-				forEach(list::add);
-		return list;
-	}
-
-	private void fromTag(ListTag list, Collection<DeathChest> deathChests) {
-		list.stream().
-				map(tag -> DeathChest.fromTag(world, (CompoundTag) tag)).
-				forEach(deathChests::add);
-	}
-
 	/**
 	 * Returns the {@link DeathChestsState} instance for the specified world.
 	 *

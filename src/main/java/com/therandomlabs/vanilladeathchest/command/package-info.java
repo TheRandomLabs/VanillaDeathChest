@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018-2020 TheRandomLabs
+ * Copyright (c) 2020-2021 TheRandomLabs
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,32 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.therandomlabs.vanilladeathchest.api.event.livingentity;
-
-import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.MobEntity;
-
-public interface LivingEntityDropCallback {
-	Event<LivingEntityDropCallback> EVENT = EventFactory.createArrayBacked(
-			LivingEntityDropCallback.class,
-			listeners -> (entity, defenseEntity, recentlyHit, lootingModifier, source) -> {
-				for(LivingEntityDropCallback event : listeners) {
-					if(!event.onLivingEntityDrop(
-							entity, defenseEntity, recentlyHit, lootingModifier, source
-					)) {
-						return false;
-					}
-				}
-
-				return true;
-			}
-	);
-
-	boolean onLivingEntityDrop(
-			MobEntity entity, DeathChestDefenseEntity defenseEntity, boolean recentlyHit,
-			int lootingModifier, DamageSource source
-	);
-}
+/**
+ * Command-related classes for VanillaDeathChest.
+ */
+package com.therandomlabs.vanilladeathchest.command;

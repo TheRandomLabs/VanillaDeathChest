@@ -23,235 +23,468 @@
 
 package com.therandomlabs.vanilladeathchest;
 
+import java.util.Optional;
+import java.util.Random;
+
 import com.electronwill.nightconfig.core.conversion.SpecDoubleInRange;
 import com.electronwill.nightconfig.core.conversion.SpecIntInRange;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.autoconfigtoml.TOMLConfigSerializer;
-import com.therandomlabs.vanilladeathchest.util.DeathChestPlacer;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 @SuppressWarnings("CanBeFinal")
 @TOMLConfigSerializer.Comment("VanillaDeathChest configuration.")
 @Config(name = VanillaDeathChest.MOD_ID)
 public final class VDCConfig implements ConfigData {
-	public static final class Defense implements ConfigData {
-		@TOMLConfigSerializer.Comment(
-				"Whether the unlocker should be damaged rather than consumed."
-		)
-		public boolean damageUnlockerInsteadOfConsume;
-
-		@TOMLConfigSerializer.Comment("Whether defense entities drop experience.")
-		public boolean defenseEntityDropsExperience;
-
-		@TOMLConfigSerializer.Comment("Whether defense entities drop items.")
-		public boolean defenseEntityDropsItems;
-
-		@SpecDoubleInRange(min = 0.0, max = Double.MAX_VALUE)
-		@TOMLConfigSerializer.Comment(
-				"The maximum distance squared that a defense entity can be from its chest."
-		)
-		public double defenseEntityMaxDistanceSquared = 64.0;
-
-		@SpecDoubleInRange(min = 0.0, max = Double.MAX_VALUE)
-		@TOMLConfigSerializer.Comment(
-				"The maximum distance squared that a defense entity can be from its player if it " +
-						"is too far away from its chest."
-		)
-		public double defenseEntityMaxDistanceSquaredFromPlayer = 64.0;
-
-		@TOMLConfigSerializer.Comment("The defense entity NBT data.")
-		public String defenseEntityNBT = "{}";
-
-		@TOMLConfigSerializer.Comment({
-				"The registry name of the defense entity.",
-				"If the defense entity is a living entity, it will not automatically despawn.",
-				"If the defense entity can have a revenge target, then the revenge target will " +
-						"be set to the player that died."
-		})
-		public String defenseEntityRegistryName = "";
-
-		@SpecIntInRange(min = 1, max = Integer.MAX_VALUE)
-		@TOMLConfigSerializer.Comment("The number of defense entities to spawn.")
-		public int defenseEntitySpawnCount = 3;
-
-		//not air
-		@TOMLConfigSerializer.Comment("The registry name of the unlocker.")
-		public String unlocker = "";
-
-		@SpecIntInRange(min = 0, max = Short.MAX_VALUE)
-		@TOMLConfigSerializer.Comment({
-				"How many times the unlocker should be consumed or damaged.",
-				"If the unlocker cannot be consumed or damage this many times, the death chest " +
-						"will not be unlocked.",
-				"Note that only the stack that the player is holding will be consumed, and that " +
-						"players in creative mode will not have their unlocker item consumed."
-		})
-		public int unlockerConsumeAmount = 1;
-
-		@SpecIntInRange(min = 0, max = Short.MAX_VALUE)
-		@TOMLConfigSerializer.Comment("The meta value of the unlocker.")
-		public int unlockerMeta = Short.MAX_VALUE;
-
-		@TOMLConfigSerializer.Comment({
-				"The message that is sent to the player when they fail to unlock a death chest.",
-				"This string takes the required amount and display name of the item as arguments."
-		})
-		public String unlockFailedMessage =
-				"You need %s of the following item to retrieve your items: %s";
-
-		@TOMLConfigSerializer.Comment(
-				"Whether the unlock failed message should be a status message rather than a " +
-						"chat message."
-		)
-		public boolean unlockFailedStatusMessage = true;
-
-		@ConfigEntry.Gui.Excluded
-		public EntityType<? extends Entity> defenseEntity;
-
-		@ConfigEntry.Gui.Excluded
-		public Item unlockerItem;
-
-		@Override
-		public void validatePostLoad() {
-			if (!defenseEntityRegistryName.isEmpty()) {
-				defenseEntity = Registry.ENTITY_TYPE.get(new Identifier(defenseEntityRegistryName));
-			}
-
-			if (!unlocker.isEmpty()) {
-				unlockerItem = Registry.ITEM.get(new Identifier(unlocker));
-			}
-
-			try {
-				StringNbtReader.parse(defenseEntityNBT);
-			} catch (CommandSyntaxException ignored) {
-				defenseEntityNBT = "{}";
-			}
-		}
-	}
-
-	public static final class Misc {
-		@TOMLConfigSerializer.Comment(
-				"Whether death chests should disappear when they are emptied.")
-		public boolean deathChestsDisappearWhenEmptied = true;
-
-		@TOMLConfigSerializer.Comment({
-				"Whether death chests should be dropped when broken.",
-				"Enable this for infinite chests."
-		})
-		public boolean dropDeathChests;
-
-		@TOMLConfigSerializer.Comment({
-				"The name of the disableDeathChests gamerule.",
-				"Set this to an empty string to disable the gamerule."
-		})
-		public String gameRuleName = "disableDeathChests";
-
-		@TOMLConfigSerializer.Comment("Whether to enable the /vdcconfigreload command.")
-		public String configReloadCommand = "vdcconfigreload";
-	}
-
-	public static final class Protection {
-		@TOMLConfigSerializer.Comment(
-				"Whether players in creative mode should be able to bypass death chest " +
-						"protection."
-		)
-		public boolean bypassIfCreative = true;
-
-		@SpecIntInRange(min = 0, max = Integer.MAX_VALUE)
-		@TOMLConfigSerializer.Comment(
-				"The required permission level to bypass death chest protection.")
-		public int bypassPermissionLevel = 3;
-
-		@TOMLConfigSerializer.Comment({
-				"Whether death chests should be protected.",
-				"When this is enabled, death chests can only be broken by their owners."
-		})
-		public boolean enabled = true;
-
-		@SpecIntInRange(min = 0, max = Integer.MAX_VALUE)
-		@TOMLConfigSerializer.Comment({
-				"The amount of time in ticks death chest protection should last.",
-				"120000 ticks is 5 in-game days.",
-				"Set this to 0 to protect death chests indefinitely."
-		})
-		public int period = 120000;
-	}
-
 	public static final class Spawning {
 		@TOMLConfigSerializer.Comment({
-				"The message sent to a player a death chest is placed after they die.",
-				"%s refers to the X, Y and Z coordinates.",
-				"Set this to an empty string to disable the message."
+				"The death chest container type.",
+				"SINGLE_CHEST: Only single chests.",
+				"SINGLE_OR_DOUBLE_CHEST: Single or double chests.",
+				"SINGLE_SHULKER_BOX: Single shulker boxes.",
+				"SINGLE_OR_DOUBLE_SHULKER_BOX: Single or double shulker boxes."
 		})
-		public String chatMessage = "Death chest spawned at [%s, %s, %s]";
+		@ConfigEntry.Gui.Tooltip
+		public DeathChestType containerType = DeathChestType.SINGLE_OR_DOUBLE_CHEST;
 
 		@TOMLConfigSerializer.Comment({
-				"The display name of the death chest container.",
-				"Leave this empty to not specify a custom name."
+				"The color of the shulker box if the container type is a shulker box.",
+				"WHITE: White.",
+				"ORANGE: Orange.",
+				"MAGENTA: Magenta.",
+				"LIGHT_BLUE: Light blue.",
+				"YELLOW: Yellow.",
+				"LIME: Lime.",
+				"PINK: Pink.",
+				"GRAY: Gray.",
+				"LIGHT_GRAY: Light gray.",
+				"CYAN: Cyan.",
+				"PURPLE: Purple.",
+				"BLUE: Blue.",
+				"BROWN: Brown.",
+				"GREEN: Green.",
+				"RED: Red.",
+				"BLACK: Black.",
+				"RANDOM: Random color."
 		})
-		public String containerDisplayName = "Death Chest";
-
-		@TOMLConfigSerializer.Comment("The type of death chest that should be placed.")
-		public DeathChestPlacer.DeathChestType chestType =
-				DeathChestPlacer.DeathChestType.SINGLE_OR_DOUBLE;
-
-		@TOMLConfigSerializer.Comment(
-				"Whether to force place a death chest at the location of a player's death if no " +
-						"viable locations are found."
-		)
-		public boolean forcePlaceIfLocationNotFound = true;
+		@ConfigEntry.Gui.Tooltip
+		public ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
 
 		@SpecIntInRange(min = 1, max = Integer.MAX_VALUE)
-		@TOMLConfigSerializer.Comment("The death chest location search radius.")
+		@TOMLConfigSerializer.Comment(
+				"The radius around the location of a player's death in which a suitable death " +
+						"chest placement location should be searched for."
+		)
+		@ConfigEntry.Gui.Tooltip
 		public int locationSearchRadius = 8;
 
-		@TOMLConfigSerializer.Comment("Whether death chests can only spawn on solid blocks.")
-		public boolean mustBeOnSolidBlocks;
+		@TOMLConfigSerializer.Comment(
+				"Causes a death chest to be forcibly placed at the location of a player's death " +
+						"if no suitable locations are found nearby."
+		)
+		@ConfigEntry.Gui.Tooltip
+		public boolean forcePlacementIfNoSuitableLocation = true;
+
+		@TOMLConfigSerializer.Comment("Requires death chest placement to be on solid blocks.")
+		@ConfigEntry.Gui.Tooltip
+		public boolean requirePlacementOnSolidBlocks;
 
 		@TOMLConfigSerializer.Comment(
 				"A regular expression that matches the registry names of items that can be " +
 						"placed in death chests."
 		)
+		@ConfigEntry.Gui.Tooltip
 		public String registryNameRegex = ".+";
 
 		@TOMLConfigSerializer.Comment({
-				"Whether death chests should only be spawned if the container can be found in " +
-						"the player's inventory.",
+				"Causes death chests to only be spawned if the necessary container is in the " +
+						"player's inventory.",
 				"If this is enabled, the container is consumed if it is found."
 		})
+		@ConfigEntry.Gui.Tooltip
 		public boolean useContainerInInventory;
 
-		@TOMLConfigSerializer.Comment(
-				"The color of the shulker box if chestType is set to SHULKER_BOX or " +
-						"DOUBLE_SHULKER_BOX.")
-		public ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
+		@TOMLConfigSerializer.Comment({
+				"The display name of the death chest container.",
+				"Set this to an empty string to cause a custom display name to not be used."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public String containerDisplayName = "Death Chest";
+
+		@TOMLConfigSerializer.Comment({
+				"The message sent to a player after a death chest is placed when they die.",
+				"The X, Y and Z coordinates are provided as arguments.",
+				"Set this to an empty string to disable this message."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public String spawnMessage = "Death chest spawned at [%s, %s, %s]";
 	}
 
-	@TOMLConfigSerializer.Comment("Options related to death chest defense.")
-	@ConfigEntry.Category("defense")
-	@ConfigEntry.Gui.TransitiveObject
-	public Defense defense = new Defense();
+	public static final class KeyItem implements ConfigData {
+		@TOMLConfigSerializer.Comment({
+				"The registry name of the key item.",
+				"Set this to an empty string to cause death chests to not be locked."
+		})
+		public String registryName = "";
 
-	@TOMLConfigSerializer.Comment("Options that don't fit into any other categories.")
-	@ConfigEntry.Category("misc")
+		@SpecIntInRange(min = 0, max = Short.MAX_VALUE)
+		@TOMLConfigSerializer.Comment({
+				"The meta value of the key item.",
+				"Set this to " + Short.MAX_VALUE + " to not require a specific meta value."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public int meta = Short.MAX_VALUE;
+
+		@TOMLConfigSerializer.Comment({
+				"The key consumption behavior.",
+				"CONSUME: Consume the item.",
+				"DAMAGE: Damage the item."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public KeyConsumptionBehavior consumptionBehavior = KeyConsumptionBehavior.CONSUME;
+
+		//TODO also consume stacks that the player isn't holding.
+		@SpecIntInRange(min = 0, max = Short.MAX_VALUE)
+		@TOMLConfigSerializer.Comment({
+				"The amount by which the key item should be consumed.",
+				"If the key item cannot be consumed this many times, the death chest will not " +
+						"be unlocked.",
+				"Players in creative mode will not have their key item consumed."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public int amountToConsume = 1;
+
+		@TOMLConfigSerializer.Comment({
+				"The message that is sent to the player when they fail to unlock a death chest.",
+				"This string takes the required amount (%1$s) and display name (%2$s) of the " +
+						"item as arguments.",
+				"Set this to an empty string to disable this message."
+		})
+		public String unlockFailedMessage = "You need %s of %s to retrieve your items";
+
+		@TOMLConfigSerializer.Comment(
+				"Whether the unlock failed message should be sent as a status message rather " +
+						"than a chat message."
+		)
+		public boolean unlockFailedStatusMessage = true;
+
+		@ConfigEntry.Gui.Excluded
+		public Item item;
+
+		@Override
+		public void validatePostLoad() {
+			if (!registryName.isEmpty()) {
+				item = Registry.ITEM.get(new Identifier(registryName));
+
+				if (item == Items.AIR) {
+					registryName = "";
+				} else {
+					registryName = new Identifier(registryName).toString();
+				}
+			}
+		}
+	}
+
+	public static final class DefenseEntities implements ConfigData {
+		@TOMLConfigSerializer.Comment({
+				"The registry name of the defense entity.",
+				"If the defense entity is a living entity, it will not automatically despawn.",
+				"If the defense entity can have a revenge target, then the revenge target will " +
+						"be set to its player.",
+				"Set this to an empty string to disable defense entities."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public String registryName = "";
+
+		@TOMLConfigSerializer.Comment("Custom NBT data for defense entities in JSON format.")
+		@ConfigEntry.Gui.Tooltip
+		public String nbt = "{}";
+
+		@TOMLConfigSerializer.Comment("Causes defense entities to drop experience.")
+		@ConfigEntry.Gui.Tooltip
+		public boolean dropExperience;
+
+		@TOMLConfigSerializer.Comment("Causes defense entities to drop items.")
+		@ConfigEntry.Gui.Tooltip
+		public boolean dropItems;
+
+		@SpecIntInRange(min = 1, max = Integer.MAX_VALUE)
+		@TOMLConfigSerializer.Comment(
+				"The number of defense entities that are spawned when a death chest is placed."
+		)
+		@ConfigEntry.Gui.Tooltip
+		public int spawnCount = 3;
+
+		@SpecDoubleInRange(min = 0.0, max = Double.MAX_VALUE)
+		@TOMLConfigSerializer.Comment({
+				"The maximum squared distance that a defense entity can be from its chest when " +
+						"a player is not nearby.",
+				"Set this to 0.0 to disable the limit so that defense entities are not " +
+						"teleported back to their death chest."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public double maxSquaredDistanceFromChest = 64.0;
+
+		@SpecDoubleInRange(min = 0.0, max = Double.MAX_VALUE)
+		@TOMLConfigSerializer.Comment({
+				"The maximum squared distance that a defense entity can be from its player when" +
+						"its chest is not within the maximum squared distance.",
+				"Set this to 0.0 to disable the limit so that defense entities are teleported " +
+						"back to their death chest regardless of their distance from the player."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public double maxSquaredDistanceFromPlayer = 64.0;
+
+		@ConfigEntry.Gui.Excluded
+		public EntityType<? extends Entity> entity;
+
+		@Override
+		public void validatePostLoad() {
+			if (!registryName.isEmpty()) {
+				final Optional<EntityType<?>> optional =
+						Registry.ENTITY_TYPE.getOrEmpty(new Identifier(registryName));
+
+				if (optional.isPresent()) {
+					registryName = new Identifier(registryName).toString();
+					entity = optional.get();
+				} else {
+					registryName = "";
+				}
+			}
+
+			try {
+				StringNbtReader.parse(nbt);
+			} catch (CommandSyntaxException ignored) {
+				nbt = "{}";
+			}
+		}
+	}
+
+	public static final class Protection {
+		@TOMLConfigSerializer.Comment({
+				"Enables death chest protection.",
+				"When this is enabled, a death chest can only be opened by its owner."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public boolean enable = true;
+
+		@SpecIntInRange(min = 0, max = Integer.MAX_VALUE)
+		@TOMLConfigSerializer.Comment(
+				"The required permission level to bypass death chest protection."
+		)
+		public int bypassPermissionLevel = 3;
+
+		@TOMLConfigSerializer.Comment(
+				"Causes players in creative mode to be able to bypass death chest protection."
+		)
+		@ConfigEntry.Gui.Tooltip
+		public boolean bypassInCreativeMode = true;
+
+		@SpecIntInRange(min = 0, max = Integer.MAX_VALUE)
+		@TOMLConfigSerializer.Comment({
+				"The length of death chest protection in ticks.",
+				"120000 ticks is five in-game days.",
+				"Set this to 0 to cause death chests to be protected indefinitely."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public int period = 120000;
+	}
+
+	public static final class Misc {
+		@TOMLConfigSerializer.Comment("Causes death chests to be removed when they are emptied.")
+		@ConfigEntry.Gui.Tooltip
+		public boolean removeEmptyDeathChests = true;
+
+		@TOMLConfigSerializer.Comment("Causes death chests to be dropped when they are broken.")
+		@ConfigEntry.Gui.Tooltip
+		public boolean dropDeathChests;
+
+		@TOMLConfigSerializer.Comment({
+				"The name of the game rule that controls whether death chests should be spawned.",
+				"Set this to an empty string to disable the game rule.",
+				"Changes to this option are applied after a game restart."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public String gameRuleName = "spawnDeathChests";
+
+		@TOMLConfigSerializer.Comment({
+				"The name of the command that reloads this configuration from disk.",
+				"Set this to an empty string to disable the command.",
+				"Changes to this option are applied when a server is loaded."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public String configReloadCommand = "vdcconfigreload";
+
+		@TOMLConfigSerializer.Comment({
+				"The name of the command that reloads this configuration from disk on the client.",
+				"Set this to an empty string to disable the command.",
+				"Changes to this option are applied after a game restart."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public String clientConfigReloadCommand = "vdcclientconfigreload";
+	}
+
+	/**
+	 * The death chest type.
+	 */
+	public enum DeathChestType {
+		/**
+		 * Only single chests.
+		 */
+		SINGLE_CHEST,
+		/**
+		 * Single or double chests.
+		 */
+		SINGLE_OR_DOUBLE_CHEST,
+		/**
+		 * Only single shulker boxes.
+		 */
+		SINGLE_SHULKER_BOX,
+		/**
+		 * Single or double shulker boxes.
+		 */
+		SINGLE_OR_DOUBLE_SHULKER_BOX
+	}
+
+	/**
+	 * The shulker box color.
+	 */
+	public enum ShulkerBoxColor {
+		/**
+		 * White.
+		 */
+		WHITE,
+		/**
+		 * Orange.
+		 */
+		ORANGE,
+		/**
+		 * Magenta.
+		 */
+		MAGENTA,
+		/**
+		 * Light blue.
+		 */
+		LIGHT_BLUE,
+		/**
+		 * Yellow.
+		 */
+		YELLOW,
+		/**
+		 * Lime.
+		 */
+		LIME,
+		/**
+		 * Pink.
+		 */
+		PINK,
+		/**
+		 * Gray.
+		 */
+		GRAY,
+		/**
+		 * Light gray.
+		 */
+		LIGHT_GRAY,
+		/**
+		 * Cyan.
+		 */
+		CYAN,
+		/**
+		 * Purple.
+		 */
+		PURPLE,
+		/**
+		 * Blue.
+		 */
+		BLUE,
+		/**
+		 * Brown.
+		 */
+		BROWN,
+		/**
+		 * Green.
+		 */
+		GREEN,
+		/**
+		 * Red.
+		 */
+		RED,
+		/**
+		 * Black.
+		 */
+		BLACK,
+		/**
+		 * Random color.
+		 */
+		RANDOM;
+
+		private static final Random random = new Random();
+
+		@Nullable
+		private final DyeColor color;
+
+		ShulkerBoxColor() {
+			color = "RANDOM".equals(name()) ? null : DyeColor.valueOf(name());
+		}
+
+		/**
+		 * Returns this shulker box color as a {@link DyeColor}.
+		 *
+		 * @return this shulker box color as a {@link DyeColor}.
+		 */
+		public DyeColor get() {
+			return color == null ? DyeColor.byId(random.nextInt(16)) : color;
+		}
+	}
+
+	/**
+	 * Key item consumption behaviors.
+	 */
+	public enum KeyConsumptionBehavior {
+		/**
+		 * Consume the item.
+		 */
+		CONSUME,
+		/**
+		 * Damage the item.
+		 */
+		DAMAGE
+	}
+
+	@TOMLConfigSerializer.Comment("Options related to death chest spawning.")
+	@ConfigEntry.Category("spawning")
 	@ConfigEntry.Gui.TransitiveObject
-	public Misc misc = new Misc();
+	public Spawning spawning = new Spawning();
+
+	@TOMLConfigSerializer.Comment("Options related to the death chest key item.")
+	@ConfigEntry.Category("key_item")
+	@ConfigEntry.Gui.TransitiveObject
+	public KeyItem keyItem = new KeyItem();
+
+	@TOMLConfigSerializer.Comment("Options related to death chest defense entities.")
+	@ConfigEntry.Category("defense_entities")
+	@ConfigEntry.Gui.TransitiveObject
+	public DefenseEntities defenseEntities = new DefenseEntities();
 
 	@TOMLConfigSerializer.Comment("Options related to death chest protection.")
 	@ConfigEntry.Category("protection")
 	@ConfigEntry.Gui.TransitiveObject
 	public Protection protection = new Protection();
 
-	@TOMLConfigSerializer.Comment("Options related to death chest spawning.")
-	@ConfigEntry.Category("spawning")
+	@TOMLConfigSerializer.Comment("Miscellaneous options.")
+	@ConfigEntry.Category("misc")
 	@ConfigEntry.Gui.TransitiveObject
-	public Spawning spawning = new Spawning();
+	public Misc misc = new Misc();
 }

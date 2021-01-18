@@ -24,35 +24,22 @@
 package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.autoconfigtoml.TOMLConfigSerializer;
-import com.therandomlabs.vanilladeathchest.api.event.block.BreakBlockCallback;
-import com.therandomlabs.vanilladeathchest.api.event.block.ExplosionDetonationCallback;
-import com.therandomlabs.vanilladeathchest.api.event.block.GetBlockDropCallback;
-import com.therandomlabs.vanilladeathchest.api.event.deathchest.DeathChestRemoveCallback;
-import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropCallback;
-import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityDropExperienceCallback;
-import com.therandomlabs.vanilladeathchest.api.event.livingentity.LivingEntityTickCallback;
-import com.therandomlabs.vanilladeathchest.api.event.player.PlayerDropAllItemsCallback;
 import com.therandomlabs.vanilladeathchest.command.VDCConfigReloadCommand;
-import com.therandomlabs.vanilladeathchest.handler.DeathChestContentsChecker;
-import com.therandomlabs.vanilladeathchest.handler.DeathChestDropHandler;
-import com.therandomlabs.vanilladeathchest.handler.DeathChestInteractionHandler;
-import com.therandomlabs.vanilladeathchest.handler.DeathChestPlaceHandler;
-import com.therandomlabs.vanilladeathchest.handler.DefenseEntityHandler;
+import com.therandomlabs.vanilladeathchest.deathchest.DeathChestPlacer;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * The main VanillaDeathChest class.
  */
-@SuppressWarnings("NullAway")
 public final class VanillaDeathChest implements ModInitializer {
 	/**
 	 * The VanillaDeathChest mod ID.
@@ -60,23 +47,36 @@ public final class VanillaDeathChest implements ModInitializer {
 	public static final String MOD_ID = "vanilladeathchest";
 
 	/**
-	 * The VanillaDeathChest logger.
+	 * The VanillaDeathChest logger. This should only be used by VanillaDeathChest.
 	 */
 	public static final Logger logger = LogManager.getLogger(MOD_ID);
 
+	/**
+	 * The game rule that controls whether death chests should be spawned.
+	 */
+	public static final GameRules.@Nullable Key<GameRules.BooleanRule> SPAWN_DEATH_CHESTS;
+
 	private static TOMLConfigSerializer<VDCConfig> serializer;
-	public static final GameRules.Key<GameRules.BooleanRule> DISABLE_DEATH_CHESTS =
-			GameRuleRegistry.register(
-					VanillaDeathChest.config().misc.gameRuleName, GameRules.Category.DROPS,
-					GameRuleFactory.createBooleanRule(false)
+
+	static {
+		final String gameRuleName = VanillaDeathChest.config().misc.gameRuleName;
+
+		if (gameRuleName.isEmpty()) {
+			SPAWN_DEATH_CHESTS = null;
+		} else {
+			SPAWN_DEATH_CHESTS = GameRuleRegistry.register(
+					gameRuleName, GameRules.Category.DROPS, GameRuleFactory.createBooleanRule(true)
 			);
+		}
+	}
 
 	@Override
 	public void onInitialize() {
 		reloadConfig();
 		CommandRegistrationCallback.EVENT.register(VDCConfigReloadCommand::register);
+		ServerTickEvents.END_WORLD_TICK.register(DeathChestPlacer::placeQueued);
 
-		final DeathChestPlaceHandler placeHandler = new DeathChestPlaceHandler();
+		/*final DeathChestPlaceHandler placeHandler = new DeathChestPlaceHandler();
 
 		PlayerDropAllItemsCallback.EVENT.register(placeHandler);
 		ServerTickEvents.END_WORLD_TICK.register(placeHandler);
@@ -99,7 +99,7 @@ public final class VanillaDeathChest implements ModInitializer {
 		LivingEntityDropExperienceCallback.EVENT.register(defenseEntityHandler);
 		LivingEntityTickCallback.EVENT.register(defenseEntityHandler);
 
-		ServerTickEvents.END_WORLD_TICK.register(new DeathChestContentsChecker());
+		ServerTickEvents.END_WORLD_TICK.register(new DeathChestContentsChecker());*/
 	}
 
 	/**

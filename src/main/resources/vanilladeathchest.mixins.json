@@ -4,14 +4,9 @@
 	"package": "com.therandomlabs.vanilladeathchest.mixin",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
-		"MixinBlock",
-		"MixinExplosion",
-		"MixinLivingEntity",
-		"MixinPlayerEntity",
-		"MixinServerPlayerInteractionManager",
-		"MixinShulkerBoxBlock"
+		"LivingEntityMixin",
+		"PlayerEntityMixin"
 	],
-	"client": [],
 	"injectors": {
 		"defaultRequire": 1
 	}

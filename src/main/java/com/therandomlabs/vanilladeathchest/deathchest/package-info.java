@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018-2020 TheRandomLabs
+ * Copyright (c) 2020-2021 TheRandomLabs
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,22 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.therandomlabs.vanilladeathchest.api.event.block;
-
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.explosion.Explosion;
-
-public interface ExplosionDetonationCallback {
-	Event<ExplosionDetonationCallback> EVENT = EventFactory.createArrayBacked(
-			ExplosionDetonationCallback.class,
-			listeners -> (world, explosion) -> {
-				for(ExplosionDetonationCallback event : listeners) {
-					event.onExplosionDetonate(world, explosion);
-				}
-			}
-	);
-
-	void onExplosionDetonate(ServerWorld world, Explosion explosion);
-}
+/**
+ * Classes that contain death chest-related logic for VanillaDeathChest.
+ */
+package com.therandomlabs.vanilladeathchest.deathchest;

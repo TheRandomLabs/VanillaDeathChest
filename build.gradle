@@ -1,4 +1,7 @@
+import com.modrinth.minotaur.TaskModrinthUpload
+
 plugins {
+	id "java-library"
 	id "fabric-loom" version "0.5-SNAPSHOT"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "1.1.0"
@@ -6,9 +9,10 @@ plugins {
 
 ext {
 	commonGradleBranch = "master"
-	yarnMappings = "1.16.4+build.7"
-	loaderVersion = "0.10.8"
-	fabricAPIVersion = "0.28.1+1.16"
+	minecraftVersion = "1.16.5"
+	yarnMappings = "1.16.5+build.1"
+	loaderVersion = "0.11.1"
+	fabricAPIVersion = "0.29.3+1.16"
 	modMenuVersion = "1.14.13+build.19"
 	clothConfigVersion = "4.8.3"
 	autoConfigVersion = "3.3.1"
@@ -16,8 +20,77 @@ ext {
 	cottonClientCommandsVersion = "1.0.1+1.16-rc1"
 }
 
-apply from: "https://raw.githubusercontent.com/TheRandomLabs/Common-Gradle/${project.commonGradleBranch}/fabric/1.16.4.gradle"
-
-version = "2.0.0"
+version = "2.0.0-fabric"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
+
+apply from: "https://raw.githubusercontent.com/TheRandomLabs/Common-Gradle/${project.commonGradleBranch}/fabric.gradle"
+
+if (project.hasProperty("curseForgeAPIKey")) {
+	curseforge {
+		apiKey = project.curseForgeAPIKey
+
+		project {
+			id = "393000"
+
+			addGameVersion "Fabric"
+			addGameVersion "Java 10"
+			addGameVersion "Java 9"
+			addGameVersion "Java 8"
+			addGameVersion "1.16.5"
+			addGameVersion "1.16.4"
+			addGameVersion "1.16.3"
+			addGameVersion "1.16.2"
+			addGameVersion "1.16.1"
+
+			mainArtifact(remapJar) {
+				changelogType = "markdown"
+				changelog = file("changelog.md")
+				displayName = "VanillaDeathChest ${version}"
+				releaseType = "beta"
+
+				relations {
+					optionalDependency "cotton-client-commands"
+				}
+			}
+
+			addArtifact(sourcesJar) {
+				displayName = "VanillaDeathChest ${version} Sources"
+				releaseType = "release"
+			}
+
+			addArtifact(javadocJar) {
+				displayName = "VanillaDeathChest ${version} Javadoc"
+				releaseType = "release"
+			}
+		}
+
+		options {
+			forgeGradleIntegration = false
+		}
+	}
+
+	afterEvaluate {
+		tasks.curseforge393000.dependsOn build
+	}
+}
+
+if (project.hasProperty("modrinthToken")) {
+	task publishModrinth(type: TaskModrinthUpload) {
+		token = project.modrinthToken
+		projectId = ""
+		versionNumber = version
+		versionName = "VanillaDeathChest ${version}"
+		changelog = new File("changelog.md").getText()
+		uploadFile = remapJar
+		releaseType = "beta"
+		addGameVersion("1.16.5")
+		addGameVersion("1.16.4")
+		addGameVersion("1.16.3")
+		addGameVersion("1.16.2")
+		addGameVersion("1.16.1")
+		addLoader("fabric")
+		addFile(sourcesJar)
+		addFile(javadocJar)
+	}
+}

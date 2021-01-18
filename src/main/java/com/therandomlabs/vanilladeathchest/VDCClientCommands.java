@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018-2020 TheRandomLabs
+ * Copyright (c) 2020-2021 TheRandomLabs
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,28 +21,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.therandomlabs.vanilladeathchest.api.event.livingentity;
+package com.therandomlabs.vanilladeathchest;
 
-import com.therandomlabs.vanilladeathchest.api.deathchest.DeathChestDefenseEntity;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.mob.MobEntity;
+import com.mojang.brigadier.CommandDispatcher;
+import com.therandomlabs.vanilladeathchest.command.VDCClientConfigReloadCommand;
+import io.github.cottonmc.clientcommands.ClientCommandPlugin;
+import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-public interface LivingEntityDropExperienceCallback {
-	Event<LivingEntityDropExperienceCallback> EVENT = EventFactory.createArrayBacked(
-			LivingEntityDropExperienceCallback.class,
-			listeners -> (entity, defenseEntity, experience) -> {
-				for(LivingEntityDropExperienceCallback event : listeners) {
-					experience = event.onLivingEntityDropExperience(
-							entity, defenseEntity, experience
-					);
-				}
-
-				return experience;
-			}
-	);
-
-	int onLivingEntityDropExperience(
-			MobEntity entity, DeathChestDefenseEntity defenseEntity, int experience
-	);
+/**
+ * The Cotton Client Commands entry point for VanillaDeathChest.
+ */
+@Environment(EnvType.CLIENT)
+public final class VDCClientCommands implements ClientCommandPlugin {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void registerCommands(CommandDispatcher<CottonClientCommandSource> dispatcher) {
+		VDCClientConfigReloadCommand.register(dispatcher);
+	}
 }

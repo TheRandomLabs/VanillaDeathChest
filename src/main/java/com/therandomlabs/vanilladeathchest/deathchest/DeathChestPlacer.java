@@ -192,7 +192,7 @@ public final class DeathChestPlacer {
 
 		int availableContainers = 0;
 
-		for (ItemEntity item : deathChest.getItems()) {
+		for (ItemEntity item : allItems) {
 			final ItemStack stack = item.getStack();
 
 			if (type == VDCConfig.ContainerType.SINGLE_CHEST ||
@@ -219,7 +219,7 @@ public final class DeathChestPlacer {
 				}
 			}
 
-			if (!doubleChest || stack.getCount() > 1) {
+			if (availableContainers == 0 && (!doubleChest || stack.getCount() > 1)) {
 				availableContainers = doubleChest ? 2 : 1;
 				stack.decrement(availableContainers);
 
@@ -247,7 +247,6 @@ public final class DeathChestPlacer {
 			return ContainerConsumptionResult.FAILED;
 		}
 
-		//Remove them from allItems so that placeAndDropRemaining doesn't try to drop them.
 		allItems.removeAll(emptyItems);
 		deathChest.getItems().removeAll(emptyItems);
 

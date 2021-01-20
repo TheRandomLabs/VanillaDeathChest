@@ -128,15 +128,15 @@ public final class DeathChestLocationFinder {
 	 * Finds the most suitable location to place a queued death chest.
 	 *
 	 * @param deathChest a queued {@link DeathChest}.
+	 * @param doubleChest whether a double chest is preferred.
 	 * @return a {@link Location} that describes the most suitable location to place the specified
 	 * death chest.
 	 */
 	@Nullable
-	public static Location find(DeathChest deathChest) {
+	public static Location find(DeathChest deathChest, boolean doubleChest) {
 		final World world = deathChest.getWorld();
 		final PlayerEntity player = world.getPlayerByUuid(deathChest.getPlayerUUID());
 		final BlockPos pos = deathChest.getPos();
-		final boolean isDoubleChest = deathChest.isDoubleChest();
 
 		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
 
@@ -153,8 +153,8 @@ public final class DeathChestLocationFinder {
 				continue;
 			}
 
-			if (!isDoubleChest || canPlace(world, player, potentialPos.east())) {
-				return new Location(potentialPos, isDoubleChest);
+			if (!doubleChest || canPlace(world, player, potentialPos.east())) {
+				return new Location(potentialPos, doubleChest);
 			}
 
 			if (singleChestPos == null) {
@@ -166,7 +166,7 @@ public final class DeathChestLocationFinder {
 			return new Location(singleChestPos, false);
 		}
 
-		return config.forcePlacementIfNoSuitableLocation ? new Location(pos, isDoubleChest) : null;
+		return config.forcePlacementIfNoSuitableLocation ? new Location(pos, doubleChest) : null;
 	}
 
 	private static Iterable<BlockPos> getSearchOrder(int size) {

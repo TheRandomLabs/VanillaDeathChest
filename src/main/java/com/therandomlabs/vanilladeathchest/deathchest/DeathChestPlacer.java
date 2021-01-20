@@ -23,6 +23,7 @@
 
 package com.therandomlabs.vanilladeathchest.deathchest;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
@@ -96,12 +97,15 @@ public final class DeathChestPlacer {
 
 	private static void placeAndDropRemaining(DeathChest deathChest) {
 		final List<ItemEntity> allItems = deathChest.cloneItems();
-		place(allItems, deathChest);
+
+		final DeathChest newDeathChest = place(allItems, deathChest);
+		final List<ItemEntity> items =
+				newDeathChest == null ? Collections.emptyList() : newDeathChest.getItems();
 
 		final World world = deathChest.getWorld();
 
 		for (ItemEntity drop : allItems) {
-			if (!deathChest.getItems().contains(drop)) {
+			if (!items.contains(drop)) {
 				world.spawnEntity(new ItemEntity(
 						world, drop.getX(), drop.getY(), drop.getZ(), drop.getStack()
 				));
@@ -110,19 +114,18 @@ public final class DeathChestPlacer {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	private static void place(List<ItemEntity> allItems, DeathChest deathChest) {
+	private static DeathChest place(List<ItemEntity> allItems, DeathChest deathChest) {
 		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
-		final List<ItemEntity> items = deathChest.getItems();
 
 		final Pattern pattern = Pattern.compile(config.registryNameRegex);
-		items.removeIf(
+		deathChest.getItems().removeIf(
 				item -> !pattern.matcher(
 						Registry.ITEM.getId(item.getStack().getItem()).toString()
 				).matches()
 		);
 
 		final VDCConfig.ContainerType type = config.containerType;
-		boolean doubleChest = items.size() > 27 &&
+		boolean doubleChest = deathChest.getItems().size() > 27 &&
 				(type == VDCConfig.ContainerType.SINGLE_OR_DOUBLE_CHEST ||
 						type == VDCConfig.ContainerType.SINGLE_OR_DOUBLE_SHULKER_BOX);
 
@@ -131,7 +134,7 @@ public final class DeathChestPlacer {
 					consumeContainerInInventory(allItems, deathChest, doubleChest);
 
 			if (result == ContainerConsumptionResult.FAILED) {
-				return;
+				return null;
 			}
 
 			if (result == ContainerConsumptionResult.SINGLE) {
@@ -140,13 +143,13 @@ public final class DeathChestPlacer {
 		}
 
 		final DeathChestLocationFinder.Location location =
-				DeathChestLocationFinder.find(deathChest);
+				DeathChestLocationFinder.find(deathChest, doubleChest);
 
 		if (location == null) {
 			VanillaDeathChest.logger.warn(
 					"No death chest location found for player at [{}]", deathChest.getPos()
 			);
-			return;
+			return null;
 		}
 
 		if (!location.isDoubleChest()) {
@@ -156,12 +159,12 @@ public final class DeathChestPlacer {
 		final BlockPos pos = location.getPos();
 		final ServerWorld world = deathChest.getWorld();
 		final DeathChest newDeathChest = new DeathChest(
-				world, deathChest.getPlayerUUID(), items, deathChest.getInventory(),
+				world, deathChest.getPlayerUUID(), deathChest.getItems(), deathChest.getInventory(),
 				world.getTime(), pos, doubleChest, true
 		);
 
 		if (!placeAndFillContainer(newDeathChest)) {
-			return;
+			return null;
 		}
 
 		final PlayerEntity player = world.getPlayerByUuid(deathChest.getPlayerUUID());
@@ -177,6 +180,8 @@ public final class DeathChestPlacer {
 		player.sendMessage(new LiteralText(String.format(
 				config.spawnMessage, pos.getX(), pos.getY(), pos.getZ()
 		)), false);
+
+		return newDeathChest;
 	}
 
 	private static ContainerConsumptionResult consumeContainerInInventory(

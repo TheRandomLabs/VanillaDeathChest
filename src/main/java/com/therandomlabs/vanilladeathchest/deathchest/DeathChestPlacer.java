@@ -32,6 +32,8 @@ import net.minecraft.server.world.ServerWorld;
  * Handles death chest placement.
  */
 public final class DeathChestPlacer {
+	private DeathChestPlacer() {}
+
 	/**
 	 * Places all queued death chests that are ready to be placed in the specified world.
 	 * This is called at the end of every world tick.

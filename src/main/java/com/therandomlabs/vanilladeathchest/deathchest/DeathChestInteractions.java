@@ -1,13 +1,21 @@
 package com.therandomlabs.vanilladeathchest.deathchest;
 
+import com.therandomlabs.vanilladeathchest.VDCConfig;
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -15,6 +23,8 @@ import net.minecraft.world.World;
  */
 public final class DeathChestInteractions {
 	private static DeathChest ignoreDeathChest;
+
+	private DeathChestInteractions() {}
 
 	/**
 	 * Called when a block is right-clicked.
@@ -50,25 +60,83 @@ public final class DeathChestInteractions {
 	}
 
 	/**
-	 * TODO
+	 * If the specified death chest is locked, an unlock attempt is performed.
+	 * The method then returns whether the specified player can unlock the death chest.
 	 *
-	 * @param deathChest
-	 * @param player
-	 * @return
+	 * @param deathChest a death chest.
+	 * @param player a player.
+	 * @return {@code true} if the player can interact with the death chest,
+	 * or otherwise {@code false}.
 	 */
 	public static boolean attemptInteract(DeathChest deathChest, ServerPlayerEntity player) {
-		//TODO
-		return true;
+		if (!deathChest.canInteract(player)) {
+			return false;
+		}
+
+		final VDCConfig.KeyItem config = VanillaDeathChest.config().keyItem;
+
+		if (config.item == null) {
+			deathChest.setLocked(false);
+		}
+
+		if (!deathChest.isLocked()) {
+			return true;
+		}
+
+		final ItemStack stack = player.getStackInHand(player.getActiveHand());
+		final int amount = config.amountToConsume;
+
+		if (stack.getItem() == config.item) {
+			if (amount == 0 || player.abilities.creativeMode) {
+				deathChest.setLocked(false);
+				return true;
+			}
+
+			if (config.consumptionBehavior == VDCConfig.KeyConsumptionBehavior.DAMAGE) {
+				if (stack.isDamageable() && stack.getDamage() + amount <= stack.getMaxDamage()) {
+					stack.damage(
+							amount, player,
+							breaker -> breaker.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND)
+					);
+					deathChest.setLocked(false);
+					return true;
+				}
+			} else if (stack.getCount() >= amount) {
+				stack.decrement(amount);
+				deathChest.setLocked(false);
+				return true;
+			}
+		}
+
+		final String message = config.unlockFailedMessage;
+
+		if (!message.isEmpty()) {
+			final Text component = new LiteralText(String.format(
+					message, amount,
+					new TranslatableText(config.item.getTranslationKey()).
+							formatted().asString().trim()
+			));
+
+			player.sendMessage(component, config.unlockFailedStatusMessage);
+		}
+
+		return false;
 	}
 
 	/**
-	 * TODO
+	 * Called when a player attempts to break a death chest.
+	 * Returns whether the death chest should be broken.
+	 * If this is {@code true} and the death chest is a double chest, the other death chest
+	 * block is automatically destroyed.
 	 *
-	 * @param deathChest
-	 * @param player
-	 * @return
+	 * @param pos a position.
+	 * @param deathChest a death chest.
+	 * @param player a player.
+	 * @return {@code true} if the death chest should be broken, or otherwise {@code false}.
 	 */
-	public static boolean attemptBreak(DeathChest deathChest, ServerPlayerEntity player) {
+	public static boolean attemptBreak(
+			BlockPos pos, DeathChest deathChest, ServerPlayerEntity player
+	) {
 		if (deathChest == ignoreDeathChest) {
 			return true;
 		}
@@ -79,71 +147,10 @@ public final class DeathChestInteractions {
 
 		if (deathChest.isDoubleChest()) {
 			ignoreDeathChest = deathChest;
-			player.interactionManager.tryBreakBlock(deathChest.getPos().east());
+			final BlockPos west = deathChest.getPos();
+			player.interactionManager.tryBreakBlock(pos.equals(west) ? west.east() : west);
 		}
 
-		//TODO
 		return true;
 	}
-
-	/*
-	private static boolean canInteract(ServerPlayerEntity player, DeathChest deathChest) {
-		if(!deathChest.canInteract(player)) {
-			return false;
-		}
-
-		final VDCConfig.Defense config = VanillaDeathChest.config().defense;
-
-		if(config.unlocker == null || deathChest.isUnlocked()) {
-			return true;
-		}
-
-		final ItemStack stack = player.getStackInHand(player.getActiveHand());
-		final int amount = config.unlockerConsumeAmount;
-
-		if(stack.getItem() == config.unlockerItem) {
-			if(amount == 0) {
-				deathChest.setUnlocked(true);
-				return true;
-			}
-
-			if(config.damageUnlockerInsteadOfConsume) {
-				boolean unlocked = player.abilities.creativeMode;
-
-				if(!unlocked && stack.isDamageable() &&
-						stack.getDamage() + amount < stack.getDamage()) {
-					stack.damage(amount, player.getRandom(), player);
-					unlocked = true;
-				}
-
-				if(unlocked) {
-					deathChest.setUnlocked(true);
-					return true;
-				}
-			} else if(stack.getCount() >= amount) {
-				if(!player.abilities.creativeMode) {
-					stack.decrement(amount);
-				}
-
-				deathChest.setUnlocked(true);
-				return true;
-			}
-		}
-
-		final String message = config.unlockFailedMessage;
-
-		if(!message.isEmpty()) {
-			final Text component = new LiteralText(String.format(
-					message,
-					amount,
-					new TranslatableText(config.unlockerItem.getTranslationKey()).
-							formatted().asString().trim()
-			));
-
-			player.sendMessage(component, config.unlockFailedStatusMessage);
-		}
-
-		return false;
-	}
-	 */
 }

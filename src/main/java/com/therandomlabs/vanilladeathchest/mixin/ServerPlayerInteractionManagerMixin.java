@@ -33,7 +33,7 @@ public final class ServerPlayerInteractionManagerMixin {
 		if (blockEntity instanceof DeathChestBlockEntity) {
 			final DeathChest deathChest = ((DeathChestBlockEntity) blockEntity).getDeathChest();
 
-			if (!DeathChestInteractions.attemptBreak(deathChest, player)) {
+			if (!DeathChestInteractions.attemptBreak(pos, deathChest, player)) {
 				info.setReturnValue(false);
 			}
 		}

@@ -134,6 +134,7 @@ public final class VDCConfig implements ConfigData {
 	public static final class KeyItem implements ConfigData {
 		@TOMLConfigSerializer.Comment({
 				"The registry name of the key item.",
+				"A player must be holding this item in their main hand to unlock a death chest.",
 				"Set this to an empty string to allow death chests to be unlocked without an item."
 		})
 		public String registryName = "";
@@ -178,6 +179,7 @@ public final class VDCConfig implements ConfigData {
 		)
 		public boolean unlockFailedStatusMessage = true;
 
+		@Nullable
 		@ConfigEntry.Gui.Excluded
 		public Item item;
 
@@ -188,6 +190,7 @@ public final class VDCConfig implements ConfigData {
 
 				if (item == Items.AIR) {
 					registryName = "";
+					item = null;
 				} else {
 					registryName = new Identifier(registryName).toString();
 				}

@@ -14,6 +14,8 @@ import net.minecraft.world.World;
  * Handles the automatic removal of empty death chests.
  */
 public final class DeathChestAutoRemover {
+	private DeathChestAutoRemover() {}
+
 	/**
 	 * Removes all empty death chests in loaded chunks.
 	 * This is called at the end of every world tick.

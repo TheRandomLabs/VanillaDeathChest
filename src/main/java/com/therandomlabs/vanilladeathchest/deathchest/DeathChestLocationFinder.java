@@ -122,6 +122,8 @@ public final class DeathChestLocationFinder {
 	@Nullable
 	private static SearchOrder searchOrder;
 
+	private DeathChestLocationFinder() {}
+
 	/**
 	 * Finds the most suitable location to place a queued death chest.
 	 *

@@ -10,9 +10,22 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
+/**
+ * Handles death chest interactions.
+ */
 public final class DeathChestInteractions {
 	private static DeathChest ignoreDeathChest;
 
+	/**
+	 * Called when a block is right-clicked.
+	 *
+	 * @param player the player.
+	 * @param world the world.
+	 * @param hand the hand.
+	 * @param blockHitResult the {@link BlockHitResult}.
+	 * @return {@link ActionResult#PASS} if the interaction can occur,
+	 * or {@link ActionResult#SUCCESS} if it cannot.
+	 */
 	public static ActionResult interact(
 			PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult
 	) {
@@ -29,19 +42,32 @@ public final class DeathChestInteractions {
 		if (blockEntity instanceof DeathChestBlockEntity) {
 			final DeathChest deathChest = ((DeathChestBlockEntity) blockEntity).getDeathChest();
 
-			if (attemptInteract(deathChest, (ServerPlayerEntity) player)) {
-				return ActionResult.PASS;
-			}
+			return attemptInteract(deathChest, (ServerPlayerEntity) player) ?
+					ActionResult.PASS : ActionResult.SUCCESS;
 		}
 
 		return ActionResult.PASS;
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @param deathChest
+	 * @param player
+	 * @return
+	 */
 	public static boolean attemptInteract(DeathChest deathChest, ServerPlayerEntity player) {
 		//TODO
 		return true;
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @param deathChest
+	 * @param player
+	 * @return
+	 */
 	public static boolean attemptBreak(DeathChest deathChest, ServerPlayerEntity player) {
 		if (deathChest == ignoreDeathChest) {
 			return true;

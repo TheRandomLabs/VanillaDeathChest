@@ -10,7 +10,16 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+/**
+ * Handles the automatic removal of empty death chests.
+ */
 public final class DeathChestAutoRemover {
+	/**
+	 * Removes all empty death chests in loaded chunks.
+	 * This is called at the end of every world tick.
+	 *
+	 * @param world a {@link ServerWorld}.
+	 */
 	public static void removeEmpty(ServerWorld world) {
 		if (!VanillaDeathChest.config().misc.removeEmptyDeathChests) {
 			return;

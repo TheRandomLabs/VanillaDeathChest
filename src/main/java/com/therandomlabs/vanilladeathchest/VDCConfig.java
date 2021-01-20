@@ -173,14 +173,14 @@ public final class VDCConfig implements ConfigData {
 				"Set this to an empty string to disable this message."
 		})
 		@ConfigEntry.Gui.Tooltip
-		public String unlockFailedMessage = "You need %s of %s to retrieve your items";
+		public String unlockFailureMessage = "You need %s of %s to retrieve your items";
 
 		@TOMLConfigSerializer.Comment(
 				"Whether the unlock failed message should be sent as a status message rather " +
 						"than a chat message."
 		)
 		@ConfigEntry.Gui.Tooltip
-		public boolean unlockFailedStatusMessage = true;
+		public boolean unlockFailureStatusMessage = true;
 
 		@Nullable
 		@ConfigEntry.Gui.Excluded

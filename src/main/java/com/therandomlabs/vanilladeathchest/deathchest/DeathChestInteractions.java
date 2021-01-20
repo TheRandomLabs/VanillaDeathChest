@@ -110,7 +110,7 @@ public final class DeathChestInteractions {
 			}
 		}
 
-		final String message = config.unlockFailedMessage;
+		final String message = config.unlockFailureMessage;
 
 		if (!message.isEmpty()) {
 			final Text component = new LiteralText(String.format(
@@ -118,7 +118,7 @@ public final class DeathChestInteractions {
 					amount, new TranslatableText(config.item.getTranslationKey()).getString()
 			));
 
-			player.sendMessage(component, config.unlockFailedStatusMessage);
+			player.sendMessage(component, config.unlockFailureStatusMessage);
 		}
 
 		return false;

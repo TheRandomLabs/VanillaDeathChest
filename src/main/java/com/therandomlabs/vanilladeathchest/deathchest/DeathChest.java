@@ -52,6 +52,7 @@ public final class DeathChest {
 	private final DeathChestIdentifier identifier;
 	private final ServerWorld world;
 	private final UUID playerUUID;
+	@SuppressWarnings("PMD.LooseCoupling")
 	private final ArrayList<ItemEntity> items;
 	private final PlayerInventory inventory;
 	private final long creationTime;

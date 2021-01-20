@@ -75,6 +75,9 @@ public final class VanillaDeathChest implements ModInitializer {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onInitialize() {
 		reloadConfig();

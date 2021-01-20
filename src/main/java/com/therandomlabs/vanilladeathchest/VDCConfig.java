@@ -186,6 +186,9 @@ public final class VDCConfig implements ConfigData {
 		@ConfigEntry.Gui.Excluded
 		public Item item;
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void validatePostLoad() {
 			if (!registryName.isEmpty()) {
@@ -255,6 +258,9 @@ public final class VDCConfig implements ConfigData {
 		@ConfigEntry.Gui.Excluded
 		public EntityType<? extends Entity> entityType;
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void validatePostLoad() {
 			if (!registryName.isEmpty()) {

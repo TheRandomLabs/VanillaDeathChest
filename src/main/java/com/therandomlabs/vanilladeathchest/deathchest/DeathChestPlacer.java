@@ -62,6 +62,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Handles death chest placement.
@@ -120,6 +121,7 @@ public final class DeathChestPlacer {
 		}
 	}
 
+	@Nullable
 	private static DeathChest place(List<ItemEntity> allItems, DeathChest deathChest) {
 		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
 

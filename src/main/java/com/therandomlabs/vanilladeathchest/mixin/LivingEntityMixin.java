@@ -66,11 +66,17 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 	@Unique
 	private UUID deathChestPlayerUUID;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<ItemEntity> getDrops() {
 		return drops;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setDeathChest(DeathChest deathChest) {
 		this.deathChest = deathChest;

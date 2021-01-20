@@ -169,6 +169,7 @@ public final class DeathChestLocationFinder {
 		return config.forcePlacementIfNoSuitableLocation ? new Location(pos, doubleChest) : null;
 	}
 
+	@SuppressWarnings("PMD.NonThreadSafeSingleton")
 	private static Iterable<BlockPos> getSearchOrder(int size) {
 		if (searchOrder == null || searchOrder.size != size) {
 			searchOrder = new SearchOrder(size);

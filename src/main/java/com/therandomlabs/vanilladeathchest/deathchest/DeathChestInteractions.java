@@ -17,11 +17,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Handles death chest interactions.
  */
 public final class DeathChestInteractions {
+	@Nullable
 	private static DeathChest ignoreDeathChest;
 
 	private DeathChestInteractions() {}
@@ -77,6 +79,7 @@ public final class DeathChestInteractions {
 
 		if (config.item == null) {
 			deathChest.setLocked(false);
+			return true;
 		}
 
 		if (!deathChest.isLocked()) {

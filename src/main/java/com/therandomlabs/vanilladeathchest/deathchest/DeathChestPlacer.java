@@ -82,11 +82,11 @@ public final class DeathChestPlacer {
 		final Queue<DeathChest> queue = state.getQueuedDeathChests();
 
 		//We wait two ticks to prevent conflicts with other mods that place things after death.
-		if (queue.isEmpty() || queue.peek().getCreationTime() - world.getTime() < 2L) {
+		if (queue.isEmpty() || world.getTime() - queue.peek().getCreationTime() < 2L) {
 			return;
 		}
 
-		while (!queue.isEmpty() && queue.peek().getCreationTime() - world.getTime() >= 2L) {
+		while (!queue.isEmpty() && world.getTime() - queue.peek().getCreationTime() >= 2L) {
 			placeAndDropRemaining(queue.poll());
 		}
 
@@ -249,6 +249,7 @@ public final class DeathChestPlacer {
 				ContainerConsumptionResult.SINGLE : ContainerConsumptionResult.DOUBLE;
 	}
 
+	@SuppressWarnings("NullAway")
 	private static boolean placeAndFillContainer(DeathChest deathChest) {
 		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
 		final BlockPos pos = deathChest.getPos();

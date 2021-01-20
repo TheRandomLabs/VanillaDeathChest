@@ -115,6 +115,7 @@ public final class DeathChestsState extends PersistentState {
 	 * @param identifier an identifier.
 	 * @return the {@link DeathChest} with the specified identifier.
 	 */
+	@Nullable
 	public DeathChest getDeathChest(DeathChestIdentifier identifier) {
 		return deathChests.get(identifier);
 	}

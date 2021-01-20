@@ -137,6 +137,7 @@ public final class VDCConfig implements ConfigData {
 				"A player must be holding this item in their main hand to unlock a death chest.",
 				"Set this to an empty string to allow death chests to be unlocked without an item."
 		})
+		@ConfigEntry.Gui.Tooltip
 		public String registryName = "";
 
 		@SpecIntInRange(min = 0, max = Short.MAX_VALUE)
@@ -171,12 +172,14 @@ public final class VDCConfig implements ConfigData {
 						"item as arguments.",
 				"Set this to an empty string to disable this message."
 		})
+		@ConfigEntry.Gui.Tooltip
 		public String unlockFailedMessage = "You need %s of %s to retrieve your items";
 
 		@TOMLConfigSerializer.Comment(
 				"Whether the unlock failed message should be sent as a status message rather " +
 						"than a chat message."
 		)
+		@ConfigEntry.Gui.Tooltip
 		public boolean unlockFailedStatusMessage = true;
 
 		@Nullable
@@ -248,6 +251,7 @@ public final class VDCConfig implements ConfigData {
 		@ConfigEntry.Gui.Tooltip
 		public double maxSquaredDistanceFromPlayer = 64.0;
 
+		@Nullable
 		@ConfigEntry.Gui.Excluded
 		public EntityType<? extends Entity> entityType;
 

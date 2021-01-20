@@ -59,6 +59,8 @@ public final class VanillaDeathChest implements ModInitializer {
 	 */
 	public static final GameRules.@Nullable Key<GameRules.BooleanRule> SPAWN_DEATH_CHESTS;
 
+	@SuppressWarnings("PMD.NonThreadSafeSingleton")
+	@Nullable
 	private static TOMLConfigSerializer<VDCConfig> serializer;
 
 	static {
@@ -87,6 +89,7 @@ public final class VanillaDeathChest implements ModInitializer {
 	 *
 	 * @return a {@link VDCConfig} object.
 	 */
+	@SuppressWarnings("NullAway")
 	public static VDCConfig config() {
 		if (serializer == null) {
 			reloadConfig();

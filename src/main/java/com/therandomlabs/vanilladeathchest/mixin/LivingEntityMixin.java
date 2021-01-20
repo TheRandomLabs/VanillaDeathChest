@@ -81,7 +81,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 		if ((Object) this instanceof PlayerEntity) {
 			drops.clear();
 			inventory = new PlayerInventory(null);
-			((PlayerEntity) (Object) this).inventory.clone(inventory);
+			inventory.clone(((PlayerEntity) (Object) this).inventory);
 		}
 	}
 
@@ -99,6 +99,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 			return;
 		}
 
+		drops.forEach(world::removeEntity);
 		final DeathChestsState deathChestsState = DeathChestsState.get(world);
 		deathChestsState.getQueuedDeathChests().add(new DeathChest(
 				world, entity.getUuid(), drops, inventory, world.getTime(), entity.getBlockPos(),

@@ -29,8 +29,10 @@ import java.util.UUID;
 
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -189,6 +191,21 @@ public final class DeathChest {
 	}
 
 	/**
+	 * Returns whether this death chest exists in the world.
+	 *
+	 * @return {@code true} if this death chest exists, or otherwise {@code false}.
+	 */
+	public boolean exists() {
+		if (!world.getBlockState(pos).getBlock().hasBlockEntity()) {
+			return false;
+		}
+
+		final BlockEntity blockEntity = world.getBlockEntity(pos);
+		return blockEntity instanceof DeathChestBlockEntity &&
+				equals(((DeathChestBlockEntity) blockEntity).getDeathChest());
+	}
+
+	/**
 	 * Returns whether the specified player can interact with this death chest.
 	 * This does not take into account whether this death chest is locked.
 	 *
@@ -239,8 +256,8 @@ public final class DeathChest {
 		inventory.serialize(inventoryList);
 		tag.put("Inventory", inventoryList);
 
-		tag.putLong("CreationTime", creationTime);
-		tag.put("Pos", NbtHelper.fromBlockPos(pos));
+		identifier.toTag(tag);
+
 		tag.putBoolean("IsDoubleChest", isDoubleChest);
 		tag.putBoolean("Locked", locked);
 		return tag;
@@ -255,6 +272,7 @@ public final class DeathChest {
 	 */
 	@SuppressWarnings("ConstantConditions")
 	public static DeathChest fromTag(ServerWorld world, CompoundTag tag) {
+		final DeathChestIdentifier identifier = DeathChestIdentifier.fromTag(tag);
 		final List<ItemEntity> items = new ArrayList<>();
 
 		for (Tag itemTag : tag.getList("Items", NbtType.COMPOUND)) {
@@ -269,8 +287,8 @@ public final class DeathChest {
 
 		return new DeathChest(
 				world, NbtHelper.toUuid(tag.get("PlayerUUID")), items, inventory,
-				tag.getLong("CreationTime"), NbtHelper.toBlockPos(tag.getCompound("Pos")),
-				tag.getBoolean("IsDoubleChest"), tag.getBoolean("Locked")
+				identifier.getCreationTime(), identifier.getPos(), tag.getBoolean("IsDoubleChest"),
+				tag.getBoolean("Locked")
 		);
 	}
 }

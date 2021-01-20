@@ -31,9 +31,7 @@ import java.util.Queue;
 
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestIdentifier;
-import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.world.ServerWorld;
@@ -140,26 +138,6 @@ public final class DeathChestsState extends PersistentState {
 	public void addDeathChest(DeathChest deathChest) {
 		deathChests.put(deathChest.getIdentifier(), deathChest);
 		deathChestsByPos.put(deathChest.getPos(), deathChest);
-	}
-
-	/**
-	 * Returns the death chest at the specified position if it exists in the world.
-	 *
-	 * @param pos a position.
-	 * @return the {@link DeathChest} at the specified {@link BlockPos}.
-	 */
-	@Nullable
-	public DeathChest getExistingDeathChest(BlockPos pos) {
-		final DeathChest deathChest = getDeathChest(pos);
-
-		if (deathChest == null || !world.getBlockState(pos).getBlock().hasBlockEntity()) {
-			return null;
-		}
-
-		final BlockEntity blockEntity = world.getBlockEntity(pos);
-		return blockEntity instanceof DeathChestBlockEntity &&
-				((DeathChestBlockEntity) blockEntity).getDeathChest().equals(deathChest) ?
-				deathChest : null;
 	}
 
 	/**

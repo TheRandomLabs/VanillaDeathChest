@@ -23,6 +23,7 @@
 
 package com.therandomlabs.vanilladeathchest.deathchest;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -108,14 +109,17 @@ public final class DeathChestPlacer {
 
 		for (ItemEntity drop : allItems) {
 			if (!items.contains(drop)) {
-				world.spawnEntity(new ItemEntity(
-						world, drop.getX(), drop.getY(), drop.getZ(), drop.getStack()
-				));
+				if (drop.removed) {
+					world.spawnEntity(new ItemEntity(
+							world, drop.getX(), drop.getY(), drop.getZ(), drop.getStack()
+					));
+				} else {
+					world.spawnEntity(drop);
+				}
 			}
 		}
 	}
 
-	@SuppressWarnings("ConstantConditions")
 	private static DeathChest place(List<ItemEntity> allItems, DeathChest deathChest) {
 		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
 
@@ -135,7 +139,18 @@ public final class DeathChestPlacer {
 				(type == VDCConfig.ContainerType.SINGLE_OR_DOUBLE_CHEST ||
 						type == VDCConfig.ContainerType.SINGLE_OR_DOUBLE_SHULKER_BOX);
 
+		final ServerWorld world = deathChest.getWorld();
+		final List<ItemEntity> allItemsBeforeContainerConsumption = new ArrayList<>();
+
 		if (config.useContainerInInventory) {
+			for (ItemEntity item : allItems) {
+				allItemsBeforeContainerConsumption.add(
+						new ItemEntity(
+								world, item.getX(), item.getY(), item.getZ(), item.getStack().copy()
+						)
+				);
+			}
+
 			final ContainerConsumptionResult result =
 					consumeContainerInInventory(allItems, deathChest, doubleChest);
 
@@ -163,29 +178,37 @@ public final class DeathChestPlacer {
 		}
 
 		final BlockPos pos = location.getPos();
-		final ServerWorld world = deathChest.getWorld();
 		final DeathChest newDeathChest = new DeathChest(
 				world, deathChest.getPlayerUUID(), deathChest.getItems(), deathChest.getInventory(),
 				world.getTime(), pos, doubleChest, true
 		);
 
 		if (!placeAndFillContainer(newDeathChest) || newDeathChest.getItems().isEmpty()) {
+			//Make sure we also drop any consumed containers.
+			if (!allItemsBeforeContainerConsumption.isEmpty()) {
+				allItems.clear();
+				allItems.addAll(allItemsBeforeContainerConsumption);
+			}
+
 			return null;
 		}
 
 		final PlayerEntity player = world.getPlayerByUuid(deathChest.getPlayerUUID());
 
-		spawnDefenseEntities(deathChest, player);
+		spawnDefenseEntities(newDeathChest);
 
 		DeathChestsState.get(world).addDeathChest(newDeathChest);
 
 		VanillaDeathChest.logger.info(
-				"Death chest for {} spawned at [{}]", player.getGameProfile().getName(), pos
+				"Death chest for {} spawned at [{}]",
+				player == null ? deathChest.getPlayerUUID() : player.getGameProfile().getName(), pos
 		);
 
-		player.sendMessage(new LiteralText(String.format(
-				config.spawnMessage, pos.getX(), pos.getY(), pos.getZ()
-		)), false);
+		if (player != null) {
+			player.sendMessage(new LiteralText(String.format(
+					config.spawnMessage, pos.getX(), pos.getY(), pos.getZ()
+			)), false);
+		}
 
 		return newDeathChest;
 	}
@@ -336,7 +359,7 @@ public final class DeathChestPlacer {
 		return true;
 	}
 
-	private static void spawnDefenseEntities(DeathChest deathChest, PlayerEntity player) {
+	private static void spawnDefenseEntities(DeathChest deathChest) {
 		final VDCConfig.DefenseEntities config = VanillaDeathChest.config().defenseEntities;
 
 		if (config.entityType == null) {
@@ -350,6 +373,7 @@ public final class DeathChestPlacer {
 		final double z = pos.getZ() + 0.5;
 
 		for (int i = 0; i < config.spawnCount; i++) {
+			//The following spawn logic has been taken from SummonCommand.
 			CompoundTag tag;
 
 			try {
@@ -359,24 +383,29 @@ public final class DeathChestPlacer {
 				tag = new CompoundTag();
 			}
 
+			final boolean emptyTag = tag.isEmpty();
 			tag.putString("id", config.registryName);
 
 			final Entity entity = EntityType.loadEntityWithPassengers(
 					tag, world, spawnedEntity -> {
-						spawnedEntity.setPos(x, y, z);
-						return !world.tryLoadEntity(spawnedEntity) ? null : spawnedEntity;
+						spawnedEntity.refreshPositionAndAngles(
+								x, y, z, spawnedEntity.yaw, spawnedEntity.pitch
+						);
+						return spawnedEntity;
 					}
 			);
 
 			if (entity instanceof DeathChestDefenseEntity) {
 				((DeathChestDefenseEntity) entity).setDeathChest(deathChest);
 
-				if (entity instanceof MobEntity) {
+				if (emptyTag && entity instanceof MobEntity) {
 					((MobEntity) entity).initialize(
 							world, world.getLocalDifficulty(pos), SpawnReason.EVENT, null, null
 					);
 				}
 			}
+
+			world.spawnEntityAndPassengers(entity);
 		}
 	}
 }

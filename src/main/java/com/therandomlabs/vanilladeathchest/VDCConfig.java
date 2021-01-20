@@ -56,7 +56,7 @@ public final class VDCConfig implements ConfigData {
 				"SINGLE_OR_DOUBLE_SHULKER_BOX: Single or double shulker boxes."
 		})
 		@ConfigEntry.Gui.Tooltip
-		public DeathChestType containerType = DeathChestType.SINGLE_OR_DOUBLE_CHEST;
+		public ContainerType containerType = ContainerType.SINGLE_OR_DOUBLE_CHEST;
 
 		@TOMLConfigSerializer.Comment({
 				"The color of the shulker box if the container type is a shulker box.",
@@ -211,7 +211,7 @@ public final class VDCConfig implements ConfigData {
 
 		@TOMLConfigSerializer.Comment("Custom NBT data for defense entities in JSON format.")
 		@ConfigEntry.Gui.Tooltip
-		public String nbt = "{}";
+		public String nbtTag = "{}";
 
 		@TOMLConfigSerializer.Comment("Causes defense entities to drop experience.")
 		@ConfigEntry.Gui.Tooltip
@@ -249,7 +249,7 @@ public final class VDCConfig implements ConfigData {
 		public double maxSquaredDistanceFromPlayer = 64.0;
 
 		@ConfigEntry.Gui.Excluded
-		public EntityType<? extends Entity> entity;
+		public EntityType<? extends Entity> entityType;
 
 		@Override
 		public void validatePostLoad() {
@@ -259,16 +259,16 @@ public final class VDCConfig implements ConfigData {
 
 				if (optional.isPresent()) {
 					registryName = new Identifier(registryName).toString();
-					entity = optional.get();
+					entityType = optional.get();
 				} else {
 					registryName = "";
 				}
 			}
 
 			try {
-				StringNbtReader.parse(nbt);
+				StringNbtReader.parse(nbtTag);
 			} catch (CommandSyntaxException ignored) {
-				nbt = "{}";
+				nbtTag = "{}";
 			}
 		}
 	}
@@ -338,9 +338,9 @@ public final class VDCConfig implements ConfigData {
 	}
 
 	/**
-	 * The death chest type.
+	 * The death chest container type.
 	 */
-	public enum DeathChestType {
+	public enum ContainerType {
 		/**
 		 * Only single chests.
 		 */

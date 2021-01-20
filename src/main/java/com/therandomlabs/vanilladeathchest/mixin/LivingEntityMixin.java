@@ -30,6 +30,7 @@ import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
+import com.therandomlabs.vanilladeathchest.util.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.util.DropsList;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
 import net.minecraft.entity.ItemEntity;
@@ -51,7 +52,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("ConstantConditions")
 @Mixin(value = LivingEntity.class, priority = Integer.MAX_VALUE)
-public abstract class LivingEntityMixin implements DropsList {
+public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseEntity {
 	@Unique
 	private final List<ItemEntity> drops = new ArrayList<>();
 
@@ -59,14 +60,20 @@ public abstract class LivingEntityMixin implements DropsList {
 	private PlayerInventory inventory;
 
 	@Unique
-	private UUID deathChestPlayer;
+	private BlockPos deathChestPos;
 
 	@Unique
-	private BlockPos deathChestPos;
+	private UUID deathChestPlayer;
 
 	@Override
 	public List<ItemEntity> getDrops() {
 		return drops;
+	}
+
+	@Override
+	public void setDeathChest(DeathChest deathChest) {
+		deathChestPos = deathChest.getPos();
+		deathChestPlayer = deathChest.getPlayerUUID();
 	}
 
 	@Inject(method = "drop", at = @At("HEAD"))
@@ -110,7 +117,9 @@ public abstract class LivingEntityMixin implements DropsList {
 		final PlayerEntity player = entity.getEntityWorld().getPlayerByUuid(deathChestPlayer);
 
 		if ((Object) this instanceof MobEntity) {
-			((MobEntity) (Object) this).setTarget(player);
+			final MobEntity mobEntity = (MobEntity) (Object) this;
+			mobEntity.setAttacker(player);
+			mobEntity.setTarget(player);
 		}
 
 		if (this instanceof Angerable) {
@@ -146,16 +155,16 @@ public abstract class LivingEntityMixin implements DropsList {
 	@Inject(method = "writeCustomDataToTag", at = @At("HEAD"))
 	public void writeCustomDataToTag(CompoundTag tag, CallbackInfo info) {
 		if (deathChestPlayer != null) {
-			tag.put("DeathChestPlayer", NbtHelper.fromUuid(deathChestPlayer));
 			tag.put("DeathChestPos", NbtHelper.fromBlockPos(deathChestPos));
+			tag.put("DeathChestPlayer", NbtHelper.fromUuid(deathChestPlayer));
 		}
 	}
 
 	@Inject(method = "readCustomDataFromTag", at = @At("HEAD"))
 	public void readCustomDataFromTag(CompoundTag tag, CallbackInfo info) {
 		if (tag.contains("DeathChestPlayer")) {
-			deathChestPlayer = NbtHelper.toUuid(tag.getCompound("DeathChestPlayer"));
 			deathChestPos = NbtHelper.toBlockPos(tag.getCompound("DeathChestPos"));
+			deathChestPlayer = NbtHelper.toUuid(tag.getCompound("DeathChestPlayer"));
 		}
 	}
 

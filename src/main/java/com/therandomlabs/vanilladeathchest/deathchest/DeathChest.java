@@ -50,11 +50,11 @@ public final class DeathChest {
 	private final DeathChestIdentifier identifier;
 	private final ServerWorld world;
 	private final UUID playerUUID;
-	private final List<ItemEntity> items;
+	private final ArrayList<ItemEntity> items;
 	private final PlayerInventory inventory;
 	private final long creationTime;
 	private final BlockPos pos;
-	private boolean isDoubleChest;
+	private final boolean isDoubleChest;
 	private boolean locked;
 
 	/**
@@ -121,6 +121,16 @@ public final class DeathChest {
 	}
 
 	/**
+	 * Returns a cloned mutable list containing this death chest's items.
+	 *
+	 * @return a cloned mutable list containing this death chest's items.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ItemEntity> cloneItems() {
+		return (List<ItemEntity>) items.clone();
+	}
+
+	/**
 	 * Returns the player inventory at the time of death.
 	 *
 	 * @return the {@link PlayerInventory} at the time of death.
@@ -156,15 +166,6 @@ public final class DeathChest {
 	 */
 	public boolean isDoubleChest() {
 		return isDoubleChest;
-	}
-
-	/**
-	 * Sets whether this death chest is a double chest.
-	 *
-	 * @param flag {@code true} if this death chest is a double chest, or otherwise {@code false}.
-	 */
-	public void setDoubleChest(boolean flag) {
-		isDoubleChest = flag;
 	}
 
 	/**

@@ -27,7 +27,7 @@ public final class DeathChestAutoRemover {
 			return;
 		}
 
-		for (DeathChest deathChest : DeathChestsState.get(world).getDeathChests().values()) {
+		for (DeathChest deathChest : DeathChestsState.get(world).getDeathChests()) {
 			removeIfEmpty(world, deathChest.getPos());
 
 			if (deathChest.isDoubleChest()) {

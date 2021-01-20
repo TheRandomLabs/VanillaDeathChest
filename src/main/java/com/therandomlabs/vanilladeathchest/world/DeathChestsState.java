@@ -24,6 +24,7 @@
 package com.therandomlabs.vanilladeathchest.world;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -100,12 +101,22 @@ public final class DeathChestsState extends PersistentState {
 	}
 
 	/**
-	 * Returns a mutable map of all placed death chests.
+	 * Returns all placed death chests.
 	 *
-	 * @return a mutable map of all placed death chests.
+	 * @return a {@link Collection} of all placed death chests.
 	 */
-	public Map<DeathChestIdentifier, DeathChest> getDeathChests() {
-		return deathChests;
+	public Collection<DeathChest> getDeathChests() {
+		return deathChests.values();
+	}
+
+	/**
+	 * Returns the death chest with the specified identifier.
+	 *
+	 * @param identifier an identifier.
+	 * @return the {@link DeathChest} with the specified identifier.
+	 */
+	public DeathChest getDeathChest(DeathChestIdentifier identifier) {
+		return deathChests.get(identifier);
 	}
 
 	/**
@@ -118,6 +129,16 @@ public final class DeathChestsState extends PersistentState {
 	public DeathChest getDeathChest(BlockPos pos) {
 		final DeathChest deathChest = deathChestsByPos.get(pos);
 		return deathChest == null ? deathChestsByPos.get(pos.west()) : deathChest;
+	}
+
+	/**
+	 * Adds a death chest.
+	 *
+	 * @param deathChest a {@link DeathChest}.
+	 */
+	public void addDeathChest(DeathChest deathChest) {
+		deathChests.put(deathChest.getIdentifier(), deathChest);
+		deathChestsByPos.put(deathChest.getPos(), deathChest);
 	}
 
 	/**

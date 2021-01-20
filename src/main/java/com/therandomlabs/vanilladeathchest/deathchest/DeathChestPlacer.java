@@ -47,6 +47,8 @@ import net.minecraft.block.enums.ChestType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
@@ -368,6 +370,12 @@ public final class DeathChestPlacer {
 
 			if (entity instanceof DeathChestDefenseEntity) {
 				((DeathChestDefenseEntity) entity).setDeathChest(deathChest);
+
+				if (entity instanceof MobEntity) {
+					((MobEntity) entity).initialize(
+							world, world.getLocalDifficulty(pos), SpawnReason.EVENT, null, null
+					);
+				}
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 package com.therandomlabs.vanilladeathchest.mixin;
 
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -26,6 +27,10 @@ public final class ShulkerBoxBlockMixin {
 			)
 	)
 	private boolean spawnEntity(World world, Entity entity) {
+		if (VanillaDeathChest.config().misc.dropDeathChests) {
+			return world.spawnEntity(entity);
+		}
+
 		final BlockPos pos = entity.getBlockPos();
 		final BlockEntity blockEntity = world.getBlockEntity(pos);
 

@@ -119,6 +119,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 
 		if ((Object) this instanceof MobEntity) {
 			final MobEntity mobEntity = (MobEntity) (Object) this;
+			mobEntity.setPersistent();
 			mobEntity.setAttacker(player);
 			mobEntity.setTarget(player);
 		}

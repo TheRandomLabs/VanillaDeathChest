@@ -26,11 +26,13 @@ package com.therandomlabs.vanilladeathchest;
 import com.therandomlabs.autoconfigtoml.TOMLConfigSerializer;
 import com.therandomlabs.vanilladeathchest.command.VDCConfigReloadCommand;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestAutoRemover;
+import com.therandomlabs.vanilladeathchest.deathchest.DeathChestInteractions;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestPlacer;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.minecraft.world.GameRules;
@@ -77,7 +79,7 @@ public final class VanillaDeathChest implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(VDCConfigReloadCommand::register);
 		ServerTickEvents.END_WORLD_TICK.register(DeathChestAutoRemover::removeEmpty);
 		ServerTickEvents.END_WORLD_TICK.register(DeathChestPlacer::placeQueued);
-
+		UseBlockCallback.EVENT.register(DeathChestInteractions::interact);
 		/*final DeathChestPlaceHandler placeHandler = new DeathChestPlaceHandler();
 
 		PlayerDropAllItemsCallback.EVENT.register(placeHandler);

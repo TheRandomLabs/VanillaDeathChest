@@ -154,7 +154,6 @@ public final class VDCConfig implements ConfigData {
 		@ConfigEntry.Gui.Tooltip
 		public KeyConsumptionBehavior consumptionBehavior = KeyConsumptionBehavior.CONSUME;
 
-		//TODO also consume stacks that the player isn't holding.
 		@SpecIntInRange(min = 0, max = Short.MAX_VALUE)
 		@TOMLConfigSerializer.Comment({
 				"The amount by which the key item should be consumed.",

@@ -80,30 +80,6 @@ public final class VanillaDeathChest implements ModInitializer {
 		ServerTickEvents.END_WORLD_TICK.register(DeathChestAutoRemover::removeEmpty);
 		ServerTickEvents.END_WORLD_TICK.register(DeathChestPlacer::placeQueued);
 		UseBlockCallback.EVENT.register(DeathChestInteractions::interact);
-		/*final DeathChestPlaceHandler placeHandler = new DeathChestPlaceHandler();
-
-		PlayerDropAllItemsCallback.EVENT.register(placeHandler);
-		ServerTickEvents.END_WORLD_TICK.register(placeHandler);
-
-		final DeathChestInteractionHandler interactionHandler = new DeathChestInteractionHandler();
-
-		BreakBlockCallback.EVENT.register(interactionHandler);
-		UseBlockCallback.EVENT.register(interactionHandler);
-		ExplosionDetonationCallback.EVENT.register(interactionHandler);
-
-		final DeathChestDropHandler dropHandler = new DeathChestDropHandler();
-
-		GetBlockDropCallback.EVENT.register(dropHandler);
-		ServerTickEvents.END_SERVER_TICK.register(dropHandler);
-		DeathChestRemoveCallback.EVENT.register(dropHandler);
-
-		final DefenseEntityHandler defenseEntityHandler = new DefenseEntityHandler();
-
-		LivingEntityDropCallback.EVENT.register(defenseEntityHandler);
-		LivingEntityDropExperienceCallback.EVENT.register(defenseEntityHandler);
-		LivingEntityTickCallback.EVENT.register(defenseEntityHandler);
-
-		ServerTickEvents.END_WORLD_TICK.register(new DeathChestContentsChecker());*/
 	}
 
 	/**

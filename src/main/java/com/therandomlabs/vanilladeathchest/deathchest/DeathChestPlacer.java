@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import com.therandomlabs.vanilladeathchest.util.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
 import net.minecraft.block.Block;
@@ -295,21 +296,28 @@ public final class DeathChestPlacer {
 		final LootableContainerBlockEntity container =
 				(LootableContainerBlockEntity) (doubleChest ? eastBlockEntity : blockEntity);
 
-		for (int i = 0; i < 27; i++) {
+		for (int i = 0; i < items.size() && i < 27; i++) {
 			container.setStack(i, items.get(i).getStack());
 		}
+
+		((DeathChestBlockEntity) container).setDeathChest(deathChest);
 
 		if (!config.containerDisplayName.isEmpty()) {
 			container.setCustomName(new LiteralText(config.containerDisplayName));
 		}
 
 		if (doubleChest) {
+			final LootableContainerBlockEntity westContainer =
+					(LootableContainerBlockEntity) blockEntity;
+
 			for (int i = 27; i < items.size(); i++) {
-				container.setStack(i - 27, items.get(i).getStack());
+				westContainer.setStack(i - 27, items.get(i).getStack());
 			}
 
+			((DeathChestBlockEntity) westContainer).setDeathChest(deathChest);
+
 			if (!config.containerDisplayName.isEmpty()) {
-				container.setCustomName(new LiteralText(config.containerDisplayName));
+				westContainer.setCustomName(new LiteralText(config.containerDisplayName));
 			}
 		} else if (items.size() > 27) {
 			items.subList(27, items.size()).clear();

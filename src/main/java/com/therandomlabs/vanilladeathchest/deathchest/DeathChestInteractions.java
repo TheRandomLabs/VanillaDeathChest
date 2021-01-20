@@ -53,8 +53,7 @@ public final class DeathChestInteractions {
 
 		if (blockEntity instanceof DeathChestBlockEntity) {
 			final DeathChest deathChest = ((DeathChestBlockEntity) blockEntity).getDeathChest();
-
-			return attemptInteract(deathChest, (ServerPlayerEntity) player) ?
+			return deathChest == null || attemptInteract(deathChest, (ServerPlayerEntity) player) ?
 					ActionResult.PASS : ActionResult.SUCCESS;
 		}
 
@@ -115,9 +114,8 @@ public final class DeathChestInteractions {
 
 		if (!message.isEmpty()) {
 			final Text component = new LiteralText(String.format(
-					message, amount,
-					new TranslatableText(config.item.getTranslationKey()).
-							formatted().asString().trim()
+					message,
+					amount, new TranslatableText(config.item.getTranslationKey()).getString()
 			));
 
 			player.sendMessage(component, config.unlockFailedStatusMessage);

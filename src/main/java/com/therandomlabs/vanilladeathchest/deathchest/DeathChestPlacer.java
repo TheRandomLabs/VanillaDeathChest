@@ -124,6 +124,10 @@ public final class DeathChestPlacer {
 				).matches()
 		);
 
+		if (deathChest.getItems().isEmpty()) {
+			return null;
+		}
+
 		final VDCConfig.ContainerType type = config.containerType;
 		boolean doubleChest = deathChest.getItems().size() > 27 &&
 				(type == VDCConfig.ContainerType.SINGLE_OR_DOUBLE_CHEST ||
@@ -163,7 +167,7 @@ public final class DeathChestPlacer {
 				world.getTime(), pos, doubleChest, true
 		);
 
-		if (!placeAndFillContainer(newDeathChest)) {
+		if (!placeAndFillContainer(newDeathChest) || newDeathChest.getItems().isEmpty()) {
 			return null;
 		}
 

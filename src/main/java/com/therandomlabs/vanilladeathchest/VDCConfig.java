@@ -289,6 +289,7 @@ public final class VDCConfig implements ConfigData {
 		@TOMLConfigSerializer.Comment(
 				"The required permission level to bypass death chest protection."
 		)
+		@ConfigEntry.Gui.Tooltip
 		public int bypassPermissionLevel = 3;
 
 		@TOMLConfigSerializer.Comment(

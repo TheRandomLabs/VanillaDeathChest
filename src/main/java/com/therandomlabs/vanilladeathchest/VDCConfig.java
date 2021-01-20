@@ -134,7 +134,7 @@ public final class VDCConfig implements ConfigData {
 	public static final class KeyItem implements ConfigData {
 		@TOMLConfigSerializer.Comment({
 				"The registry name of the key item.",
-				"Set this to an empty string to cause death chests to not be locked."
+				"Set this to an empty string to allow death chests to be unlocked without an item."
 		})
 		public String registryName = "";
 
@@ -274,7 +274,7 @@ public final class VDCConfig implements ConfigData {
 	public static final class Protection {
 		@TOMLConfigSerializer.Comment({
 				"Enables death chest protection.",
-				"When this is enabled, a death chest can only be opened by its owner."
+				"When a death chest is protected, it can only be unlocked by its owner."
 		})
 		@ConfigEntry.Gui.Tooltip
 		public boolean enable = true;

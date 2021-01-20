@@ -24,13 +24,15 @@
 package com.therandomlabs.vanilladeathchest.world;
 
 import java.util.ArrayDeque;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
+import com.therandomlabs.vanilladeathchest.deathchest.DeathChestIdentifier;
+import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.world.ServerWorld;
@@ -43,7 +45,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class DeathChestsState extends PersistentState {
 	private final ServerWorld world;
-	private final Map<BlockPos, DeathChest> deathChests = new HashMap<>();
+	private final Map<DeathChestIdentifier, DeathChest> deathChests = new HashMap<>();
+	private final Map<BlockPos, DeathChest> deathChestsByPos = new HashMap<>();
 	private final Queue<DeathChest> queuedDeathChests = new ArrayDeque<>();
 
 	private DeathChestsState(String name, ServerWorld world) {
@@ -59,7 +62,16 @@ public final class DeathChestsState extends PersistentState {
 		deathChests.clear();
 		tag.getList("DeathChests", NbtType.COMPOUND).stream().
 				map(deathChestTag -> DeathChest.fromTag(world, (CompoundTag) deathChestTag)).
-				forEach(deathChest -> deathChests.put(deathChest.getPos(), deathChest));
+				forEach(deathChest -> deathChests.put(deathChest.getIdentifier(), deathChest));
+
+		for (DeathChest deathChest : deathChests.values()) {
+			final DeathChest oldDeathChest = deathChestsByPos.get(deathChest.getPos());
+
+			if (oldDeathChest == null ||
+					deathChest.getCreationTime() > oldDeathChest.getCreationTime()) {
+				deathChestsByPos.put(deathChest.getPos(), deathChest);
+			}
+		}
 
 		queuedDeathChests.clear();
 		tag.getList("QueuedDeathChests", NbtType.COMPOUND).stream().
@@ -92,20 +104,40 @@ public final class DeathChestsState extends PersistentState {
 	 *
 	 * @return a mutable map of all placed death chests.
 	 */
-	public Map<BlockPos, DeathChest> getDeathChests() {
+	public Map<DeathChestIdentifier, DeathChest> getDeathChests() {
 		return deathChests;
 	}
 
 	/**
-	 * Returns the death chest at the specified position.
+	 * Returns the most recently placed death chest at the specified position.
 	 *
 	 * @param pos a position.
 	 * @return the {@link DeathChest} at the specified {@link BlockPos}.
 	 */
 	@Nullable
 	public DeathChest getDeathChest(BlockPos pos) {
-		final DeathChest deathChest = deathChests.get(pos);
-		return deathChest == null ? deathChests.get(pos.east()) : deathChest;
+		final DeathChest deathChest = deathChestsByPos.get(pos);
+		return deathChest == null ? deathChestsByPos.get(pos.west()) : deathChest;
+	}
+
+	/**
+	 * Returns the death chest at the specified position if it exists in the world.
+	 *
+	 * @param pos a position.
+	 * @return the {@link DeathChest} at the specified {@link BlockPos}.
+	 */
+	@Nullable
+	public DeathChest getExistingDeathChest(BlockPos pos) {
+		final DeathChest deathChest = getDeathChest(pos);
+
+		if (deathChest == null || !world.getBlockState(pos).getBlock().hasBlockEntity()) {
+			return null;
+		}
+
+		final BlockEntity blockEntity = world.getBlockEntity(pos);
+		return blockEntity instanceof DeathChestBlockEntity &&
+				((DeathChestBlockEntity) blockEntity).getDeathChest().equals(deathChest) ?
+				deathChest : null;
 	}
 
 	/**

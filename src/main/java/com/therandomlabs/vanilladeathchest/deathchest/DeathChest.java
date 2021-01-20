@@ -47,6 +47,7 @@ import net.minecraft.util.math.BlockPos;
  * Represents a death chest.
  */
 public final class DeathChest {
+	private final DeathChestIdentifier identifier;
 	private final ServerWorld world;
 	private final UUID playerUUID;
 	private final List<ItemEntity> items;
@@ -72,6 +73,7 @@ public final class DeathChest {
 			ServerWorld world, UUID playerUUID, List<ItemEntity> items, PlayerInventory inventory,
 			long creationTime, BlockPos pos, boolean isDoubleChest, boolean locked
 	) {
+		identifier = new DeathChestIdentifier(creationTime, pos);
 		this.world = world;
 		this.playerUUID = playerUUID;
 		this.items = new ArrayList<>(items);
@@ -80,6 +82,15 @@ public final class DeathChest {
 		this.pos = pos;
 		this.isDoubleChest = isDoubleChest;
 		this.locked = locked;
+	}
+
+	/**
+	 * Returns this death chest's identifier.
+	 *
+	 * @return a {@link DeathChestIdentifier}.
+	 */
+	public DeathChestIdentifier getIdentifier() {
+		return identifier;
 	}
 
 	/**

@@ -21,40 +21,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.therandomlabs.vanilladeathchest.deathchest;
+package com.therandomlabs.vanilladeathchest.util;
 
-import java.util.Queue;
-
-import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
-import net.minecraft.server.world.ServerWorld;
+import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 
 /**
- * Handles death chest placement.
+ * Allows a death chest {@link net.minecraft.block.entity.BlockEntity}'s
+ * {@link DeathChest} to be accessed.
  */
-public final class DeathChestPlacer {
+public interface DeathChestBlockEntity {
 	/**
-	 * Places all queued death chests that are ready to be placed in the specified world.
-	 * This is called at the end of every world tick.
+	 * Returns the death chest.
 	 *
-	 * @param world a {@link ServerWorld}.
+	 * @return the {@link DeathChest}.
 	 */
-	public static void placeQueued(ServerWorld world) {
-		final DeathChestsState state = DeathChestsState.get(world);
-		final Queue<DeathChest> queue = state.getQueuedDeathChests();
+	DeathChest getDeathChest();
 
-		//We wait two ticks to prevent conflicts with other mods that place things after death.
-		if (queue.isEmpty() || queue.peek().getCreationTime() - world.getTime() < 2L) {
-			return;
-		}
-
-		while (!queue.isEmpty() && queue.peek().getCreationTime() - world.getTime() >= 2L) {
-			place(queue.poll());
-		}
-
-		state.markDirty();
-	}
-
-	private static void place(DeathChest deathChest) {
-		//TODO
-	}
+	/**
+	 * Sets the death chest.
+	 *
+	 * @param deathChest a {@link DeathChest}.
+	 */
+	void setDeathChest(DeathChest deathChest);
 }

@@ -4,8 +4,15 @@
 	"package": "com.therandomlabs.vanilladeathchest.mixin",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
+		"BlockMixin",
+		"ChestBlockEntityMixin",
+		"ExplosionMixin",
 		"LivingEntityMixin",
-		"PlayerEntityMixin"
+		"LockableContainerBlockEntityMixin",
+		"PlayerEntityMixin",
+		"ServerPlayerInteractionManagerMixin",
+		"ShulkerBoxBlockEntityMixin",
+		"ShulkerBoxBlockMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

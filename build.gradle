@@ -47,10 +47,6 @@ if (project.hasProperty("curseForgeAPIKey")) {
 				changelog = file("changelog.md")
 				displayName = "VanillaDeathChest ${version}"
 				releaseType = "beta"
-
-				relations {
-					optionalDependency "cotton-client-commands"
-				}
 			}
 
 			addArtifact(sourcesJar) {

@@ -23,8 +23,12 @@
 
 package com.therandomlabs.vanilladeathchest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.electronwill.nightconfig.core.conversion.SpecDoubleInRange;
 import com.electronwill.nightconfig.core.conversion.SpecIntInRange;
@@ -41,13 +45,14 @@ import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.dimension.DimensionType;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 @SuppressWarnings("CanBeFinal")
 @TOMLConfigSerializer.Comment("VanillaDeathChest configuration.")
 @Config(name = VanillaDeathChest.MOD_ID)
 public final class VDCConfig implements ConfigData {
-	public static final class Spawning {
+	public static final class Spawning implements ConfigData {
 		@TOMLConfigSerializer.Comment({
 				"The death chest container type.",
 				"SINGLE_CHEST: Only single chests.",
@@ -80,6 +85,20 @@ public final class VDCConfig implements ConfigData {
 		})
 		@ConfigEntry.Gui.Tooltip
 		public ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
+
+		@TOMLConfigSerializer.Comment(
+				"The dimensions that death chests should or should not spawn in."
+		)
+		@ConfigEntry.Gui.Tooltip
+		public List<String> dimensions = new ArrayList<>();
+
+		@TOMLConfigSerializer.Comment({
+				"Whether the dimensions list should be a blacklist or a whitelist.",
+				"BLACKLIST: blacklist.",
+				"WHITELIST: whitelist."
+		})
+		@ConfigEntry.Gui.Tooltip
+		public DimensionListBehavior dimensionsBehavior = DimensionListBehavior.BLACKLIST;
 
 		@SpecIntInRange(min = 1, max = Integer.MAX_VALUE)
 		@TOMLConfigSerializer.Comment(
@@ -129,6 +148,42 @@ public final class VDCConfig implements ConfigData {
 		})
 		@ConfigEntry.Gui.Tooltip
 		public String spawnMessage = "Death chest spawned at [%s, %s, %s]";
+
+		@Nullable
+		@ConfigEntry.Gui.Excluded
+		private Set<Identifier> dimensionIdentifiers;
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void validatePostLoad() {
+			dimensionIdentifiers = dimensions.stream().
+					map(Identifier::new).
+					collect(Collectors.toSet());
+			dimensions = dimensionIdentifiers.stream().
+					map(Identifier::toString).
+					collect(Collectors.toList());
+		}
+
+		/**
+		 * Returns whether death chest spawning is enabled in the specified dimension.
+		 *
+		 * @param dimension a {@link DimensionType}.
+		 * @return {@code true} if death chest spawning is enabled in the specified dimension,
+		 * or otherwise {@code false}.
+		 */
+		@SuppressWarnings("ConstantConditions")
+		public boolean isDimensionEnabled(DimensionType dimension) {
+			final boolean anyMatch =
+					dimensionIdentifiers.stream().anyMatch(dimension.getSkyProperties()::equals);
+
+			if (dimensionsBehavior == DimensionListBehavior.BLACKLIST) {
+				return !anyMatch;
+			}
+
+			return anyMatch;
+		}
 	}
 
 	public static final class KeyItem implements ConfigData {
@@ -460,6 +515,20 @@ public final class VDCConfig implements ConfigData {
 		public DyeColor get() {
 			return color == null ? DyeColor.byId(random.nextInt(16)) : color;
 		}
+	}
+
+	/**
+	 * Dimension list behaviors.
+	 */
+	public enum DimensionListBehavior {
+		/**
+		 * Blacklist.
+		 */
+		BLACKLIST,
+		/**
+		 * Whitelist.
+		 */
+		WHITELIST
 	}
 
 	/**

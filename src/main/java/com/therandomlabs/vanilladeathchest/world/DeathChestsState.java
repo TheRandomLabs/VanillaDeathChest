@@ -28,9 +28,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.UUID;
 
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
-import com.therandomlabs.vanilladeathchest.deathchest.DeathChestIdentifier;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -44,7 +44,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class DeathChestsState extends PersistentState {
 	private final ServerWorld world;
-	private final Map<DeathChestIdentifier, DeathChest> deathChests = new HashMap<>();
+	private final Map<UUID, DeathChest> deathChests = new HashMap<>();
 	private final Map<BlockPos, DeathChest> deathChestsByPos = new HashMap<>();
 	private final Queue<DeathChest> queuedDeathChests = new ArrayDeque<>();
 
@@ -114,7 +114,7 @@ public final class DeathChestsState extends PersistentState {
 	 * @return the {@link DeathChest} with the specified identifier.
 	 */
 	@Nullable
-	public DeathChest getDeathChest(DeathChestIdentifier identifier) {
+	public DeathChest getDeathChest(UUID identifier) {
 		return deathChests.get(identifier);
 	}
 

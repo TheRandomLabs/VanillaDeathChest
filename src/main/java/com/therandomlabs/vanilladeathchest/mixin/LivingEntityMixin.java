@@ -30,7 +30,6 @@ import java.util.UUID;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
-import com.therandomlabs.vanilladeathchest.deathchest.DeathChestIdentifier;
 import com.therandomlabs.vanilladeathchest.util.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.util.DropsList;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
@@ -110,8 +109,8 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 		drops.forEach(world::removeEntity);
 		final DeathChestsState deathChestsState = DeathChestsState.get(world);
 		deathChestsState.getQueuedDeathChests().add(new DeathChest(
-				world, entity.getUuid(), drops, inventory, world.getTime(), entity.getBlockPos(),
-				false, true
+				UUID.randomUUID(), world, entity.getUuid(), drops, inventory, world.getTime(),
+				entity.getBlockPos(), false, true
 		));
 		deathChestsState.markDirty();
 	}
@@ -177,7 +176,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 		if (deathChestPlayerUUID != null) {
 			if (deathChest != null) {
 				tag.put(
-						"DeathChestIdentifier", deathChest.getIdentifier().toTag(new CompoundTag())
+						"DeathChestIdentifier", NbtHelper.fromUuid(deathChest.getIdentifier())
 				);
 			}
 
@@ -195,7 +194,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 						(ServerWorld) ((LivingEntity) (Object) this).getEntityWorld()
 				);
 				deathChest = deathChestsState.getDeathChest(
-						DeathChestIdentifier.fromTag(tag.getCompound("DeathChestIdentifier"))
+						NbtHelper.toUuid(tag.getCompound("DeathChestIdentifier"))
 				);
 			}
 		}

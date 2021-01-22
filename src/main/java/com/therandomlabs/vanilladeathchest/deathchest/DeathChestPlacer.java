@@ -181,8 +181,9 @@ public final class DeathChestPlacer {
 
 		final BlockPos pos = location.getPos();
 		final DeathChest newDeathChest = new DeathChest(
-				world, deathChest.getPlayerUUID(), deathChest.getItems(), deathChest.getInventory(),
-				world.getTime(), pos, doubleChest, true
+				deathChest.getIdentifier(), world, deathChest.getPlayerUUID(),
+				deathChest.getItems(), deathChest.getInventory(), world.getTime(), pos, doubleChest,
+				true
 		);
 
 		if (!placeAndFillContainer(newDeathChest) || newDeathChest.getItems().isEmpty()) {
@@ -202,8 +203,9 @@ public final class DeathChestPlacer {
 		DeathChestsState.get(world).addDeathChest(newDeathChest);
 
 		VanillaDeathChest.logger.info(
-				"Death chest for {} spawned at [{}]",
-				player == null ? deathChest.getPlayerUUID() : player.getGameProfile().getName(), pos
+				"Death chest for {} spawned at [{}] with identifier: {}",
+				player == null ? deathChest.getPlayerUUID() : player.getGameProfile().getName(),
+				pos, deathChest.getIdentifier()
 		);
 
 		if (player != null) {

@@ -49,7 +49,7 @@ import net.minecraft.util.math.BlockPos;
  * Represents a death chest.
  */
 public final class DeathChest {
-	private final DeathChestIdentifier identifier;
+	private final UUID identifier;
 	private final ServerWorld world;
 	private final UUID playerUUID;
 	@SuppressWarnings("PMD.LooseCoupling")
@@ -73,10 +73,11 @@ public final class DeathChest {
 	 * @param locked whether the chest is locked.
 	 */
 	public DeathChest(
-			ServerWorld world, UUID playerUUID, List<ItemEntity> items, PlayerInventory inventory,
-			long creationTime, BlockPos pos, boolean isDoubleChest, boolean locked
+			UUID identifier, ServerWorld world, UUID playerUUID, List<ItemEntity> items,
+			PlayerInventory inventory, long creationTime, BlockPos pos, boolean isDoubleChest,
+			boolean locked
 	) {
-		identifier = new DeathChestIdentifier(creationTime, pos);
+		this.identifier = identifier;
 		this.world = world;
 		this.playerUUID = playerUUID;
 		this.items = new ArrayList<>(items);
@@ -90,9 +91,9 @@ public final class DeathChest {
 	/**
 	 * Returns this death chest's identifier.
 	 *
-	 * @return a {@link DeathChestIdentifier}.
+	 * @return a {@link UUID}.
 	 */
-	public DeathChestIdentifier getIdentifier() {
+	public UUID getIdentifier() {
 		return identifier;
 	}
 
@@ -257,8 +258,8 @@ public final class DeathChest {
 		inventory.serialize(inventoryList);
 		tag.put("Inventory", inventoryList);
 
-		identifier.toTag(tag);
-
+		tag.putLong("CreationTime", creationTime);
+		tag.put("Pos", NbtHelper.fromBlockPos(pos));
 		tag.putBoolean("IsDoubleChest", isDoubleChest);
 		tag.putBoolean("Locked", locked);
 		return tag;
@@ -273,7 +274,6 @@ public final class DeathChest {
 	 */
 	@SuppressWarnings("ConstantConditions")
 	public static DeathChest fromTag(ServerWorld world, CompoundTag tag) {
-		final DeathChestIdentifier identifier = DeathChestIdentifier.fromTag(tag);
 		final List<ItemEntity> items = new ArrayList<>();
 
 		for (Tag itemTag : tag.getList("Items", NbtType.COMPOUND)) {
@@ -287,9 +287,10 @@ public final class DeathChest {
 		inventory.deserialize(tag.getList("Inventory", NbtType.COMPOUND));
 
 		return new DeathChest(
-				world, NbtHelper.toUuid(tag.get("PlayerUUID")), items, inventory,
-				identifier.getCreationTime(), identifier.getPos(), tag.getBoolean("IsDoubleChest"),
-				tag.getBoolean("Locked")
+				NbtHelper.toUuid(tag.getCompound("Identifier")), world,
+				NbtHelper.toUuid(tag.get("PlayerUUID")), items, inventory,
+				tag.getLong("CreationTime"), NbtHelper.toBlockPos(tag.getCompound("Pos")),
+				tag.getBoolean("IsDoubleChest"), tag.getBoolean("Locked")
 		);
 	}
 }

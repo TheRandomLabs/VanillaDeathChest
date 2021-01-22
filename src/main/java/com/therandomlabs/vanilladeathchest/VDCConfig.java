@@ -327,6 +327,7 @@ public final class VDCConfig implements ConfigData {
 					entityType = optional.get();
 				} else {
 					registryName = "";
+					entityType = null;
 				}
 			}
 

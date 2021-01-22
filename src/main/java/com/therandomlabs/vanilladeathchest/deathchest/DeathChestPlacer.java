@@ -203,9 +203,9 @@ public final class DeathChestPlacer {
 		DeathChestsState.get(world).addDeathChest(newDeathChest);
 
 		VanillaDeathChest.logger.info(
-				"Death chest for {} spawned at [{}] with identifier: {}",
+				"Death chest for {} spawned at [{}, {}, {}] with identifier {}",
 				player == null ? deathChest.getPlayerUUID() : player.getGameProfile().getName(),
-				pos, deathChest.getIdentifier()
+				pos.getX(), pos.getY(), pos.getZ(), deathChest.getIdentifier()
 		);
 
 		if (player != null) {

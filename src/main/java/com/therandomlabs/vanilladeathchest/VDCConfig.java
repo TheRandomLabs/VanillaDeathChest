@@ -394,14 +394,6 @@ public final class VDCConfig implements ConfigData {
 		})
 		@ConfigEntry.Gui.Tooltip
 		public String configReloadCommand = "vdcconfigreload";
-
-		@TOMLConfigSerializer.Comment({
-				"The name of the command that reloads this configuration from disk on the client.",
-				"Set this to an empty string to disable the command.",
-				"Changes to this option are applied after a game restart."
-		})
-		@ConfigEntry.Gui.Tooltip
-		public String clientConfigReloadCommand = "vdcclientconfigreload";
 	}
 
 	/**

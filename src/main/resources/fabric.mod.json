@@ -21,9 +21,6 @@
 		],
 		"modmenu": [
 			"com.therandomlabs.vanilladeathchest.VDCModMenuEntryPoint"
-		],
-		"cotton-client-commands": [
-			"com.therandomlabs.vanilladeathchest.VDCClientCommands"
 		]
 	},
 	"mixins": [

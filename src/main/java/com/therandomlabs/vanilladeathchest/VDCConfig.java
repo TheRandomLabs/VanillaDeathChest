@@ -173,7 +173,7 @@ public final class VDCConfig implements ConfigData {
 		 * @return {@code true} if death chest spawning is enabled in the specified dimension,
 		 * or otherwise {@code false}.
 		 */
-		@SuppressWarnings("ConstantConditions")
+		@SuppressWarnings({"ConstantConditions", "NullAway"})
 		public boolean isDimensionEnabled(DimensionType dimension) {
 			final boolean anyMatch =
 					dimensionIdentifiers.stream().anyMatch(dimension.getSkyProperties()::equals);

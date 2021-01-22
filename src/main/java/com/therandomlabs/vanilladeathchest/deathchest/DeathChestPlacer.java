@@ -99,6 +99,143 @@ public final class DeathChestPlacer {
 		state.markDirty();
 	}
 
+	/**
+	 * Places and fills the specified death chest.
+	 *
+	 * @param deathChest a death chest.
+	 * @return {@code true} if the placement is successful, or otherwise {@code false}.
+	 */
+	@SuppressWarnings("NullAway")
+	public static boolean placeAndFillContainer(DeathChest deathChest) {
+		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
+		final BlockPos pos = deathChest.getPos();
+		final List<ItemEntity> items = deathChest.getItems();
+		final boolean doubleChest = deathChest.isDoubleChest();
+
+		final Block block;
+
+		if (config.containerType == VDCConfig.ContainerType.SINGLE_SHULKER_BOX ||
+				config.containerType == VDCConfig.ContainerType.SINGLE_OR_DOUBLE_SHULKER_BOX) {
+			block = ShulkerBoxBlock.get(config.shulkerBoxColor.get());
+		} else {
+			block = Blocks.CHEST;
+		}
+
+		final BlockPos east = pos.east();
+		final World world = deathChest.getWorld();
+		final BlockState state = block.getDefaultState();
+
+		if (doubleChest) {
+			if (block == Blocks.CHEST) {
+				world.setBlockState(pos, state.with(ChestBlock.CHEST_TYPE, ChestType.LEFT));
+				world.setBlockState(east, state.with(ChestBlock.CHEST_TYPE, ChestType.RIGHT));
+			} else {
+				world.setBlockState(pos, state);
+				world.setBlockState(east, state);
+			}
+		} else {
+			world.setBlockState(pos, state);
+		}
+
+		final BlockEntity blockEntity = world.getBlockEntity(pos);
+		final BlockEntity eastBlockEntity = doubleChest ? world.getBlockEntity(east) : null;
+
+		if (!(blockEntity instanceof LootableContainerBlockEntity) ||
+				(doubleChest && !(eastBlockEntity instanceof LootableContainerBlockEntity))) {
+			VanillaDeathChest.logger.warn(
+					"Failed to place death chest at [{}] due to invalid block entity", pos
+			);
+			return false;
+		}
+
+		final LootableContainerBlockEntity container =
+				(LootableContainerBlockEntity) (doubleChest ? eastBlockEntity : blockEntity);
+
+		for (int i = 0; i < items.size() && i < 27; i++) {
+			container.setStack(i, items.get(i).getStack());
+		}
+
+		((DeathChestBlockEntity) container).setDeathChest(deathChest);
+
+		if (!config.containerDisplayName.isEmpty()) {
+			container.setCustomName(new LiteralText(config.containerDisplayName));
+		}
+
+		if (doubleChest) {
+			final LootableContainerBlockEntity westContainer =
+					(LootableContainerBlockEntity) blockEntity;
+
+			for (int i = 27; i < items.size(); i++) {
+				westContainer.setStack(i - 27, items.get(i).getStack());
+			}
+
+			((DeathChestBlockEntity) westContainer).setDeathChest(deathChest);
+
+			if (!config.containerDisplayName.isEmpty()) {
+				westContainer.setCustomName(new LiteralText(config.containerDisplayName));
+			}
+		} else if (items.size() > 27) {
+			items.subList(27, items.size()).clear();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Spawns the defense entities for the specified death chest.
+	 *
+	 * @param deathChest a death chest.
+	 */
+	public static void spawnDefenseEntities(DeathChest deathChest) {
+		final VDCConfig.DefenseEntities config = VanillaDeathChest.config().defenseEntities;
+
+		if (config.entityType == null) {
+			return;
+		}
+
+		final ServerWorld world = deathChest.getWorld();
+		final BlockPos pos = deathChest.getPos();
+		final double x = pos.getX() + 0.5;
+		final double y = pos.getY() + 1.0;
+		final double z = pos.getZ() + 0.5;
+
+		for (int i = 0; i < config.spawnCount; i++) {
+			//The following spawn logic has been taken from SummonCommand.
+			CompoundTag tag;
+
+			try {
+				tag = StringNbtReader.parse(config.nbtTag);
+			} catch (CommandSyntaxException ignored) {
+				//This should not happen.
+				tag = new CompoundTag();
+			}
+
+			final boolean emptyTag = tag.isEmpty();
+			tag.putString("id", config.registryName);
+
+			final Entity entity = EntityType.loadEntityWithPassengers(
+					tag, world, spawnedEntity -> {
+						spawnedEntity.refreshPositionAndAngles(
+								x, y, z, spawnedEntity.yaw, spawnedEntity.pitch
+						);
+						return spawnedEntity;
+					}
+			);
+
+			if (entity instanceof DeathChestDefenseEntity) {
+				((DeathChestDefenseEntity) entity).setDeathChest(deathChest);
+
+				if (emptyTag && entity instanceof MobEntity) {
+					((MobEntity) entity).initialize(
+							world, world.getLocalDifficulty(pos), SpawnReason.EVENT, null, null
+					);
+				}
+			}
+
+			world.spawnEntityAndPassengers(entity);
+		}
+	}
+
 	private static void placeAndDropRemaining(DeathChest deathChest) {
 		final List<ItemEntity> allItems = deathChest.cloneItems();
 
@@ -285,131 +422,5 @@ public final class DeathChestPlacer {
 
 		return availableContainers == 1 ?
 				ContainerConsumptionResult.SINGLE : ContainerConsumptionResult.DOUBLE;
-	}
-
-	@SuppressWarnings("NullAway")
-	private static boolean placeAndFillContainer(DeathChest deathChest) {
-		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
-		final BlockPos pos = deathChest.getPos();
-		final List<ItemEntity> items = deathChest.getItems();
-		final boolean doubleChest = deathChest.isDoubleChest();
-
-		final Block block;
-
-		if (config.containerType == VDCConfig.ContainerType.SINGLE_SHULKER_BOX ||
-				config.containerType == VDCConfig.ContainerType.SINGLE_OR_DOUBLE_SHULKER_BOX) {
-			block = ShulkerBoxBlock.get(config.shulkerBoxColor.get());
-		} else {
-			block = Blocks.CHEST;
-		}
-
-		final BlockPos east = pos.east();
-		final World world = deathChest.getWorld();
-		final BlockState state = block.getDefaultState();
-
-		if (doubleChest) {
-			if (block == Blocks.CHEST) {
-				world.setBlockState(pos, state.with(ChestBlock.CHEST_TYPE, ChestType.LEFT));
-				world.setBlockState(east, state.with(ChestBlock.CHEST_TYPE, ChestType.RIGHT));
-			} else {
-				world.setBlockState(pos, state);
-				world.setBlockState(east, state);
-			}
-		} else {
-			world.setBlockState(pos, state);
-		}
-
-		final BlockEntity blockEntity = world.getBlockEntity(pos);
-		final BlockEntity eastBlockEntity = doubleChest ? world.getBlockEntity(east) : null;
-
-		if (!(blockEntity instanceof LootableContainerBlockEntity) ||
-				(doubleChest && !(eastBlockEntity instanceof LootableContainerBlockEntity))) {
-			VanillaDeathChest.logger.warn(
-					"Failed to place death chest at [{}] due to invalid block entity", pos
-			);
-			return false;
-		}
-
-		final LootableContainerBlockEntity container =
-				(LootableContainerBlockEntity) (doubleChest ? eastBlockEntity : blockEntity);
-
-		for (int i = 0; i < items.size() && i < 27; i++) {
-			container.setStack(i, items.get(i).getStack());
-		}
-
-		((DeathChestBlockEntity) container).setDeathChest(deathChest);
-
-		if (!config.containerDisplayName.isEmpty()) {
-			container.setCustomName(new LiteralText(config.containerDisplayName));
-		}
-
-		if (doubleChest) {
-			final LootableContainerBlockEntity westContainer =
-					(LootableContainerBlockEntity) blockEntity;
-
-			for (int i = 27; i < items.size(); i++) {
-				westContainer.setStack(i - 27, items.get(i).getStack());
-			}
-
-			((DeathChestBlockEntity) westContainer).setDeathChest(deathChest);
-
-			if (!config.containerDisplayName.isEmpty()) {
-				westContainer.setCustomName(new LiteralText(config.containerDisplayName));
-			}
-		} else if (items.size() > 27) {
-			items.subList(27, items.size()).clear();
-		}
-
-		return true;
-	}
-
-	private static void spawnDefenseEntities(DeathChest deathChest) {
-		final VDCConfig.DefenseEntities config = VanillaDeathChest.config().defenseEntities;
-
-		if (config.entityType == null) {
-			return;
-		}
-
-		final ServerWorld world = deathChest.getWorld();
-		final BlockPos pos = deathChest.getPos();
-		final double x = pos.getX() + 0.5;
-		final double y = pos.getY() + 1.0;
-		final double z = pos.getZ() + 0.5;
-
-		for (int i = 0; i < config.spawnCount; i++) {
-			//The following spawn logic has been taken from SummonCommand.
-			CompoundTag tag;
-
-			try {
-				tag = StringNbtReader.parse(config.nbtTag);
-			} catch (CommandSyntaxException ignored) {
-				//This should not happen.
-				tag = new CompoundTag();
-			}
-
-			final boolean emptyTag = tag.isEmpty();
-			tag.putString("id", config.registryName);
-
-			final Entity entity = EntityType.loadEntityWithPassengers(
-					tag, world, spawnedEntity -> {
-						spawnedEntity.refreshPositionAndAngles(
-								x, y, z, spawnedEntity.yaw, spawnedEntity.pitch
-						);
-						return spawnedEntity;
-					}
-			);
-
-			if (entity instanceof DeathChestDefenseEntity) {
-				((DeathChestDefenseEntity) entity).setDeathChest(deathChest);
-
-				if (emptyTag && entity instanceof MobEntity) {
-					((MobEntity) entity).initialize(
-							world, world.getLocalDifficulty(pos), SpawnReason.EVENT, null, null
-					);
-				}
-			}
-
-			world.spawnEntityAndPassengers(entity);
-		}
 	}
 }

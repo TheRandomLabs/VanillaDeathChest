@@ -94,7 +94,7 @@ public final class DeathChestInteractions {
 	 */
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public static boolean attemptInteract(DeathChest deathChest, ServerPlayerEntity player) {
-		if (!deathChest.canInteract(player)) {
+		if (deathChest.isProtectedFrom(player)) {
 			return false;
 		}
 

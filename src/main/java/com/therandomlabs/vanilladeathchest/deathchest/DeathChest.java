@@ -208,31 +208,31 @@ public final class DeathChest {
 	}
 
 	/**
-	 * Returns whether the specified player can interact with this death chest.
-	 * This does not take into account whether this death chest is locked.
+	 * Returns whether death chest protection prevents the specified player from opening this
+	 * death chest.
 	 *
 	 * @param player a player.
-	 * @return {@code true} if the player can interact with this death chest,
+	 * @return {@code true} if this death chest is protected from the specified player,
 	 * or otherwise {@code false}.
 	 */
 	@SuppressWarnings("ConstantConditions")
-	public boolean canInteract(PlayerEntity player) {
+	public boolean isProtectedFrom(PlayerEntity player) {
 		final VDCConfig.Protection config = VanillaDeathChest.config().protection;
 
 		if (!config.enable || playerUUID.equals(player.getUuid()) ||
 				(config.bypassInCreativeMode && player.abilities.creativeMode)) {
-			return true;
+			return false;
 		}
 
 		final OperatorEntry entry =
 				player.getServer().getPlayerManager().getOpList().get(player.getGameProfile());
 
 		if (entry != null && entry.getPermissionLevel() >= config.bypassPermissionLevel) {
-			return true;
+			return false;
 		}
 
-		return config.period != 0 &&
-				player.getEntityWorld().getTime() - creationTime > config.period;
+		return config.period == 0 ||
+				player.getEntityWorld().getTime() - creationTime <= config.period;
 	}
 
 	/**

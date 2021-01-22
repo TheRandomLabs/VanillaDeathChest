@@ -67,14 +67,14 @@ public final class DeathChestAutoRemover {
 
 		final BlockEntity blockEntity = world.getBlockEntity(pos);
 
-		if (!(blockEntity instanceof LockableContainerBlockEntity)) {
+		if (!(blockEntity instanceof LockableContainerBlockEntity) ||
+				!((LockableContainerBlockEntity) blockEntity).isEmpty()) {
 			return;
 		}
 
-		final int viewerCount = blockEntity instanceof ViewerCount ?
-				((ViewerCount) blockEntity).getViewerCount() : 0;
-
-		if (((LockableContainerBlockEntity) blockEntity).isEmpty() && viewerCount == 0) {
+		if (!VanillaDeathChest.config().misc.onlyRemoveClosedEmptyDeathChests ||
+				!(blockEntity instanceof ViewerCount) ||
+				((ViewerCount) blockEntity).getViewerCount() == 0) {
 			world.setBlockState(pos, Blocks.AIR.getDefaultState());
 		}
 	}

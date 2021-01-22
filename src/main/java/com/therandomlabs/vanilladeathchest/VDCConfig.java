@@ -375,6 +375,12 @@ public final class VDCConfig implements ConfigData {
 		@ConfigEntry.Gui.Tooltip
 		public boolean removeEmptyDeathChests = true;
 
+		@TOMLConfigSerializer.Comment(
+				"Whether empty death chests should only be removed when they are closed."
+		)
+		@ConfigEntry.Gui.Tooltip
+		public boolean onlyRemoveClosedEmptyDeathChests = true;
+
 		@TOMLConfigSerializer.Comment("Causes death chests to be dropped when they are broken.")
 		@ConfigEntry.Gui.Tooltip
 		public boolean dropDeathChests;

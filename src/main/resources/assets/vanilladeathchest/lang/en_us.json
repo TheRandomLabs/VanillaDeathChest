@@ -65,6 +65,8 @@
 	"text.autoconfig.vanilladeathchest.category.misc": "Miscellaneous",
 	"text.autoconfig.vanilladeathchest.option.misc.removeEmptyDeathChests": "Remove empty death chests",
 	"text.autoconfig.vanilladeathchest.option.misc.removeEmptyDeathChests.@Tooltip": "Causes death chests to be removed when they are emptied.",
+	"text.autoconfig.vanilladeathchest.option.misc.onlyRemoveClosedEmptyDeathChests": "Only remove closed empty death chests",
+	"text.autoconfig.vanilladeathchest.option.misc.onlyRemoveClosedEmptyDeathChests.@Tooltip": "Whether empty death chests should only be removed when they are closed.",
 	"text.autoconfig.vanilladeathchest.option.misc.dropDeathChests": "Drop death chests",
 	"text.autoconfig.vanilladeathchest.option.misc.dropDeathChests.@Tooltip": "Causes death chests to be dropped when they are broken.",
 	"text.autoconfig.vanilladeathchest.option.misc.gameRuleName": "Game rule name",

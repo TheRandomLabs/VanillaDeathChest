@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.UUID;
 
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
@@ -96,6 +97,15 @@ public final class DeathChestsState extends PersistentState {
 		tag.put("QueuedDeathChests", queuedDeathChestsList);
 
 		return tag;
+	}
+
+	/**
+	 * Returns the identifiers of all placed death chests.
+	 *
+	 * @return a {@link Set} of {@link UUID}s.
+	 */
+	public Set<UUID> getDeathChestIdentifiers() {
+		return deathChests.keySet();
 	}
 
 	/**

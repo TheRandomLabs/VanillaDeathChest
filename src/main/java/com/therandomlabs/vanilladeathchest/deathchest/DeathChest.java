@@ -242,6 +242,7 @@ public final class DeathChest {
 	 * @return the {@link CompoundTag}.
 	 */
 	public CompoundTag toTag(CompoundTag tag) {
+		tag.put("Identifier", NbtHelper.fromUuid(identifier));
 		tag.put("PlayerUUID", NbtHelper.fromUuid(playerUUID));
 
 		final ListTag itemsList = new ListTag();
@@ -287,7 +288,7 @@ public final class DeathChest {
 		inventory.deserialize(tag.getList("Inventory", NbtType.COMPOUND));
 
 		return new DeathChest(
-				NbtHelper.toUuid(tag.getCompound("Identifier")), world,
+				NbtHelper.toUuid(tag.get("Identifier")), world,
 				NbtHelper.toUuid(tag.get("PlayerUUID")), items, inventory,
 				tag.getLong("CreationTime"), NbtHelper.toBlockPos(tag.getCompound("Pos")),
 				tag.getBoolean("IsDoubleChest"), tag.getBoolean("Locked")

@@ -87,7 +87,11 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 		if ((Object) this instanceof PlayerEntity) {
 			drops.clear();
 			inventory = new PlayerInventory(null);
-			inventory.clone(((PlayerEntity) (Object) this).inventory);
+			final PlayerInventory oldInventory = ((PlayerEntity) (Object) this).inventory;
+
+			for (int i = 0; i < oldInventory.size(); i++) {
+				inventory.setStack(i, oldInventory.getStack(i).copy());
+			}
 		}
 	}
 

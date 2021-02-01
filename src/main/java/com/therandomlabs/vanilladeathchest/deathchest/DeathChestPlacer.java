@@ -152,7 +152,7 @@ public final class DeathChestPlacer {
 				(LootableContainerBlockEntity) (doubleChest ? eastBlockEntity : blockEntity);
 
 		for (int i = 0; i < items.size() && i < 27; i++) {
-			container.setStack(i, items.get(i).getStack());
+			container.setStack(i, items.get(i).getStack().copy());
 		}
 
 		((DeathChestBlockEntity) container).setDeathChest(deathChest);
@@ -166,7 +166,7 @@ public final class DeathChestPlacer {
 					(LootableContainerBlockEntity) blockEntity;
 
 			for (int i = 27; i < items.size(); i++) {
-				westContainer.setStack(i - 27, items.get(i).getStack());
+				westContainer.setStack(i - 27, items.get(i).getStack().copy());
 			}
 
 			((DeathChestBlockEntity) westContainer).setDeathChest(deathChest);
@@ -205,7 +205,7 @@ public final class DeathChestPlacer {
 
 			try {
 				tag = StringNbtReader.parse(config.nbtTag);
-			} catch (CommandSyntaxException ignored) {
+			} catch (CommandSyntaxException ex) {
 				//This should not happen.
 				tag = new CompoundTag();
 			}
@@ -249,7 +249,7 @@ public final class DeathChestPlacer {
 			if (!items.contains(drop)) {
 				if (drop.removed) {
 					world.spawnEntity(new ItemEntity(
-							world, drop.getX(), drop.getY(), drop.getZ(), drop.getStack()
+							world, drop.getX(), drop.getY(), drop.getZ(), drop.getStack().copy()
 					));
 				} else {
 					world.spawnEntity(drop);

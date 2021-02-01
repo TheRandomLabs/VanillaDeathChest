@@ -333,7 +333,7 @@ public final class VDCConfig implements ConfigData {
 
 			try {
 				StringNbtReader.parse(nbtTag);
-			} catch (CommandSyntaxException ignored) {
+			} catch (CommandSyntaxException ex) {
 				nbtTag = "{}";
 			}
 		}

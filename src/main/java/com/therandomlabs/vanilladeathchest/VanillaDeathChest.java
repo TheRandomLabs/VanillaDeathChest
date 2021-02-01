@@ -24,7 +24,7 @@
 package com.therandomlabs.vanilladeathchest;
 
 import com.therandomlabs.autoconfigtoml.TOMLConfigSerializer;
-import com.therandomlabs.vanilladeathchest.command.VDCConfigReloadCommand;
+import com.therandomlabs.vanilladeathchest.command.VDCCommand;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestAutoRemover;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestInteractions;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestPlacer;
@@ -81,7 +81,7 @@ public final class VanillaDeathChest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		reloadConfig();
-		CommandRegistrationCallback.EVENT.register(VDCConfigReloadCommand::register);
+		CommandRegistrationCallback.EVENT.register(VDCCommand::register);
 		ServerTickEvents.END_WORLD_TICK.register(DeathChestAutoRemover::removeEmpty);
 		ServerTickEvents.END_WORLD_TICK.register(DeathChestPlacer::placeQueued);
 		UseBlockCallback.EVENT.register(DeathChestInteractions::interact);

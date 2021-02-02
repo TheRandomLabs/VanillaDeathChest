@@ -10,6 +10,9 @@
 
 Places chests (or shulker boxes) where players die that contain all of their items.
 
+**VanillaDeathChest requires**
+**[Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api).**
+
 **When reporting issues or suggesting enhancements, please use the**
 **[GitHub issue tracker](https://github.com/TheRandomLabs/VanillaDeathChest/issues)—it's easier**
 **to keep track of things this way. Avoid commenting them on the CurseForge project page or**

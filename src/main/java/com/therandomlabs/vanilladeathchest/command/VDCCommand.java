@@ -161,6 +161,7 @@ public final class VDCCommand {
 		return Command.SINGLE_SUCCESS;
 	}
 
+	@SuppressWarnings("NullAway")
 	private static DeathChest getDeathChest(CommandContext<ServerCommandSource> context)
 			throws CommandSyntaxException {
 		final DeathChestsState state = DeathChestsState.get(context.getSource().getWorld());

@@ -23,23 +23,49 @@
 
 package com.therandomlabs.vanilladeathchest.command;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+import java.util.UUID;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestPlacer;
+import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.argument.UuidArgumentType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 
 /**
  * The command that reloads the VanillaDeathChest configuration.
  */
 public final class VDCCommand {
+	private static final SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER =
+			(context, builder) -> CommandSource.suggestMatching(
+					DeathChestsState.get(
+							context.getSource().getWorld()
+					).getDeathChestIdentifierStrings(), builder
+			);
+
+	private static final SimpleCommandExceptionType INVALID_IDENTIFIER_EXCEPTION =
+			new SimpleCommandExceptionType(
+					new TranslatableText("argument.death_chest_identifier.invalid")
+			);
+
 	private VDCCommand() {}
 
 	/**
@@ -63,28 +89,36 @@ public final class VDCCommand {
 								requires(source -> source.hasPermissionLevel(2)).
 								then(
 										CommandManager.argument(
-												"identifier",
-												DeathChestIdentifierArgumentType.identifier()
-										).executes(context -> executeRestoreInventory(
-												context.getSource(),
-												DeathChestIdentifierArgumentType.getDeathChest(
-														context, "identifier"
+												"identifier", UuidArgumentType.uuid()
+										).suggests(SUGGESTION_PROVIDER).executes(
+												context -> executeRestoreInventory(
+														context.getSource(), getDeathChest(context)
 												)
-										))
+										).then(
+												CommandManager.argument(
+														"targets", EntityArgumentType.players()
+												).executes(
+														context -> executeRestoreInventory(
+																context.getSource(),
+																getDeathChest(context),
+																EntityArgumentType.getPlayers(
+																		context, "targets"
+																)
+														)
+												)
+										)
 								)
 						).
 						then(CommandManager.literal("place").
 								requires(source -> source.hasPermissionLevel(2)).
 								then(
 										CommandManager.argument(
-												"identifier",
-												DeathChestIdentifierArgumentType.identifier()
-										).executes(context -> executePlace(
-												context.getSource(),
-												DeathChestIdentifierArgumentType.getDeathChest(
-														context, "identifier"
+												"identifier", UuidArgumentType.uuid()
+										).suggests(SUGGESTION_PROVIDER).executes(
+												context -> executePlace(
+														context.getSource(), getDeathChest(context)
 												)
-										))
+										)
 								)
 						)
 		);
@@ -99,10 +133,21 @@ public final class VDCCommand {
 
 	private static int executeRestoreInventory(ServerCommandSource source, DeathChest deathChest)
 			throws CommandSyntaxException {
-		final PlayerInventory inventory = source.getPlayer().inventory;
+		return executeRestoreInventory(
+				source, deathChest, Collections.singleton(source.getPlayer())
+		);
+	}
 
-		for (int i = 0; i < inventory.size(); i++) {
-			inventory.setStack(i, deathChest.getInventory().getStack(i).copy());
+	private static int executeRestoreInventory(
+			ServerCommandSource source, DeathChest deathChest,
+			Collection<ServerPlayerEntity> players
+	) throws CommandSyntaxException {
+		for (ServerPlayerEntity player : players) {
+			final PlayerInventory inventory = player.inventory;
+
+			for (int i = 0; i < inventory.size(); i++) {
+				inventory.setStack(i, deathChest.getInventory().getStack(i).copy());
+			}
 		}
 
 		source.sendFeedback(new LiteralText("Inventory restored!"), true);
@@ -116,5 +161,18 @@ public final class VDCCommand {
 				"Death chest placed at [%s, %s, %s]", pos.getX(), pos.getY(), pos.getZ()
 		)), true);
 		return Command.SINGLE_SUCCESS;
+	}
+
+	private static DeathChest getDeathChest(CommandContext<ServerCommandSource> context)
+			throws CommandSyntaxException {
+		final DeathChestsState state = DeathChestsState.get(context.getSource().getWorld());
+		final Set<UUID> identifiers = state.getDeathChestIdentifiers();
+		final UUID identifier = context.getArgument("identifier", UUID.class);
+
+		if (identifiers.contains(identifier)) {
+			return state.getDeathChest(identifier);
+		}
+
+		throw INVALID_IDENTIFIER_EXCEPTION.create();
 	}
 }

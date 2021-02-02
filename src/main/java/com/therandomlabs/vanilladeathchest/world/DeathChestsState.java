@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 import net.fabricmc.fabric.api.util.NbtType;
@@ -106,6 +107,15 @@ public final class DeathChestsState extends PersistentState {
 	 */
 	public Set<UUID> getDeathChestIdentifiers() {
 		return deathChests.keySet();
+	}
+
+	/**
+	 * Returns the identifier strings of all placed death chests.
+	 *
+	 * @return a {@link Set} of strings.
+	 */
+	public Set<String> getDeathChestIdentifierStrings() {
+		return getDeathChestIdentifiers().stream().map(UUID::toString).collect(Collectors.toSet());
 	}
 
 	/**

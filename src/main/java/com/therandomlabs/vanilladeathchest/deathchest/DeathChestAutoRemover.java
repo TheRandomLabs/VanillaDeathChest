@@ -50,6 +50,8 @@ public final class DeathChestAutoRemover {
 			return;
 		}
 
+		//Is it worth keeping a separate list of existing death chests so that we don't have to
+		//check every tick?
 		for (DeathChest deathChest : DeathChestsState.get(world).getDeathChests()) {
 			removeIfEmpty(world, deathChest.getPos());
 

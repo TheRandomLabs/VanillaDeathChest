@@ -45,7 +45,7 @@ import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 @SuppressWarnings("CanBeFinal")
@@ -167,16 +167,18 @@ public final class VDCConfig implements ConfigData {
 		}
 
 		/**
-		 * Returns whether death chest spawning is enabled in the specified dimension.
+		 * Returns whether death chest spawning is enabled in the specified world's dimension.
 		 *
-		 * @param dimension a {@link DimensionType}.
+		 * @param world a {@link World}.
 		 * @return {@code true} if death chest spawning is enabled in the specified dimension,
 		 * or otherwise {@code false}.
 		 */
 		@SuppressWarnings({"ConstantConditions", "NullAway"})
-		public boolean isDimensionEnabled(DimensionType dimension) {
-			final boolean anyMatch =
-					dimensionIdentifiers.stream().anyMatch(dimension.getSkyProperties()::equals);
+		public boolean isDimensionEnabled(World world) {
+			final Identifier identifier = world.getRegistryManager().
+					get(Registry.DIMENSION_TYPE_KEY).
+					getId(world.getDimension());
+			final boolean anyMatch = dimensionIdentifiers.stream().anyMatch(identifier::equals);
 
 			if (dimensionsBehavior == DimensionListBehavior.BLACKLIST) {
 				return !anyMatch;

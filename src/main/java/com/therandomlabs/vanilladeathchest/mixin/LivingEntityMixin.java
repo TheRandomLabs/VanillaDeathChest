@@ -106,7 +106,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 
 		if ((VanillaDeathChest.SPAWN_DEATH_CHESTS != null &&
 				!world.getGameRules().getBoolean(VanillaDeathChest.SPAWN_DEATH_CHESTS)) ||
-				!VanillaDeathChest.config().spawning.isDimensionEnabled(world.getDimension())) {
+				!VanillaDeathChest.config().spawning.isDimensionEnabled(world)) {
 			return;
 		}
 

@@ -47,7 +47,6 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -62,9 +61,7 @@ public final class VDCCommand {
 			);
 
 	private static final SimpleCommandExceptionType INVALID_IDENTIFIER_EXCEPTION =
-			new SimpleCommandExceptionType(
-					new TranslatableText("argument.death_chest_identifier.invalid")
-			);
+			new SimpleCommandExceptionType(new LiteralText("Invalid death chest identifier"));
 
 	private VDCCommand() {}
 
@@ -156,6 +153,7 @@ public final class VDCCommand {
 
 	private static int executePlace(ServerCommandSource source, DeathChest deathChest) {
 		DeathChestPlacer.placeAndFillContainer(deathChest);
+		DeathChestsState.get(source.getWorld()).addDeathChest(deathChest);
 		final BlockPos pos = deathChest.getPos();
 		source.sendFeedback(new LiteralText(String.format(
 				"Death chest placed at [%s, %s, %s]", pos.getX(), pos.getY(), pos.getZ()

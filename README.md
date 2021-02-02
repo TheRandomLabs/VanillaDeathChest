@@ -95,3 +95,11 @@ The name of the game rule that controls whther death chests should be spawned is
 ## Game Stages support
 
 I'll get around to re-implementing this.
+
+## Commands
+
+* `/vdc restoreinventory <identifier> [targets]` can be used to restore a player's inventory at
+the time of death chest placement.
+* `/vdc place <identifier>` can be used to replace a death chest.
+
+The commands aren't fully fleshed out at the moment, so I'd love some feedback.

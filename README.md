@@ -49,46 +49,46 @@ These are some of the options that are configurable:
 
 ### Container type
 
-* Four container types can be chosen:
-  * Only single chests.
-  * Single or double chests.
-  * Single shulker boxes.
-  * Single or double shulker boxes.
-* The shulker box color can also be configured.
+Four container types can be chosen:
+* Only single chests.
+* Single or double chests.
+* Single shulker boxes.
+* Single or double shulker boxes.
+The shulker box color can also be configured.
 
 ### Spawn dimensions
 
-* A whitelist or blacklist of death chest spawning dimensions can be configured.
+A whitelist or blacklist of death chest spawning dimensions can be configured.
 
 ### Item filter
 
-* A reguluar expression can be configured to determine the items that can be placed in death
+A reguluar expression can be configured to determine the items that can be placed in death
 chests.
 
 ### Use container in inventory
 
-* If this is enabled, players must have a suitable container in their inventory that can be
+If this is enabled, players must have a suitable container in their inventory that can be
 consumed for a death chest to be placed when they die.
 
 ### Key item
 
-* If a key item is configured, it is required to unlock death chests.
+If a key item is configured, it is required to unlock death chests.
 
 ### Defense entities
 
-* If defense entities are configured, they spawn every time a death chest is placed, and if they
+If defense entities are configured, they spawn every time a death chest is placed, and if they
 are hostile, they target the player.
 
 ### Protection
 
-* By default, death chests are protected for five in-game days, which means that only the owner of
+By default, death chests are protected for five in-game days, which means that only the owner of
 a death chest can unlock it.
 
 ### Game rule
 
-* The name of the game rule that controls whther death chests should be spawned is
+The name of the game rule that controls whther death chests should be spawned is
 `spawnDeathChests` by default, and can be configured.
 
 ## Game Stages support
 
-* I'll get around to re-implementing this.
+I'll get around to re-implementing this.

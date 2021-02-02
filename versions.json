@@ -1,14 +1,23 @@
 {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
+    "1.16.5": {
+        "2.0.0-forge": "Rewrite."
+    },
+    "1.16.4": {
+        "2.0.0-forge": "Rewrite."
+    },
     "1.16.3": {
+        "2.0.0-forge": "Rewrite.",
         "1.16.3-1.11.0.7": "Localized the disableDeathChests gamerule.",
         "1.16.2-1.11.0.5": "Added a license to mods.toml."
     },
     "1.16.2": {
+        "2.0.0-forge": "Rewrite.",
         "1.16.3-1.11.0.7": "Localized the disableDeathChests gamerule.",
         "1.16.2-1.11.0.5": "Added a license to mods.toml."
     },
     "1.16.1": {
+        "2.0.0-forge": "Rewrite.",
         "1.16.3-1.11.0.7": "Localized the disableDeathChests gamerule.",
         "1.16.2-1.11.0.5": "Added a license to mods.toml.",
         "1.16.1-1.11.0.4": "Now compatible with and requires Forge 1.16.1-32.0.67 or higher.",

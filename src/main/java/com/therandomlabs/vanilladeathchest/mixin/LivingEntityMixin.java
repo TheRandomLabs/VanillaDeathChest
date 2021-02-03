@@ -33,6 +33,7 @@ import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.util.DropsList;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -110,7 +111,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 			return;
 		}
 
-		drops.forEach(world::removeEntity);
+		drops.forEach(Entity::remove);
 		final DeathChestsState deathChestsState = DeathChestsState.get(world);
 		deathChestsState.getQueuedDeathChests().add(new DeathChest(
 				UUID.randomUUID(), world, entity.getUuid(), drops, inventory, world.getTime(),

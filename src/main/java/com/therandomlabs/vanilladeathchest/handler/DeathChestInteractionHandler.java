@@ -82,6 +82,10 @@ public final class DeathChestInteractionHandler {
 
 	@SubscribeEvent
 	public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
+		if (event.getWorld().isRemote()) {
+			return;
+		}
+
 		event.getAffectedBlocks().removeIf(
 				pos -> DeathChestManager.isLocked((ServerWorld) event.getWorld(), pos)
 		);

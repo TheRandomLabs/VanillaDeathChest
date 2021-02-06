@@ -1,23 +1,28 @@
 {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/vanilladeathchest",
     "1.16.5": {
-        "2.0.0-forge": "Rewrite."
+        "2.0.0-forge": "Rewrite.",
+        "1.16.3-1.11.0.8": "Fixed a client crash."
     },
     "1.16.4": {
-        "2.0.0-forge": "Rewrite."
+        "2.0.0-forge": "Rewrite.",
+        "1.16.3-1.11.0.8": "Fixed a client crash."
     },
     "1.16.3": {
         "2.0.0-forge": "Rewrite.",
+        "1.16.3-1.11.0.8": "Fixed a client crash.",
         "1.16.3-1.11.0.7": "Localized the disableDeathChests gamerule.",
         "1.16.2-1.11.0.5": "Added a license to mods.toml."
     },
     "1.16.2": {
         "2.0.0-forge": "Rewrite.",
+        "1.16.3-1.11.0.8": "Fixed a client crash.",
         "1.16.3-1.11.0.7": "Localized the disableDeathChests gamerule.",
         "1.16.2-1.11.0.5": "Added a license to mods.toml."
     },
     "1.16.1": {
         "2.0.0-forge": "Rewrite.",
+        "1.16.3-1.11.0.8": "Fixed a client crash.",
         "1.16.3-1.11.0.7": "Localized the disableDeathChests gamerule.",
         "1.16.2-1.11.0.5": "Added a license to mods.toml.",
         "1.16.1-1.11.0.4": "Now compatible with and requires Forge 1.16.1-32.0.67 or higher.",
@@ -193,12 +198,16 @@
         "1.10.2-1.9.0.0": "Backported 1.12.2-1.9.0.0."
     },
     "promos": {
-        "1.16.3-latest": "1.16.3-1.11.0.7",
-        "1.16.3-recommended": "1.16.3-1.11.0.7",
-        "1.16.2-latest": "1.16.3-1.11.0.7",
-        "1.16.2-recommended": "1.16.3-1.11.0.7",
-        "1.16.1-latest": "1.16.3-1.11.0.7",
-        "1.16.1-recommended": "1.16.3-1.11.0.7",
+        "1.16.5-latest": "1.16.3-1.11.0.8",
+        "1.16.5-recommended": "1.16.3-1.11.0.8",
+        "1.16.4-latest": "1.16.3-1.11.0.8",
+        "1.16.4-recommended": "1.16.3-1.11.0.8",
+        "1.16.3-latest": "1.16.3-1.11.0.8",
+        "1.16.3-recommended": "1.16.3-1.11.0.8",
+        "1.16.2-latest": "1.16.3-1.11.0.8",
+        "1.16.2-recommended": "1.16.3-1.11.0.8",
+        "1.16.1-latest": "1.16.3-1.11.0.8",
+        "1.16.1-recommended": "1.16.3-1.11.0.8",
         "1.15.2-latest": "1.15.2-1.11.0.2",
         "1.15.2-recommended": "1.15.2-1.11.0.2",
         "1.14.4-latest": "1.14.4-1.11.0.2",

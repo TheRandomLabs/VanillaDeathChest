@@ -53,10 +53,12 @@ These are some of the options that are configurable:
 ### Container type
 
 Four container types can be chosen:
+
 * Only single chests.
 * Single or double chests.
 * Single shulker boxes.
 * Single or double shulker boxes.
+
 The shulker box color can also be configured.
 
 ### Spawn dimensions
@@ -91,10 +93,6 @@ a death chest can unlock it.
 
 The name of the game rule that controls whther death chests should be spawned is
 `spawnDeathChests` by default, and can be configured.
-
-## Game Stages support
-
-I'll get around to re-implementing this.
 
 ## Commands
 

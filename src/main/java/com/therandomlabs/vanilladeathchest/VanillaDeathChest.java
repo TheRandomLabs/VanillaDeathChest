@@ -28,9 +28,11 @@ import com.therandomlabs.vanilladeathchest.command.VDCCommand;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestAutoRemover;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestInteractions;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestPlacer;
+import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
@@ -85,6 +87,7 @@ public final class VanillaDeathChest implements ModInitializer {
 		ServerTickEvents.END_WORLD_TICK.register(DeathChestAutoRemover::removeEmpty);
 		ServerTickEvents.END_WORLD_TICK.register(DeathChestPlacer::placeQueued);
 		UseBlockCallback.EVENT.register(DeathChestInteractions::interact);
+		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register(DeathChestsState::onBlockEntityUnload);
 	}
 
 	/**

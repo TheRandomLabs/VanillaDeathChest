@@ -12,7 +12,8 @@
 		"PlayerEntityMixin",
 		"ServerPlayerInteractionManagerMixin",
 		"ShulkerBoxBlockEntityMixin",
-		"ShulkerBoxBlockMixin"
+		"ShulkerBoxBlockMixin",
+		"WorldAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

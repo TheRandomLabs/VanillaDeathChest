@@ -51,8 +51,8 @@ public abstract class ExplosionMixin {
 	private void collectBlocksAndDamageEntities(CallbackInfo info) {
 		final DeathChestsState deathChestsState = DeathChestsState.get((ServerWorld) world);
 		getAffectedBlocks().removeIf(pos -> {
-			final DeathChest deathChest = deathChestsState.getDeathChest(pos);
-			return deathChest != null && deathChest.exists() && deathChest.isLocked();
+			final DeathChest deathChest = deathChestsState.getExistingDeathChest(pos);
+			return deathChest != null && deathChest.isLocked();
 		});
 	}
 }

@@ -65,7 +65,7 @@ public final class LockableContainerBlockEntityMixin implements DeathChestBlockE
 		if (tag.getBoolean("IsDeathChest")) {
 			final BlockEntity blockEntity = (BlockEntity) (Object) this;
 			deathChest = DeathChestsState.get((ServerWorld) blockEntity.getWorld()).
-					getDeathChest(blockEntity.getPos());
+					getExistingDeathChest(blockEntity.getPos());
 		}
 	}
 

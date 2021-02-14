@@ -33,9 +33,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
+import com.therandomlabs.vanilladeathchest.mixin.WorldAccessor;
+import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
@@ -47,7 +51,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class DeathChestsState extends PersistentState {
 	private final ServerWorld world;
 	private final Map<UUID, DeathChest> deathChests = new HashMap<>();
-	private final Map<BlockPos, DeathChest> deathChestsByPos = new HashMap<>();
+	private final Map<BlockPos, DeathChest> existingDeathChests = new HashMap<>();
 	private final Queue<DeathChest> queuedDeathChests = new ArrayDeque<>();
 
 	private DeathChestsState(String name, ServerWorld world) {
@@ -65,14 +69,11 @@ public final class DeathChestsState extends PersistentState {
 				map(deathChestTag -> DeathChest.fromTag(world, (CompoundTag) deathChestTag)).
 				forEach(deathChest -> deathChests.put(deathChest.getIdentifier(), deathChest));
 
-		for (DeathChest deathChest : deathChests.values()) {
-			final DeathChest oldDeathChest = deathChestsByPos.get(deathChest.getPos());
-
-			if (oldDeathChest == null ||
-					deathChest.getCreationTime() > oldDeathChest.getCreationTime()) {
-				deathChestsByPos.put(deathChest.getPos(), deathChest);
-			}
-		}
+		existingDeathChests.clear();
+		tag.getList("ExistingDeathChests", NbtType.INT_ARRAY).stream().
+				map(NbtHelper::toUuid).
+				map(deathChests::get).
+				forEach(deathChest -> existingDeathChests.put(deathChest.getPos(), deathChest));
 
 		queuedDeathChests.clear();
 		tag.getList("QueuedDeathChests", NbtType.COMPOUND).stream().
@@ -90,6 +91,13 @@ public final class DeathChestsState extends PersistentState {
 				map(deathChest -> deathChest.toTag(new CompoundTag())).
 				forEach(deathChestsList::add);
 		tag.put("DeathChests", deathChestsList);
+
+		final ListTag existingDeathChestsList = new ListTag();
+		existingDeathChests.values().stream().
+				map(DeathChest::getIdentifier).
+				map(NbtHelper::fromUuid).
+				forEach(existingDeathChestsList::add);
+		tag.put("ExistingDeathChests", existingDeathChestsList);
 
 		final ListTag queuedDeathChestsList = new ListTag();
 		queuedDeathChests.stream().
@@ -139,25 +147,35 @@ public final class DeathChestsState extends PersistentState {
 	}
 
 	/**
-	 * Returns the most recently placed death chest at the specified position.
+	 * Returns all existing death chests.
 	 *
-	 * @param pos a position.
-	 * @return the {@link DeathChest} at the specified {@link BlockPos}.
+	 * @return a {@link Collection} of all existing death chests.
 	 */
-	@Nullable
-	public DeathChest getDeathChest(BlockPos pos) {
-		final DeathChest deathChest = deathChestsByPos.get(pos);
-		return deathChest == null ? deathChestsByPos.get(pos.west()) : deathChest;
+	public Collection<DeathChest> getExistingDeathChests() {
+		return existingDeathChests.values();
 	}
 
 	/**
-	 * Adds a death chest.
+	 * Returns the existing death chest at the specified position.
+	 *
+	 * @param pos a position.
+	 * @return the existing {@link DeathChest} at the specified {@link BlockPos},
+	 * or {@code null} if it does not exist.
+	 */
+	@Nullable
+	public DeathChest getExistingDeathChest(BlockPos pos) {
+		final DeathChest deathChest = existingDeathChests.get(pos);
+		return deathChest == null ? existingDeathChests.get(pos.west()) : deathChest;
+	}
+
+	/**
+	 * Adds an existing death chest.
 	 *
 	 * @param deathChest a {@link DeathChest}.
 	 */
 	public void addDeathChest(DeathChest deathChest) {
 		deathChests.put(deathChest.getIdentifier(), deathChest);
-		deathChestsByPos.put(deathChest.getPos(), deathChest);
+		existingDeathChests.put(deathChest.getPos(), deathChest);
 	}
 
 	/**
@@ -179,5 +197,26 @@ public final class DeathChestsState extends PersistentState {
 		return world.getPersistentStateManager().getOrCreate(
 				() -> new DeathChestsState("deathchests", world), "deathchests"
 		);
+	}
+
+	/**
+	 * Called when a block entity is unloaded.
+	 *
+	 * @param blockEntity a {@link BlockEntity}.
+	 * @param world a {@link ServerWorld}.
+	 */
+	public static void onBlockEntityUnload(BlockEntity blockEntity, ServerWorld world) {
+		//Fabric API invokes this event in three different locations, but only two of them are
+		//when a block entity is removed. The other one is just when a chunk is unloaded.
+		//We can differentiate between these by checking whether the block entity is in
+		//World#unloadedBlockEntities.
+		if (((WorldAccessor) world).getUnloadedBlockEntities().contains(blockEntity)) {
+			return;
+		}
+
+		if (blockEntity instanceof DeathChestBlockEntity) {
+			final DeathChest deathChest = ((DeathChestBlockEntity) blockEntity).getDeathChest();
+			get(world).existingDeathChests.values().remove(deathChest);
+		}
 	}
 }

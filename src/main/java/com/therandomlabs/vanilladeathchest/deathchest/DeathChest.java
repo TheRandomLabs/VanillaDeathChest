@@ -63,6 +63,7 @@ public final class DeathChest {
 	/**
 	 * Constructs a {@link DeathChest} with the specified properties.
 	 *
+	 * @param identifier a {@link UUID}.
 	 * @param world a {@link ServerWorld}.
 	 * @param playerUUID a player UUID.
 	 * @param items the items.

@@ -26,6 +26,7 @@ package com.therandomlabs.vanilladeathchest.world;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -132,7 +133,7 @@ public final class DeathChestsState extends PersistentState {
 	 * @return a {@link Collection} of all placed death chests.
 	 */
 	public Collection<DeathChest> getDeathChests() {
-		return deathChests.values();
+		return new HashSet<>(deathChests.values());
 	}
 
 	/**
@@ -152,7 +153,7 @@ public final class DeathChestsState extends PersistentState {
 	 * @return a {@link Collection} of all existing death chests.
 	 */
 	public Collection<DeathChest> getExistingDeathChests() {
-		return existingDeathChests.values();
+		return new HashSet<>(existingDeathChests.values());
 	}
 
 	/**
@@ -179,7 +180,7 @@ public final class DeathChestsState extends PersistentState {
 	}
 
 	/**
-	 * Returns a queue of all unplaced death chests.
+	 * Returns a queue of all unplaced death chests. Changes to this queue are kept.
 	 *
 	 * @return a queue of all unplaced death chests.
 	 */

@@ -287,6 +287,7 @@ public final class DeathChest {
 			items.add(item);
 		}
 
+		//We can pass in a null player here because deserialize doesn't use the player.
 		final PlayerInventory inventory = new PlayerInventory(null);
 		inventory.deserialize(tag.getList("Inventory", NbtType.COMPOUND));
 

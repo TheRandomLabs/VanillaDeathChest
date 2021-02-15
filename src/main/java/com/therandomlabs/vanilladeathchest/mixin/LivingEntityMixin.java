@@ -87,7 +87,9 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 	public void dropHead(CallbackInfo info) {
 		if ((Object) this instanceof PlayerEntity) {
 			drops.clear();
-			inventory = new PlayerInventory(null);
+			//We can't pass in null here because Campanion mixins into setStack and needs the
+			//player.
+			inventory = new PlayerInventory((PlayerEntity) (Object) this);
 			final PlayerInventory oldInventory = ((PlayerEntity) (Object) this).inventory;
 
 			for (int i = 0; i < oldInventory.size(); i++) {

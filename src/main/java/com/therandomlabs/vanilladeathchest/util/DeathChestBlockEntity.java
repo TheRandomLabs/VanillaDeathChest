@@ -24,6 +24,7 @@
 package com.therandomlabs.vanilladeathchest.util;
 
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Allows a death chest {@link net.minecraft.block.entity.BlockEntity}'s
@@ -35,12 +36,11 @@ public interface DeathChestBlockEntity {
 	 *
 	 * @return the {@link DeathChest}.
 	 */
+	@Nullable
 	DeathChest getDeathChest();
 
 	/**
-	 * Sets the death chest.
-	 *
-	 * @param deathChest a {@link DeathChest}.
+	 * Marks this block entity as a death chest.
 	 */
-	void setDeathChest(DeathChest deathChest);
+	void markAsDeathChest();
 }

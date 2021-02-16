@@ -31,6 +31,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,13 +42,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LockableContainerBlockEntity.class)
 public final class LockableContainerBlockEntityMixin implements DeathChestBlockEntity {
 	@Unique
+	private boolean isDeathChest;
+
+	@Unique
 	private DeathChest deathChest;
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Nullable
 	@Override
 	public DeathChest getDeathChest() {
+		if (!isDeathChest) {
+			return null;
+		}
+
+		if (deathChest != null) {
+			return deathChest;
+		}
+
+		final BlockEntity blockEntity = (BlockEntity) (Object) this;
+		final ServerWorld world = (ServerWorld) blockEntity.getWorld();
+
+		if (world == null) {
+			return null;
+		}
+
+		deathChest = DeathChestsState.get(world).getExistingDeathChest(blockEntity.getPos());
 		return deathChest;
 	}
 
@@ -55,23 +76,18 @@ public final class LockableContainerBlockEntityMixin implements DeathChestBlockE
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setDeathChest(DeathChest deathChest) {
-		this.deathChest = deathChest;
+	public void markAsDeathChest() {
+		isDeathChest = true;
 	}
 
-	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "fromTag", at = @At("TAIL"))
 	private void fromTag(BlockState state, CompoundTag tag, CallbackInfo info) {
-		if (tag.getBoolean("IsDeathChest")) {
-			final BlockEntity blockEntity = (BlockEntity) (Object) this;
-			deathChest = DeathChestsState.get((ServerWorld) blockEntity.getWorld()).
-					getExistingDeathChest(blockEntity.getPos());
-		}
+		isDeathChest = tag.getBoolean("IsDeathChest");
 	}
 
 	@Inject(method = "toTag", at = @At("TAIL"))
 	private void toTag(CompoundTag tag, CallbackInfoReturnable<CompoundTag> info) {
-		if (deathChest != null) {
+		if (isDeathChest) {
 			tag.putBoolean("IsDeathChest", true);
 		}
 	}

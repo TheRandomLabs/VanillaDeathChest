@@ -23,11 +23,12 @@
 
 package com.therandomlabs.vanilladeathchest.world;
 
-import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
@@ -53,7 +54,8 @@ public final class DeathChestsState extends PersistentState {
 	private final ServerWorld world;
 	private final Map<UUID, DeathChest> deathChests = new HashMap<>();
 	private final Map<BlockPos, DeathChest> existingDeathChests = new HashMap<>();
-	private final Queue<DeathChest> queuedDeathChests = new ArrayDeque<>();
+	private final Queue<DeathChest> queuedDeathChests =
+			new PriorityQueue<>(Comparator.comparing(DeathChest::getCreationTime));
 
 	private DeathChestsState(String name, ServerWorld world) {
 		super(name);

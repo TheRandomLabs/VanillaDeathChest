@@ -155,7 +155,7 @@ public final class DeathChestPlacer {
 			container.setStack(i, items.get(i).getStack().copy());
 		}
 
-		((DeathChestBlockEntity) container).setDeathChest(deathChest);
+		((DeathChestBlockEntity) container).markAsDeathChest();
 
 		if (!config.containerDisplayName.isEmpty()) {
 			container.setCustomName(new LiteralText(config.containerDisplayName));
@@ -169,7 +169,7 @@ public final class DeathChestPlacer {
 				westContainer.setStack(i - 27, items.get(i).getStack().copy());
 			}
 
-			((DeathChestBlockEntity) westContainer).setDeathChest(deathChest);
+			((DeathChestBlockEntity) westContainer).markAsDeathChest();
 
 			if (!config.containerDisplayName.isEmpty()) {
 				westContainer.setCustomName(new LiteralText(config.containerDisplayName));

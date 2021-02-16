@@ -31,7 +31,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 /**
  * Handles the automatic removal of empty death chests.
@@ -50,16 +49,14 @@ public final class DeathChestAutoRemover {
 			return;
 		}
 
-		for (DeathChest deathChest : DeathChestsState.get(world).getExistingDeathChests()) {
-			removeIfEmpty(world, deathChest.getPos());
-
-			if (deathChest.isDoubleChest()) {
-				removeIfEmpty(world, deathChest.getPos().east());
-			}
-		}
+		DeathChestsState.get(world).getExistingDeathChests().
+				forEach(DeathChestAutoRemover::removeIfEmpty);
 	}
 
-	private static void removeIfEmpty(World world, BlockPos pos) {
+	private static void removeIfEmpty(DeathChest deathChest) {
+		final ServerWorld world = deathChest.getWorld();
+		final BlockPos pos = deathChest.getPos();
+
 		//Don't unnecessarily load any chunks.
 		if (!world.getChunkManager().isChunkLoaded(pos.getX() >> 4, pos.getZ() >> 4)) {
 			return;
@@ -72,10 +69,25 @@ public final class DeathChestAutoRemover {
 			return;
 		}
 
+		final boolean isDoubleChest = deathChest.isDoubleChest();
+
+		if (isDoubleChest) {
+			final BlockEntity eastBlockEntity = world.getBlockEntity(pos.east());
+
+			if (!(eastBlockEntity instanceof LockableContainerBlockEntity) ||
+					!((LockableContainerBlockEntity) eastBlockEntity).isEmpty()) {
+				return;
+			}
+		}
+
 		if (!VanillaDeathChest.config().misc.onlyRemoveClosedEmptyDeathChests ||
 				!(blockEntity instanceof ViewerCount) ||
 				((ViewerCount) blockEntity).getViewerCount() == 0) {
 			world.setBlockState(pos, Blocks.AIR.getDefaultState());
+
+			if (isDoubleChest) {
+				world.setBlockState(pos.east(), Blocks.AIR.getDefaultState());
+			}
 		}
 	}
 }

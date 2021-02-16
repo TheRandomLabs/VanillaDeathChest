@@ -115,11 +115,19 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 
 		drops.forEach(Entity::remove);
 		final DeathChestsState deathChestsState = DeathChestsState.get(world);
-		deathChestsState.getQueuedDeathChests().add(new DeathChest(
-				UUID.randomUUID(), world, entity.getUuid(), drops, inventory, world.getTime(),
-				entity.getBlockPos(), false, true
-		));
+		final BlockPos pos = entity.getBlockPos();
+		final DeathChest deathChest = new DeathChest(
+				UUID.randomUUID(), world, entity.getUuid(), drops, inventory, world.getTime(), pos,
+				false, true
+		);
+		deathChestsState.getQueuedDeathChests().add(deathChest);
 		deathChestsState.markDirty();
+
+		VanillaDeathChest.logger.info(
+				"Death chest for {} queued at [{}, {}, {}] with identifier {}",
+				((PlayerEntity) (Object) this).getGameProfile().getName(),
+				pos.getX(), pos.getY(), pos.getZ(), deathChest.getIdentifier()
+		);
 	}
 
 	@Inject(method = "tick", at = @At("HEAD"))

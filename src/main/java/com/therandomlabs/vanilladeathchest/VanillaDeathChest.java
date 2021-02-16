@@ -84,8 +84,8 @@ public final class VanillaDeathChest implements ModInitializer {
 	public void onInitialize() {
 		reloadConfig();
 		CommandRegistrationCallback.EVENT.register(VDCCommand::register);
+		ServerTickEvents.START_WORLD_TICK.register(DeathChestPlacer::placeQueued);
 		ServerTickEvents.END_WORLD_TICK.register(DeathChestAutoRemover::removeEmpty);
-		ServerTickEvents.END_WORLD_TICK.register(DeathChestPlacer::placeQueued);
 		UseBlockCallback.EVENT.register(DeathChestInteractions::interact);
 		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register(DeathChestsState::onBlockEntityUnload);
 	}

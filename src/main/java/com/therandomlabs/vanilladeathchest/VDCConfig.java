@@ -178,6 +178,14 @@ public final class VDCConfig implements ConfigData {
 			final Identifier identifier = world.getRegistryManager().
 					get(Registry.DIMENSION_TYPE_KEY).
 					getId(world.getDimension());
+
+			if (identifier == null) {
+				VanillaDeathChest.logger.error(
+						"Failed to determine dimension", new RuntimeException()
+				);
+				return dimensionsBehavior == DimensionListBehavior.BLACKLIST;
+			}
+
 			final boolean anyMatch = dimensionIdentifiers.stream().anyMatch(identifier::equals);
 
 			if (dimensionsBehavior == DimensionListBehavior.BLACKLIST) {

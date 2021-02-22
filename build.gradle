@@ -19,7 +19,7 @@ ext {
 	autoConfigTOMLVersion = "autoconfig-3.x.x-fabric-SNAPSHOT"
 }
 
-version = "2.0.5-fabric"
+version = "2.0.6-fabric"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 

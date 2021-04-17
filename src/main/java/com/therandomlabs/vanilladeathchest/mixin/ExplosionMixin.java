@@ -49,10 +49,12 @@ public abstract class ExplosionMixin {
 
 	@Inject(method = "collectBlocksAndDamageEntities", at = @At("TAIL"))
 	private void collectBlocksAndDamageEntities(CallbackInfo info) {
-		final DeathChestsState deathChestsState = DeathChestsState.get((ServerWorld) world);
-		getAffectedBlocks().removeIf(pos -> {
-			final DeathChest deathChest = deathChestsState.getExistingDeathChest(pos);
-			return deathChest != null && deathChest.isLocked();
-		});
+		if(this.world instanceof ServerWorld) {
+			final DeathChestsState deathChestsState = DeathChestsState.get((ServerWorld) world);
+			getAffectedBlocks().removeIf(pos -> {
+				final DeathChest deathChest = deathChestsState.getExistingDeathChest(pos);
+				return deathChest != null && deathChest.isLocked();
+			});
+		}
 	}
 }

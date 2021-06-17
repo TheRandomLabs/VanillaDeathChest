@@ -1,0 +1,138 @@
+def branch = project.findProperty("commonGradleBranch") ?: "master"
+def includeClothConfig = !project.hasProperty("includeClothConfig") || project.includeClothConfig
+def testMod = project.findProperty("testMod")
+
+ext {
+	useSpotBugs = false
+	testing = false
+	defaultCompileDependencies = false
+	includeLicense = false
+	buildSourcesJar = false
+	registerDefaultMavenPublication = false
+}
+
+apply from: "https://raw.githubusercontent.com/TheRandomLabs/Common-Gradle/$branch/build.gradle"
+
+if (testMod) {
+	sourceSets {
+		testmod {
+			compileClasspath += main.compileClasspath
+			runtimeClasspath += main.runtimeClasspath
+		}
+	}
+}
+
+repositories {
+	if (project.hasProperty("clothConfigVersion")) {
+		 maven { url "https://maven.shedaniel.me/" }
+	}
+
+	if (project.hasProperty("autoConfigVersion")) {
+		maven {
+			url "https://dl.bintray.com/shedaniel/autoconfig1u"
+		}
+	}
+
+	if (project.hasProperty("autoConfigTOMLVersion")) {
+		maven {
+			url "https://jitpack.io"
+		}
+	}
+
+    if (project.hasProperty("modMenuVersion")) {
+	    maven { 
+            url "https://maven.terraformersmc.com/releases/"
+        }
+    }
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraftVersion}"
+	mappings "net.fabricmc:yarn:${project.yarnMappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
+
+	if (project.hasProperty("fabricAPIVersion")) {
+		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricAPIVersion}"
+	}
+
+	if (project.hasProperty("modMenuVersion")) {
+		modImplementation "com.terraformersmc:modmenu:${modMenuVersion}"
+	}
+
+	if (project.hasProperty("clothConfigVersion")) {
+		modApi("me.shedaniel.cloth:cloth-config-fabric:${project.clothConfigVersion}") {
+            exclude(group: "net.fabricmc.fabric-api")
+        }
+
+		if (includeClothConfig) {
+			include "me.shedaniel.cloth:cloth-config-fabric:${project.clothConfigVersion}"
+		}
+	}
+
+	if (project.hasProperty("autoConfigVersion")) {
+		modImplementation("me.sargunvohra.mcmods:autoconfig1u:${project.autoConfigVersion}") {
+			exclude(module: "fabric-api")
+		}
+
+		if (includeClothConfig) {
+			include "me.sargunvohra.mcmods:autoconfig1u:${project.autoConfigVersion}"
+		}
+	}
+
+	if (project.hasProperty("autoConfigTOMLVersion")) {
+		modImplementation "com.github.TheRandomLabs:AutoConfig-TOML:${project.autoConfigTOMLVersion}"
+		include "com.github.TheRandomLabs:AutoConfig-TOML:${project.autoConfigTOMLVersion}"
+	}
+
+	if (testMod) {
+		afterEvaluate {
+			testmodImplementation(sourceSets.main.output)
+		}
+	}
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+java {
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename {
+			"${it}_${project.archivesBaseName}"
+		}
+	}
+}
+
+if (testMod) {
+	runClient {
+		classpath(sourceSets.testmod.runtimeClasspath)
+	}
+
+	runServer {
+		classpath(sourceSets.testmod.runtimeClasspath)
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(remapJar) {
+				builtBy remapJar
+			}
+
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+
+			artifact javadocJar
+		}
+	}
+}

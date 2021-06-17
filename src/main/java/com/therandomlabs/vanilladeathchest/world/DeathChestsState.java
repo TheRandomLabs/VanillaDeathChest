@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
@@ -42,6 +43,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.scoreboard.ScoreboardState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
@@ -62,11 +64,7 @@ public final class DeathChestsState extends PersistentState {
 		this.world = world;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void fromTag(NbtCompound tag) {
+	public DeathChestsState readNbt(NbtCompound tag) {
 		deathChests.clear();
 		tag.getList("DeathChests", NbtType.COMPOUND).stream().
 				map(deathChestTag -> DeathChest.fromTag(world, (NbtCompound) deathChestTag)).
@@ -82,6 +80,8 @@ public final class DeathChestsState extends PersistentState {
 		tag.getList("QueuedDeathChests", NbtType.COMPOUND).stream().
 				map(deathChestTag -> DeathChest.fromTag(world, (NbtCompound) deathChestTag)).
 				forEach(queuedDeathChests::add);
+
+		return this;
 	}
 
 	/**
@@ -198,7 +198,8 @@ public final class DeathChestsState extends PersistentState {
 	 */
 	public static DeathChestsState get(ServerWorld world) {
 		return world.getPersistentStateManager().getOrCreate(
-				() -> new DeathChestsState("deathchests", world), "deathchests"
+				(data) -> DeathChestsState.stateFromNbt(world, data),
+				() -> DeathChestsState.createState(world), "deathchests"
 		);
 	}
 
@@ -221,5 +222,16 @@ public final class DeathChestsState extends PersistentState {
 			final DeathChest deathChest = ((DeathChestBlockEntity) blockEntity).getDeathChest();
 			get(world).existingDeathChests.values().remove(deathChest);
 		}
+	}
+
+	public static DeathChestsState createState(ServerWorld world) {
+		//Is name really unused?
+		DeathChestsState deathChestsState = new DeathChestsState("deathchests", world);
+		Objects.requireNonNull(deathChestsState);
+		return deathChestsState;
+	}
+
+	public static DeathChestsState stateFromNbt(ServerWorld world, NbtCompound nbt) {
+		return createState(world).readNbt(nbt);
 	}
 }

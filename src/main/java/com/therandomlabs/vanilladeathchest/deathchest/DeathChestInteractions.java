@@ -68,7 +68,7 @@ public final class DeathChestInteractions {
 			return ActionResult.PASS;
 		}
 
-		if (!world.getBlockState(blockHitResult.getBlockPos()).getBlock().hasBlockEntity()) {
+		if (!world.getBlockState(blockHitResult.getBlockPos()).hasBlockEntity()) {
 			return ActionResult.PASS;
 		}
 

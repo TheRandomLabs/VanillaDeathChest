@@ -49,7 +49,7 @@ public final class BlockMixin {
 	private void onBreak(
 			World world, BlockPos pos, BlockState state, PlayerEntity player, CallbackInfo info
 	) {
-		if ((Object) this instanceof ShulkerBoxBlock || !state.getBlock().hasBlockEntity()) {
+		if ((Object) this instanceof ShulkerBoxBlock || !state.hasBlockEntity()) {
 			return;
 		}
 

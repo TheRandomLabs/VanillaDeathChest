@@ -201,7 +201,7 @@ public final class DeathChest {
 	public boolean exists() {
 		//We don't bother checking the east block, as it is impossible to only break one
 		//block in a double death chest.
-		if (!world.getBlockState(pos).getBlock().hasBlockEntity()) {
+		if (!world.getBlockState(pos).hasBlockEntity()) {
 			return false;
 		}
 

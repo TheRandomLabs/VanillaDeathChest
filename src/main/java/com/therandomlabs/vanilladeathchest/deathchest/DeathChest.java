@@ -223,7 +223,7 @@ public final class DeathChest {
 		final VDCConfig.Protection config = VanillaDeathChest.config().protection;
 
 		if (!config.enable || playerUUID.equals(player.getUuid()) ||
-				(config.bypassInCreativeMode && player.abilities.creativeMode)) {
+				(config.bypassInCreativeMode && player.getAbilities().creativeMode)) {
 			return false;
 		}
 

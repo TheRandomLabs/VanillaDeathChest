@@ -180,7 +180,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 					squaredDistanceFromPlayer > config.maxSquaredDistanceFromPlayer) {
 				entity.refreshPositionAndAngles(
 						pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5,
-						entity.yaw, entity.pitch
+						entity.getYaw(), entity.getPitch()
 				);
 			}
 		}

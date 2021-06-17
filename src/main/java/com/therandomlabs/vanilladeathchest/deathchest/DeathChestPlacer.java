@@ -216,7 +216,7 @@ public final class DeathChestPlacer {
 			final Entity entity = EntityType.loadEntityWithPassengers(
 					tag, world, spawnedEntity -> {
 						spawnedEntity.refreshPositionAndAngles(
-								x, y, z, spawnedEntity.yaw, spawnedEntity.pitch
+								x, y, z, spawnedEntity.getYaw(), spawnedEntity.getPitch()
 						);
 						return spawnedEntity;
 					}

@@ -63,7 +63,7 @@ public final class ShulkerBoxBlockMixin {
 		}
 
 		final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(27, ItemStack.EMPTY);
-		Inventories.fromTag(
+		Inventories.readNbt(
 				((ItemEntity) entity).getStack().getTag().getCompound("BlockEntityTag"), inventory
 		);
 

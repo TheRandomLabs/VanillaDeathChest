@@ -37,10 +37,10 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.OperatorEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -239,27 +239,27 @@ public final class DeathChest {
 	}
 
 	/**
-	 * Serializes this death chest to a {@link CompoundTag}.
+	 * Serializes this death chest to a {@link NbtCompound}.
 	 *
-	 * @param tag a {@link CompoundTag}.
-	 * @return the {@link CompoundTag}.
+	 * @param tag a {@link NbtCompound}.
+	 * @return the {@link NbtCompound}.
 	 */
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound writeNbt(NbtCompound tag) {
 		tag.put("Identifier", NbtHelper.fromUuid(identifier));
 		tag.put("PlayerUUID", NbtHelper.fromUuid(playerUUID));
 
-		final ListTag itemsList = new ListTag();
+		final NbtList itemsList = new NbtList();
 
 		for (ItemEntity item : items) {
-			final CompoundTag itemTag = item.toTag(new CompoundTag());
-			item.writeCustomDataToTag(itemTag);
+			final NbtCompound itemTag = item.writeNbt(new NbtCompound());
+			item.writeCustomDataToNbt(itemTag);
 			itemsList.add(itemTag);
 		}
 
 		tag.put("Items", itemsList);
 
-		final ListTag inventoryList = new ListTag();
-		inventory.serialize(inventoryList);
+		final NbtList inventoryList = new NbtList();
+		inventory.writeNbt(inventoryList);
 		tag.put("Inventory", inventoryList);
 
 		tag.putLong("CreationTime", creationTime);
@@ -270,26 +270,26 @@ public final class DeathChest {
 	}
 
 	/**
-	 * Deserializes a death chest from a {@link CompoundTag}.
+	 * Deserializes a death chest from a {@link NbtCompound}.
 	 *
 	 * @param world a {@link ServerWorld}.
-	 * @param tag a {@link CompoundTag}.
+	 * @param tag a {@link NbtCompound}.
 	 * @return the deserialized {@link DeathChest}.
 	 */
 	@SuppressWarnings("ConstantConditions")
-	public static DeathChest fromTag(ServerWorld world, CompoundTag tag) {
+	public static DeathChest fromTag(ServerWorld world, NbtCompound tag) {
 		final List<ItemEntity> items = new ArrayList<>();
 
-		for (Tag itemTag : tag.getList("Items", NbtType.COMPOUND)) {
+		for (NbtElement itemTag : tag.getList("Items", NbtType.COMPOUND)) {
 			final ItemEntity item = new ItemEntity(EntityType.ITEM, world);
-			item.fromTag((CompoundTag) itemTag);
-			item.readCustomDataFromTag((CompoundTag) itemTag);
+			item.readNbt((NbtCompound) itemTag);
+			item.readCustomDataFromNbt((NbtCompound) itemTag);
 			items.add(item);
 		}
 
 		//We can pass in a null player here because deserialize doesn't use the player.
 		final PlayerInventory inventory = new PlayerInventory(null);
-		inventory.deserialize(tag.getList("Inventory", NbtType.COMPOUND));
+		inventory.readNbt(tag.getList("Inventory", NbtType.COMPOUND));
 
 		return new DeathChest(
 				NbtHelper.toUuid(tag.get("Identifier")), world,

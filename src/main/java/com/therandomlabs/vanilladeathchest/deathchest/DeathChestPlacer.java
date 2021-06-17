@@ -54,7 +54,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
@@ -201,13 +201,13 @@ public final class DeathChestPlacer {
 
 		for (int i = 0; i < config.spawnCount; i++) {
 			//The following spawn logic has been taken from SummonCommand.
-			CompoundTag tag;
+			NbtCompound tag;
 
 			try {
 				tag = StringNbtReader.parse(config.nbtTag);
 			} catch (CommandSyntaxException ex) {
 				//This should not happen.
-				tag = new CompoundTag();
+				tag = new NbtCompound();
 			}
 
 			final boolean emptyTag = tag.isEmpty();
@@ -375,12 +375,12 @@ public final class DeathChestPlacer {
 					continue;
 				}
 
-				final CompoundTag tag = stack.getTag();
+				final NbtCompound tag = stack.getTag();
 
 				if (tag != null) {
 					final DefaultedList<ItemStack> inventory =
 							DefaultedList.ofSize(27, ItemStack.EMPTY);
-					Inventories.fromTag(tag.getCompound("BlockEntityTag"), inventory);
+					Inventories.readNbt(tag.getCompound("BlockEntityTag"), inventory);
 
 					//The shulker box must be empty.
 					if (inventory.stream().anyMatch(itemStack -> !itemStack.isEmpty())) {

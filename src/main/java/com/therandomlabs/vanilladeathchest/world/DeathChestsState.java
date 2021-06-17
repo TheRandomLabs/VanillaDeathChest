@@ -39,9 +39,9 @@ import com.therandomlabs.vanilladeathchest.mixin.WorldAccessor;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
@@ -58,7 +58,7 @@ public final class DeathChestsState extends PersistentState {
 			new PriorityQueue<>(Comparator.comparing(DeathChest::getCreationTime));
 
 	private DeathChestsState(String name, ServerWorld world) {
-		super(name);
+		super();
 		this.world = world;
 	}
 
@@ -66,10 +66,10 @@ public final class DeathChestsState extends PersistentState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void fromTag(CompoundTag tag) {
+	public void fromTag(NbtCompound tag) {
 		deathChests.clear();
 		tag.getList("DeathChests", NbtType.COMPOUND).stream().
-				map(deathChestTag -> DeathChest.fromTag(world, (CompoundTag) deathChestTag)).
+				map(deathChestTag -> DeathChest.fromTag(world, (NbtCompound) deathChestTag)).
 				forEach(deathChest -> deathChests.put(deathChest.getIdentifier(), deathChest));
 
 		existingDeathChests.clear();
@@ -80,7 +80,7 @@ public final class DeathChestsState extends PersistentState {
 
 		queuedDeathChests.clear();
 		tag.getList("QueuedDeathChests", NbtType.COMPOUND).stream().
-				map(deathChestTag -> DeathChest.fromTag(world, (CompoundTag) deathChestTag)).
+				map(deathChestTag -> DeathChest.fromTag(world, (NbtCompound) deathChestTag)).
 				forEach(queuedDeathChests::add);
 	}
 
@@ -88,23 +88,23 @@ public final class DeathChestsState extends PersistentState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		final ListTag deathChestsList = new ListTag();
+	public NbtCompound writeNbt(NbtCompound tag) {
+		final NbtList deathChestsList = new NbtList();
 		deathChests.values().stream().
-				map(deathChest -> deathChest.toTag(new CompoundTag())).
+				map(deathChest -> deathChest.writeNbt(new NbtCompound())).
 				forEach(deathChestsList::add);
 		tag.put("DeathChests", deathChestsList);
 
-		final ListTag existingDeathChestsList = new ListTag();
+		final NbtList existingDeathChestsList = new NbtList();
 		existingDeathChests.values().stream().
 				map(DeathChest::getIdentifier).
 				map(NbtHelper::fromUuid).
 				forEach(existingDeathChestsList::add);
 		tag.put("ExistingDeathChests", existingDeathChestsList);
 
-		final ListTag queuedDeathChestsList = new ListTag();
+		final NbtList queuedDeathChestsList = new NbtList();
 		queuedDeathChests.stream().
-				map(deathChest -> deathChest.toTag(new CompoundTag())).
+				map(deathChest -> deathChest.writeNbt(new NbtCompound())).
 				forEach(queuedDeathChestsList::add);
 		tag.put("QueuedDeathChests", queuedDeathChestsList);
 

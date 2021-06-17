@@ -41,7 +41,7 @@ import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -186,8 +186,8 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 		}
 	}
 
-	@Inject(method = "writeCustomDataToTag", at = @At("HEAD"))
-	public void writeCustomDataToTag(CompoundTag tag, CallbackInfo info) {
+	@Inject(method = "writeCustomDataToNbt", at = @At("HEAD"))
+	public void writeCustomDataToNbt(NbtCompound tag, CallbackInfo info) {
 		if (deathChestPlayerUUID != null) {
 			if (deathChest != null) {
 				tag.put(
@@ -199,8 +199,8 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 		}
 	}
 
-	@Inject(method = "readCustomDataFromTag", at = @At("HEAD"))
-	public void readCustomDataFromTag(CompoundTag tag, CallbackInfo info) {
+	@Inject(method = "readCustomDataFromNbt", at = @At("HEAD"))
+	public void readCustomDataFromNbt(NbtCompound tag, CallbackInfo info) {
 		if (tag.contains("DeathChestPlayer")) {
 			deathChestPlayerUUID = NbtHelper.toUuid(tag.get("DeathChestPlayer"));
 

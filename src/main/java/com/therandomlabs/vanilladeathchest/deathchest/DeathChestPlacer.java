@@ -247,7 +247,7 @@ public final class DeathChestPlacer {
 
 		for (ItemEntity drop : allItems) {
 			if (!items.contains(drop)) {
-				if (drop.removed) {
+				if (drop.isRemoved()) {
 					world.spawnEntity(new ItemEntity(
 							world, drop.getX(), drop.getY(), drop.getZ(), drop.getStack().copy()
 					));

@@ -113,7 +113,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 			return;
 		}
 
-		drops.forEach(Entity::remove);
+		drops.forEach(Entity::discard);
 		final DeathChestsState deathChestsState = DeathChestsState.get(world);
 		final BlockPos pos = entity.getBlockPos();
 		final DeathChest deathChest = new DeathChest(

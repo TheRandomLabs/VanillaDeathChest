@@ -29,15 +29,19 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.function.Supplier;
 
 @Mixin(Block.class)
 public final class BlockMixin {
@@ -62,16 +66,32 @@ public final class BlockMixin {
 	}
 
 	@Inject(
-			method = "dropStack",
+			method = "dropStack(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)V",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/world/World;" +
-							"spawnEntity(Lnet/minecraft/entity/Entity;)Z"
+					target = "Lnet/minecraft/block/Block;dropStack(Lnet/minecraft/world/World;Ljava/util/function/Supplier;Lnet/minecraft/item/ItemStack;)V"
 			),
 			cancellable = true
 	)
 	private static void dropStack(
 			World world, BlockPos pos, ItemStack stack, CallbackInfo callback
+	) {
+		if (pos.equals(brokenDeathChest) && !VanillaDeathChest.config().misc.dropDeathChests) {
+			brokenDeathChest = null;
+			callback.cancel();
+		}
+	}
+
+	@Inject(
+			method = "dropStack(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/item/ItemStack;)V",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/block/Block;dropStack(Lnet/minecraft/world/World;Ljava/util/function/Supplier;Lnet/minecraft/item/ItemStack;)V"
+			),
+			cancellable = true
+	)
+	private static void dropStack(
+			World world, BlockPos pos, Direction direction, ItemStack stack, CallbackInfo callback
 	) {
 		if (pos.equals(brokenDeathChest) && !VanillaDeathChest.config().misc.dropDeathChests) {
 			brokenDeathChest = null;

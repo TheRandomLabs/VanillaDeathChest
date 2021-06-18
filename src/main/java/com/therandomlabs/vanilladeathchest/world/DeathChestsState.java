@@ -214,9 +214,12 @@ public final class DeathChestsState extends PersistentState {
 		//when a block entity is removed. The other one is just when a chunk is unloaded.
 		//We can differentiate between these by checking whether the block entity is in
 		//World#unloadedBlockEntities.
-		if (((WorldAccessor) world).getUnloadedBlockEntities().contains(blockEntity)) {
+
+		// Chunk removal in ClientWorld#unloadBlockEntities no longer relies
+		// on World#unloadedBlockEntities.
+		/*if (((WorldAccessor) world).getUnloadedBlockEntities().contains(blockEntity)) {
 			return;
-		}
+		}*/
 
 		if (blockEntity instanceof DeathChestBlockEntity) {
 			final DeathChest deathChest = ((DeathChestBlockEntity) blockEntity).getDeathChest();

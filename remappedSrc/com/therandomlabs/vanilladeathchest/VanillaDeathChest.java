@@ -109,10 +109,7 @@ public final class VanillaDeathChest implements ModInitializer {
 	 */
 	public static void reloadConfig() {
 		if (serializer == null) {
-			AutoConfig.register(VDCConfig.class, (definition, configClass) -> {
-				serializer = new TOMLConfigSerializer<>(definition, configClass);
-				return serializer;
-			});
+            AutoConfig.register(VDCConfig.class, Toml4jConfigSerializer::new);			
 		} else {
 			serializer.reloadFromDisk();
 		}

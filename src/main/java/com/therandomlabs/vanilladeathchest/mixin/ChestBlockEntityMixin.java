@@ -29,16 +29,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ChestBlockEntity.class)
-public final class ChestBlockEntityMixin implements ViewerCount {
-	@SuppressWarnings("PMD.AvoidProtectedFieldInFinalClass")
-	@Shadow
-	protected int viewerCount;
+public final class ChestBlockEntityMixin {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getViewerCount() {
-		return viewerCount;
-	}
 }

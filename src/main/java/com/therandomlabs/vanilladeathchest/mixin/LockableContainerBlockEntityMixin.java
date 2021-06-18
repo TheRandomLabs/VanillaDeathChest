@@ -81,14 +81,18 @@ public final class LockableContainerBlockEntityMixin implements DeathChestBlockE
 	}
 
 	@Inject(method = "writeNbt", at = @At("TAIL"))
-	private void writeNbt(BlockState state, NbtCompound tag, CallbackInfo info) {
-		isDeathChest = tag.getBoolean("IsDeathChest");
+	private void writeNbt(
+			NbtCompound nbt, CallbackInfoReturnable<NbtCompound> cir
+	) {
+		isDeathChest = nbt.getBoolean("IsDeathChest");
 	}
 
 	@Inject(method = "readNbt", at = @At("TAIL"))
-	private void readNbt(NbtCompound tag, CallbackInfoReturnable<NbtCompound> info) {
+	private void readNbt(
+			NbtCompound nbt, CallbackInfo ci
+	) {
 		if (isDeathChest) {
-			tag.putBoolean("IsDeathChest", true);
+			nbt.putBoolean("IsDeathChest", true);
 		}
 	}
 }

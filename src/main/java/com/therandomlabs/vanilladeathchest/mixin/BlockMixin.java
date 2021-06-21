@@ -29,7 +29,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -40,8 +39,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.function.Supplier;
 
 @Mixin(Block.class)
 public final class BlockMixin {
@@ -66,10 +63,13 @@ public final class BlockMixin {
 	}
 
 	@Inject(
-			method = "dropStack(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)V",
+			method = "dropStack(Lnet/minecraft/world/World;" +
+						"Lnet/minecraft/util/math/BlockPos;" +
+						"Lnet/minecraft/item/ItemStack;)V",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/block/Block;dropStack(Lnet/minecraft/world/World;Ljava/util/function/Supplier;Lnet/minecraft/item/ItemStack;)V"
+					target = "Lnet/minecraft/block/Block;dropStack(Lnet/minecraft/world/World;" +
+								"Ljava/util/function/Supplier;Lnet/minecraft/item/ItemStack;)V"
 			),
 			cancellable = true
 	)
@@ -83,10 +83,14 @@ public final class BlockMixin {
 	}
 
 	@Inject(
-			method = "dropStack(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/item/ItemStack;)V",
+			method = "dropStack(Lnet/minecraft/world/World;" +
+						"Lnet/minecraft/util/math/BlockPos;" +
+						"Lnet/minecraft/util/math/Direction;" +
+						"Lnet/minecraft/item/ItemStack;)V",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/block/Block;dropStack(Lnet/minecraft/world/World;Ljava/util/function/Supplier;Lnet/minecraft/item/ItemStack;)V"
+					target = "Lnet/minecraft/block/Block;dropStack(Lnet/minecraft/world/World;" +
+								"Ljava/util/function/Supplier;Lnet/minecraft/item/ItemStack;)V"
 			),
 			cancellable = true
 	)

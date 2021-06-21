@@ -36,14 +36,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
-import com.therandomlabs.vanilladeathchest.mixin.WorldAccessor;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.scoreboard.ScoreboardState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
@@ -64,6 +62,9 @@ public final class DeathChestsState extends PersistentState {
 		this.world = world;
 	}
 
+	/**
+	 *
+	 */
 	public DeathChestsState readNbt(NbtCompound tag) {
 		deathChests.clear();
 		tag.getList("DeathChests", NbtType.COMPOUND).stream().
@@ -227,6 +228,9 @@ public final class DeathChestsState extends PersistentState {
 		}
 	}
 
+	/**
+	 *
+	 */
 	public static DeathChestsState createState(ServerWorld world) {
 		//Is name really unused?
 		DeathChestsState deathChestsState = new DeathChestsState("deathchests", world);
@@ -234,6 +238,9 @@ public final class DeathChestsState extends PersistentState {
 		return deathChestsState;
 	}
 
+	/**
+	 *
+	 */
 	public static DeathChestsState stateFromNbt(ServerWorld world, NbtCompound nbt) {
 		return createState(world).readNbt(nbt);
 	}

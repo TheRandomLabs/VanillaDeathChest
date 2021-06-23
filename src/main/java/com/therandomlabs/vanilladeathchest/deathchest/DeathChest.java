@@ -277,7 +277,7 @@ public final class DeathChest {
 	 * @return the deserialized {@link DeathChest}.
 	 */
 	@SuppressWarnings("ConstantConditions")
-	public static DeathChest fromTag(ServerWorld world, NbtCompound tag) {
+	public static DeathChest readNbt(ServerWorld world, NbtCompound tag) {
 		final List<ItemEntity> items = new ArrayList<>();
 
 		for (NbtElement itemTag : tag.getList("Items", NbtType.COMPOUND)) {

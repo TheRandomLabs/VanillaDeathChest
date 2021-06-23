@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -68,7 +69,7 @@ public final class DeathChestsState extends PersistentState {
 	public DeathChestsState readNbt(NbtCompound tag) {
 		deathChests.clear();
 		tag.getList("DeathChests", NbtType.COMPOUND).stream().
-				map(deathChestTag -> DeathChest.fromTag(world, (NbtCompound) deathChestTag)).
+				map(deathChestTag -> DeathChest.readNbt(world, (NbtCompound) deathChestTag)).
 				forEach(deathChest -> deathChests.put(deathChest.getIdentifier(), deathChest));
 
 		existingDeathChests.clear();
@@ -79,7 +80,7 @@ public final class DeathChestsState extends PersistentState {
 
 		queuedDeathChests.clear();
 		tag.getList("QueuedDeathChests", NbtType.COMPOUND).stream().
-				map(deathChestTag -> DeathChest.fromTag(world, (NbtCompound) deathChestTag)).
+				map(deathChestTag -> DeathChest.readNbt(world, (NbtCompound) deathChestTag)).
 				forEach(queuedDeathChests::add);
 
 		return this;

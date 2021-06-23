@@ -243,9 +243,19 @@ public final class DeathChestsState extends PersistentState {
 				isEmpty = false;
 			}
 
+			if (deathChest != null) {
+				VanillaDeathChest.logger.atDebug().log(
+						"Unload requested for DeathChest at x:" + blockEntity.getPos().getX() +
+								",y:" + blockEntity.getPos().getY() + ",z:" +
+								blockEntity.getPos().getZ() + ",empty:" + isEmpty + ",chestCount:" +
+								state.existingDeathChests.size());
+			}
+
 			if (deathChest != null && isEmpty) {
 				Block bl = blockEntity.getCachedState().getBlock();
 				state.existingDeathChests.values().remove(deathChest);
+				VanillaDeathChest.logger.atDebug().log(
+						"Removed DeathChest, " + state.existingDeathChests.size() + " remaining.");
 			}
 		}
 	}

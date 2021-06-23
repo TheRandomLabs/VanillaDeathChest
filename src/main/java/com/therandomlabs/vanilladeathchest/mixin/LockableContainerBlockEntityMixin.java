@@ -23,6 +23,7 @@
 
 package com.therandomlabs.vanilladeathchest.mixin;
 
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
@@ -84,6 +85,9 @@ public final class LockableContainerBlockEntityMixin implements DeathChestBlockE
 			NbtCompound nbt, CallbackInfo ci
 	) {
 		isDeathChest = nbt.getBoolean("IsDeathChest");
+		VanillaDeathChest.logger.atDebug().log(
+				"Loading DeathChest at x:" + nbt.getInt("x") + ",y:" + nbt.get("y") + ",z:" +
+						nbt.get("z"));
 	}
 
 	@Inject(method = "writeNbt", at = @At("TAIL"))
@@ -92,6 +96,9 @@ public final class LockableContainerBlockEntityMixin implements DeathChestBlockE
 	) {
 		if (isDeathChest) {
 			nbt.putBoolean("IsDeathChest", true);
+			VanillaDeathChest.logger.atDebug().log(
+					"Storing DeathChest at x:" + nbt.getInt("x") + ",y:" + nbt.get("y") +
+							",z:" + nbt.get("z"));
 		}
 	}
 }

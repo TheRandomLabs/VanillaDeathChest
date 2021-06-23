@@ -15,7 +15,6 @@ ext {
 	fabricAPIVersion = "0.35.2+1.17"
 	modMenuVersion = "2.0.2"
 	clothConfigVersion = "5.0.34"
-	nightConfigVersion = "3.6.3"
 }
 
 version = "2.1.0-fabric"

@@ -58,7 +58,7 @@ public final class VDCConfig implements ConfigData {
 				"SINGLE_SHULKER_BOX: Single shulker boxes.\n" +
 				"SINGLE_OR_DOUBLE_SHULKER_BOX: Single or double shulker boxes."
 		)
-		@ConfigEntry.Gui.Tooltip
+		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		public ContainerType containerType = ContainerType.SINGLE_OR_DOUBLE_CHEST;
 
 		@Comment(
@@ -81,20 +81,20 @@ public final class VDCConfig implements ConfigData {
 				"BLACK: Black.\n" +
 				"RANDOM: Random color."
 		)
-		@ConfigEntry.Gui.Tooltip
+		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		public ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
 
 		@Comment(
 				"The dimensions that death chests should or should not spawn in."
 		)
-		@ConfigEntry.Gui.Tooltip
+		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		public List<String> dimensions = new ArrayList<>();
 
 		@Comment("Whether the dimensions list should be a blacklist or a whitelist.\n"+
 				"BLACKLIST: blacklist\n"+
 				"WHITELIST: whitelist."
 		)
-		@ConfigEntry.Gui.Tooltip
+		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		public DimensionListBehavior dimensionsBehavior = DimensionListBehavior.BLACKLIST;
 
 		@ConfigEntry.BoundedDiscrete(min = 1, max = 1000)
@@ -102,25 +102,21 @@ public final class VDCConfig implements ConfigData {
 				"The radius around the location of a player's death in which a suitable death " +
 						"chest placement location should be searched for."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public int locationSearchRadius = 8;
 
 		@Comment(
 				"Causes a death chest to be forcibly placed at the location of a player's death " +
 						"if no suitable locations are found nearby."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public boolean forcePlacementIfNoSuitableLocation = true;
 
 		@Comment("Requires death chest placement to be on solid blocks.")
-		@ConfigEntry.Gui.Tooltip
 		public boolean requirePlacementOnSolidBlocks;
 
 		@Comment(
 				"A regular expression that matches the registry names of items that can be " +
 						"placed in death chests."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public String registryNameRegex = ".+";
 
 		@Comment(
@@ -128,14 +124,12 @@ public final class VDCConfig implements ConfigData {
 						"player's inventory.\n"+
 				"If this is enabled, the container is consumed if it is found."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public boolean useContainerInInventory;
 
 		@Comment(
 				"The display name of the death chest container.\n"+
 				"Set this to an empty string to cause a custom display name to not be used."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public String containerDisplayName = "Death Chest";
 
 		@Comment(
@@ -143,7 +137,6 @@ public final class VDCConfig implements ConfigData {
 				"The X, Y and Z coordinates are provided as arguments.\n"+
 				"Set this to an empty string to disable this message."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public String spawnMessage = "Death chest spawned at [%s, %s, %s]";
 
 		@Nullable
@@ -199,16 +192,14 @@ public final class VDCConfig implements ConfigData {
 				"A player must be holding this item in their main hand to unlock a death chest.\n"+
 				"Set this to an empty string to allow death chests to be unlocked without an item."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public String registryName = "";
 
 		//@IntRange(from = 0, to= Integer.MAX_VALUE)
-		@ConfigEntry.BoundedDiscrete(min = 0, max = Short.MAX_VALUE)
+		//@ConfigEntry.BoundedDiscrete(min = 0, max = Short.MAX_VALUE)
 		@Comment(
 				"The meta value of the key item.\n"+
 				"Set this to " + Short.MAX_VALUE + " to not require a specific meta value."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public int meta = Short.MAX_VALUE;
 
 		@Comment(
@@ -216,7 +207,7 @@ public final class VDCConfig implements ConfigData {
 				"CONSUME: Consume the item.\n"+
 				"DAMAGE: Damage the item."
 		)
-		@ConfigEntry.Gui.Tooltip
+		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		public KeyConsumptionBehavior consumptionBehavior = KeyConsumptionBehavior.CONSUME;
 
 		@ConfigEntry.BoundedDiscrete(min = 0, max = 100)
@@ -226,7 +217,6 @@ public final class VDCConfig implements ConfigData {
 						"be unlocked.\n"+
 				"Players in creative mode will not have their key item consumed."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public int amountToConsume = 1;
 
 		@Comment(
@@ -235,14 +225,12 @@ public final class VDCConfig implements ConfigData {
 						"item as arguments.\n"+
 				"Set this to an empty string to disable this message."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public String unlockFailureMessage = "You need %s of %s to retrieve your items";
 
 		@Comment(
 				"Whether the unlock failed message should be sent as a status message rather " +
 						"than a chat message."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public boolean unlockFailureStatusMessage = true;
 
 		@Nullable
@@ -275,26 +263,21 @@ public final class VDCConfig implements ConfigData {
 						"be set to its player.\n" +
 				"Set this to an empty string to disable defense entities."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public String registryName = "";
 
 		@Comment("Custom NBT data for defense entities in JSON format.")
-		@ConfigEntry.Gui.Tooltip
 		public String nbtTag = "{}";
 
 		@Comment("Causes defense entities to drop experience.")
-		@ConfigEntry.Gui.Tooltip
 		public boolean dropExperience;
 
 		@Comment("Causes defense entities to drop items.")
-		@ConfigEntry.Gui.Tooltip
 		public boolean dropItems;
 
 		@ConfigEntry.BoundedDiscrete(min = 1, max = 100)
 		@Comment(
 				"The number of defense entities that are spawned when a death chest is placed."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public int spawnCount = 3;
 
 		//@SpecDoubleInRange(min = 0.0, max = Double.MAX_VALUE)
@@ -304,7 +287,6 @@ public final class VDCConfig implements ConfigData {
 				"Set this to 0.0 to disable the limit so that defense entities are not " +
 						"teleported back to their death chest."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public double maxSquaredDistanceFromChest = 64.0;
 
 		//@SpecDoubleInRange(min = 0.0, max = Double.MAX_VALUE)
@@ -314,7 +296,6 @@ public final class VDCConfig implements ConfigData {
 				"Set this to 0.0 to disable the limit so that defense entities are teleported " +
 						"back to their death chest regardless of their distance from the player."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public double maxSquaredDistanceFromPlayer = 64.0;
 
 		@Nullable
@@ -347,51 +328,44 @@ public final class VDCConfig implements ConfigData {
 		}
 	}
 
-	public static final class Protection {
+	public static final class Protection implements ConfigData{
 		@Comment(
 				"Enables death chest protection.\n"+
 				"When a death chest is protected, it can only be unlocked by its owner.\n"
 		)
-		@ConfigEntry.Gui.Tooltip
 		public boolean enable = true;
 
 		@ConfigEntry.BoundedDiscrete(min = 0, max = 5)
 		@Comment(
 				"The required permission level to bypass death chest protection."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public int bypassPermissionLevel = 3;
 
 		@Comment(
 				"Causes players in creative mode to be able to bypass death chest protection."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public boolean bypassInCreativeMode = true;
 
 		//@IntRange(from = 0, to= Integer.MAX_VALUE)
-		@ConfigEntry.BoundedDiscrete(min = 0, max = Integer.MAX_VALUE)
+		//@ConfigEntry.BoundedDiscrete(min = 0, max = Integer.MAX_VALUE)
 		@Comment(
 				"The length of death chest protection in ticks.\n" +
 				"120000 ticks is five in-game days.\n" +
 				"Set this to 0 to cause death chests to be protected indefinitely."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public int period = 120000;
 	}
 
-	public static final class Misc {
+	public static final class Misc implements ConfigData{
 		@Comment("Causes death chests to be removed when they are emptied.")
-		@ConfigEntry.Gui.Tooltip
 		public boolean removeEmptyDeathChests = true;
 
 		@Comment(
 				"Whether empty death chests should only be removed when they are closed."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public boolean onlyRemoveClosedEmptyDeathChests;
 
 		@Comment("Causes death chests to be dropped when they are broken.")
-		@ConfigEntry.Gui.Tooltip
 		public boolean dropDeathChests;
 
 		@Comment(
@@ -399,7 +373,6 @@ public final class VDCConfig implements ConfigData {
 				"Set this to an empty string to disable the game rule.\n"+
 				"Changes to this option are applied after a game restart."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public String gameRuleName = "spawnDeathChests";
 
 		@Comment(
@@ -407,7 +380,6 @@ public final class VDCConfig implements ConfigData {
 				"Set this to an empty string to disable the command.\n"+
 				"Changes to this option are applied when a server is loaded."
 		)
-		@ConfigEntry.Gui.Tooltip
 		public String configReloadCommand = "vdcconfigreload";
 	}
 
@@ -552,28 +524,41 @@ public final class VDCConfig implements ConfigData {
 		 */
 		DAMAGE
 	}
+	@Override
+	public void validatePostLoad() {
+		try {
+			spawning.validatePostLoad();
+			keyItem.validatePostLoad();
+			defenseEntities.validatePostLoad();
+			protection.validatePostLoad();
+			misc.validatePostLoad();
+		} catch (ValidationException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-	@Comment("Options related to death chest spawning.")
+	//Comments seem to hide the comments within the class
+	//@Comment("Options related to death chest spawning.")
 	@ConfigEntry.Category("spawning")
 	@ConfigEntry.Gui.TransitiveObject
 	public Spawning spawning = new Spawning();
 
-	@Comment("Options related to the death chest key item.")
+	//@Comment("Options related to the death chest key item.")
 	@ConfigEntry.Category("key_item")
 	@ConfigEntry.Gui.TransitiveObject
 	public KeyItem keyItem = new KeyItem();
 
-	@Comment("Options related to death chest defense entities.")
+	//@Comment("Options related to death chest defense entities.")
 	@ConfigEntry.Category("defense_entities")
 	@ConfigEntry.Gui.TransitiveObject
 	public DefenseEntities defenseEntities = new DefenseEntities();
 
-	@Comment("Options related to death chest protection.")
+	//@Comment("Options related to death chest protection.")
 	@ConfigEntry.Category("protection")
 	@ConfigEntry.Gui.TransitiveObject
 	public Protection protection = new Protection();
 
-	@Comment("Miscellaneous options.")
+	//@Comment("Miscellaneous options.")
 	@ConfigEntry.Category("misc")
 	@ConfigEntry.Gui.TransitiveObject
 	public Misc misc = new Misc();

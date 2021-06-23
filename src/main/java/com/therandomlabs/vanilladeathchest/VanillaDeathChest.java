@@ -31,6 +31,7 @@ import com.therandomlabs.vanilladeathchest.deathchest.DeathChestPlacer;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -65,8 +66,8 @@ public final class VanillaDeathChest implements ModInitializer {
 
 	@SuppressWarnings("PMD.NonThreadSafeSingleton")
 	@Nullable
-	private static Toml4jConfigSerializer<VDCConfig> serializer;
 	private static VDCConfig config;
+	private static boolean didRegister = false;
 
 	static {
 		final String gameRuleName = VanillaDeathChest.config().misc.gameRuleName;
@@ -111,12 +112,10 @@ public final class VanillaDeathChest implements ModInitializer {
 	 * Reloads the VanillaDeathChest configuration from disk.
 	 */
 	public static void reloadConfig() {
-		if (serializer == null) {
+		if (!didRegister) {
+			didRegister = true;
+			AutoConfig.register(VDCConfig.class, JanksonConfigSerializer::new);
             //AutoConfig.register(VDCConfig.class, Toml4jConfigSerializer::new);
-			AutoConfig.register(VDCConfig.class, (definition, configClass) -> {
-				serializer = new Toml4jConfigSerializer<VDCConfig>(definition, configClass);
-				return serializer;
-			});
 		}
 		config = AutoConfig.getConfigHolder(VDCConfig.class).getConfig();
 	}

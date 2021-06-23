@@ -23,16 +23,13 @@
 
 package com.therandomlabs.vanilladeathchest;
 
-
 import com.therandomlabs.vanilladeathchest.command.VDCCommand;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestAutoRemover;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestInteractions;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChestPlacer;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
@@ -115,8 +112,9 @@ public final class VanillaDeathChest implements ModInitializer {
 		if (!didRegister) {
 			didRegister = true;
 			AutoConfig.register(VDCConfig.class, JanksonConfigSerializer::new);
-            //AutoConfig.register(VDCConfig.class, Toml4jConfigSerializer::new);
+			//AutoConfig.register(VDCConfig.class, Toml4jConfigSerializer::new);
 		}
+
 		config = AutoConfig.getConfigHolder(VDCConfig.class).getConfig();
 	}
 }

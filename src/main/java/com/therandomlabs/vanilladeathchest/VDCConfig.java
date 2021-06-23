@@ -53,33 +53,33 @@ public final class VDCConfig implements ConfigData {
 	public static final class Spawning implements ConfigData {
 		@Comment(
 				"The death chest container type.\n" +
-				"SINGLE_CHEST: Only single chests.\n" +
-				"SINGLE_OR_DOUBLE_CHEST: Single or double chests.\n" +
-				"SINGLE_SHULKER_BOX: Single shulker boxes.\n" +
-				"SINGLE_OR_DOUBLE_SHULKER_BOX: Single or double shulker boxes."
+						"SINGLE_CHEST: Only single chests.\n" +
+						"SINGLE_OR_DOUBLE_CHEST: Single or double chests.\n" +
+						"SINGLE_SHULKER_BOX: Single shulker boxes.\n" +
+						"SINGLE_OR_DOUBLE_SHULKER_BOX: Single or double shulker boxes."
 		)
 		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		public ContainerType containerType = ContainerType.SINGLE_OR_DOUBLE_CHEST;
 
 		@Comment(
-				"The color of the shulker box if the container type is a shulker box.\n"+
-				"WHITE: White.\n" +
-				"ORANGE: Orange.\n" +
-				"MAGENTA: Magenta.\n" +
-				"LIGHT_BLUE: Light blue.\n" +
-				"YELLOW: Yellow.\n" +
-				"LIME: Lime.\n" +
-				"PINK: Pink.\n" +
-				"GRAY: Gray.\n" +
-				"LIGHT_GRAY: Light gray.\n" +
-				"CYAN: Cyan.\n" +
-				"PURPLE: Purple.\n" +
-				"BLUE: Blue.\n" +
-				"BROWN: Brown.\n" +
-				"GREEN: Green.\n" +
-				"RED: Red.\n" +
-				"BLACK: Black.\n" +
-				"RANDOM: Random color."
+				"The color of the shulker box if the container type is a shulker box.\n" +
+						"WHITE: White.\n" +
+						"ORANGE: Orange.\n" +
+						"MAGENTA: Magenta.\n" +
+						"LIGHT_BLUE: Light blue.\n" +
+						"YELLOW: Yellow.\n" +
+						"LIME: Lime.\n" +
+						"PINK: Pink.\n" +
+						"GRAY: Gray.\n" +
+						"LIGHT_GRAY: Light gray.\n" +
+						"CYAN: Cyan.\n" +
+						"PURPLE: Purple.\n" +
+						"BLUE: Blue.\n" +
+						"BROWN: Brown.\n" +
+						"GREEN: Green.\n" +
+						"RED: Red.\n" +
+						"BLACK: Black.\n" +
+						"RANDOM: Random color."
 		)
 		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		public ShulkerBoxColor shulkerBoxColor = ShulkerBoxColor.WHITE;
@@ -90,8 +90,8 @@ public final class VDCConfig implements ConfigData {
 		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		public List<String> dimensions = new ArrayList<>();
 
-		@Comment("Whether the dimensions list should be a blacklist or a whitelist.\n"+
-				"BLACKLIST: blacklist\n"+
+		@Comment("Whether the dimensions list should be a blacklist or a whitelist.\n" +
+				"BLACKLIST: blacklist\n" +
 				"WHITELIST: whitelist."
 		)
 		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
@@ -121,21 +121,21 @@ public final class VDCConfig implements ConfigData {
 
 		@Comment(
 				"Causes death chests to only be spawned if the necessary container is in the " +
-						"player's inventory.\n"+
-				"If this is enabled, the container is consumed if it is found."
+						"player's inventory.\n" +
+						"If this is enabled, the container is consumed if it is found."
 		)
 		public boolean useContainerInInventory;
 
 		@Comment(
-				"The display name of the death chest container.\n"+
-				"Set this to an empty string to cause a custom display name to not be used."
+				"The display name of the death chest container.\n" +
+						"Set this to an empty string to cause a custom display name to not be used."
 		)
 		public String containerDisplayName = "Death Chest";
 
 		@Comment(
-				"The message sent to a player after a death chest is placed when they die.\n"+
-				"The X, Y and Z coordinates are provided as arguments.\n"+
-				"Set this to an empty string to disable this message."
+				"The message sent to a player after a death chest is placed when they die.\n" +
+						"The X, Y and Z coordinates are provided as arguments.\n" +
+						"Set this to an empty string to disable this message."
 		)
 		public String spawnMessage = "Death chest spawned at [%s, %s, %s]";
 
@@ -188,8 +188,8 @@ public final class VDCConfig implements ConfigData {
 
 	public static final class KeyItem implements ConfigData {
 		@Comment(
-				"The registry name of the key item.\n"+
-				"A player must be holding this item in their main hand to unlock a death chest.\n"+
+				"The registry name of the key item.\n" +
+				"A player must be holding this item in their main hand to unlock a death chest.\n" +
 				"Set this to an empty string to allow death chests to be unlocked without an item."
 		)
 		public String registryName = "";
@@ -197,32 +197,32 @@ public final class VDCConfig implements ConfigData {
 		//@IntRange(from = 0, to= Integer.MAX_VALUE)
 		//@ConfigEntry.BoundedDiscrete(min = 0, max = Short.MAX_VALUE)
 		@Comment(
-				"The meta value of the key item.\n"+
-				"Set this to " + Short.MAX_VALUE + " to not require a specific meta value."
+				"The meta value of the key item.\n" +
+						"Set this to " + Short.MAX_VALUE + " to not require a specific meta value."
 		)
 		public int meta = Short.MAX_VALUE;
 
 		@Comment(
-				"The key consumption behavior.\n"+
-				"CONSUME: Consume the item.\n"+
-				"DAMAGE: Damage the item."
+				"The key consumption behavior.\n" +
+						"CONSUME: Consume the item.\n" +
+						"DAMAGE: Damage the item."
 		)
 		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		public KeyConsumptionBehavior consumptionBehavior = KeyConsumptionBehavior.CONSUME;
 
 		@ConfigEntry.BoundedDiscrete(min = 0, max = 100)
 		@Comment(
-				"The amount by which the key item should be consumed.\n"+
+				"The amount by which the key item should be consumed.\n" +
 				"If the key item cannot be consumed this many times, the death chest will not " +
-						"be unlocked.\n"+
+				"be unlocked.\n" +
 				"Players in creative mode will not have their key item consumed."
 		)
 		public int amountToConsume = 1;
 
 		@Comment(
-				"The message that is sent to the player when they fail to unlock a death chest.\n"+
+				"The message that is sent to the player when they fail to unlock a death chest.\n" +
 				"This string takes the required amount (%1$s) and display name (%2$s) of the " +
-						"item as arguments.\n"+
+				"item as arguments.\n" +
 				"Set this to an empty string to disable this message."
 		)
 		public String unlockFailureMessage = "You need %s of %s to retrieve your items";
@@ -257,10 +257,10 @@ public final class VDCConfig implements ConfigData {
 
 	public static final class DefenseEntities implements ConfigData {
 		@Comment(
-				"The registry name of the defense entity.\n"+
-				"If the defense entity is a living entity, it will not automatically despawn.\n"+
+				"The registry name of the defense entity.\n" +
+				"If the defense entity is a living entity, it will not automatically despawn.\n" +
 				"If the defense entity can have a revenge target, then the revenge target will\n" +
-						"be set to its player.\n" +
+				"be set to its player.\n" +
 				"Set this to an empty string to disable defense entities."
 		)
 		public String registryName = "";
@@ -283,18 +283,18 @@ public final class VDCConfig implements ConfigData {
 		//@SpecDoubleInRange(min = 0.0, max = Double.MAX_VALUE)
 		@Comment(
 				"The maximum squared distance that a defense entity can be from its chest when " +
-						"a player is not nearby.\n"+
+				"a player is not nearby.\n" +
 				"Set this to 0.0 to disable the limit so that defense entities are not " +
-						"teleported back to their death chest."
+				"teleported back to their death chest."
 		)
 		public double maxSquaredDistanceFromChest = 64.0;
 
 		//@SpecDoubleInRange(min = 0.0, max = Double.MAX_VALUE)
 		@Comment(
 				"The maximum squared distance that a defense entity can be from its player when" +
-						"its chest is not within the maximum squared distance.\n"+
+				"its chest is not within the maximum squared distance.\n" +
 				"Set this to 0.0 to disable the limit so that defense entities are teleported " +
-						"back to their death chest regardless of their distance from the player."
+				"back to their death chest regardless of their distance from the player."
 		)
 		public double maxSquaredDistanceFromPlayer = 64.0;
 
@@ -328,10 +328,10 @@ public final class VDCConfig implements ConfigData {
 		}
 	}
 
-	public static final class Protection implements ConfigData{
+	public static final class Protection implements ConfigData {
 		@Comment(
-				"Enables death chest protection.\n"+
-				"When a death chest is protected, it can only be unlocked by its owner.\n"
+				"Enables death chest protection.\n" +
+						"When a death chest is protected, it can only be unlocked by its owner.\n"
 		)
 		public boolean enable = true;
 
@@ -356,7 +356,7 @@ public final class VDCConfig implements ConfigData {
 		public int period = 120000;
 	}
 
-	public static final class Misc implements ConfigData{
+	public static final class Misc implements ConfigData {
 		@Comment("Causes death chests to be removed when they are emptied.")
 		public boolean removeEmptyDeathChests = true;
 
@@ -369,16 +369,16 @@ public final class VDCConfig implements ConfigData {
 		public boolean dropDeathChests;
 
 		@Comment(
-				"The name of the game rule that controls whether death chests should be spawned.\n"+
-				"Set this to an empty string to disable the game rule.\n"+
-				"Changes to this option are applied after a game restart."
+			"The name of the game rule that controls whether death chests should be spawned.\n" +
+			"Set this to an empty string to disable the game rule.\n" +
+			"Changes to this option are applied after a game restart."
 		)
 		public String gameRuleName = "spawnDeathChests";
 
 		@Comment(
-				"The name of the command that reloads this configuration from disk.\n"+
-				"Set this to an empty string to disable the command.\n"+
-				"Changes to this option are applied when a server is loaded."
+				"The name of the command that reloads this configuration from disk.\n" +
+						"Set this to an empty string to disable the command.\n" +
+						"Changes to this option are applied when a server is loaded."
 		)
 		public String configReloadCommand = "vdcconfigreload";
 	}
@@ -524,6 +524,11 @@ public final class VDCConfig implements ConfigData {
 		 */
 		DAMAGE
 	}
+
+	/**
+	 *
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void validatePostLoad() {
 		try {

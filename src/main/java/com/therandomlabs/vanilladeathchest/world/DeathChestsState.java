@@ -40,7 +40,6 @@ import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.mixin.ChestBlockEntityAccessor;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -252,7 +251,6 @@ public final class DeathChestsState extends PersistentState {
 			}
 
 			if (deathChest != null && isEmpty) {
-				Block bl = blockEntity.getCachedState().getBlock();
 				state.existingDeathChests.values().remove(deathChest);
 				VanillaDeathChest.logger.atDebug().log(
 						"Removed DeathChest, " + state.existingDeathChests.size() + " remaining.");

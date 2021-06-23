@@ -35,11 +35,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
+import com.therandomlabs.vanilladeathchest.mixin.ChestBlockEntityAccessor;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
@@ -223,9 +226,27 @@ public final class DeathChestsState extends PersistentState {
 			return;
 		}*/
 
+		// Using a heuristic for chunk unload: If the chest was destroyed (and not chunk unloaded)
+		// the chest inventory should be empty.
+
 		if (blockEntity instanceof DeathChestBlockEntity) {
 			final DeathChest deathChest = ((DeathChestBlockEntity) blockEntity).getDeathChest();
-			get(world).existingDeathChests.values().remove(deathChest);
+			final DeathChestsState state = get(world);
+			final boolean isEmpty;
+
+			if (blockEntity instanceof ChestBlockEntityAccessor) {
+				isEmpty = ((ChestBlockEntityAccessor) blockEntity).getInventory().
+						stream().
+						allMatch(ItemStack::isEmpty);
+			} else {
+				//not sure if this case can happen, but we keep the chest around
+				isEmpty = false;
+			}
+
+			if (deathChest != null && isEmpty) {
+				Block bl = blockEntity.getCachedState().getBlock();
+				state.existingDeathChests.values().remove(deathChest);
+			}
 		}
 	}
 

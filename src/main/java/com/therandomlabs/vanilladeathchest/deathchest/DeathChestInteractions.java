@@ -68,7 +68,7 @@ public final class DeathChestInteractions {
 			return ActionResult.PASS;
 		}
 
-		if (!world.getBlockState(blockHitResult.getBlockPos()).getBlock().hasBlockEntity()) {
+		if (!world.getBlockState(blockHitResult.getBlockPos()).hasBlockEntity()) {
 			return ActionResult.PASS;
 		}
 
@@ -113,7 +113,7 @@ public final class DeathChestInteractions {
 		final int amount = config.amountToConsume;
 
 		if (stack.getItem() == config.item) {
-			if (amount == 0 || player.abilities.creativeMode) {
+			if (amount == 0 || player.getAbilities().creativeMode) {
 				deathChest.setLocked(false);
 				return true;
 			}

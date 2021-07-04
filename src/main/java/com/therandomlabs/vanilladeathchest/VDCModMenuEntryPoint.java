@@ -23,19 +23,20 @@
 
 package com.therandomlabs.vanilladeathchest;
 
-import io.github.prospector.modmenu.api.ConfigScreenFactory;
-import io.github.prospector.modmenu.api.ModMenuApi;
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
+import com.terraformersmc.modmenu.api.ModMenuApi;
+import me.shedaniel.autoconfig.AutoConfig;
 
 /**
  * The Mod Menu entry point for VanillaDeathChest.
  */
 public final class VDCModMenuEntryPoint implements ModMenuApi {
 	/**
+	 *
 	 * {@inheritDoc}
 	 */
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
-		return parent -> AutoConfig.getConfigScreen(VDCConfig.class, parent).get();
+		return screen -> AutoConfig.getConfigScreen(VDCConfig.class, screen).get();
 	}
 }

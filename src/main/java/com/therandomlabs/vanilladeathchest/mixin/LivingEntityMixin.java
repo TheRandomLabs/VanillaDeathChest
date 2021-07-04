@@ -41,7 +41,7 @@ import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -90,7 +90,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 			//We can't pass in null here because Campanion mixins into setStack and needs the
 			//player.
 			inventory = new PlayerInventory((PlayerEntity) (Object) this);
-			final PlayerInventory oldInventory = ((PlayerEntity) (Object) this).inventory;
+			final PlayerInventory oldInventory = ((PlayerEntity) (Object) this).getInventory();
 
 			for (int i = 0; i < oldInventory.size(); i++) {
 				inventory.setStack(i, oldInventory.getStack(i).copy());
@@ -113,7 +113,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 			return;
 		}
 
-		drops.forEach(Entity::remove);
+		drops.forEach(Entity::discard);
 		final DeathChestsState deathChestsState = DeathChestsState.get(world);
 		final BlockPos pos = entity.getBlockPos();
 		final DeathChest deathChest = new DeathChest(
@@ -180,14 +180,14 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 					squaredDistanceFromPlayer > config.maxSquaredDistanceFromPlayer) {
 				entity.refreshPositionAndAngles(
 						pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5,
-						entity.yaw, entity.pitch
+						entity.getYaw(), entity.getPitch()
 				);
 			}
 		}
 	}
 
-	@Inject(method = "writeCustomDataToTag", at = @At("HEAD"))
-	public void writeCustomDataToTag(CompoundTag tag, CallbackInfo info) {
+	@Inject(method = "writeCustomDataToNbt", at = @At("HEAD"))
+	public void writeCustomDataToNbt(NbtCompound tag, CallbackInfo info) {
 		if (deathChestPlayerUUID != null) {
 			if (deathChest != null) {
 				tag.put(
@@ -199,8 +199,8 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 		}
 	}
 
-	@Inject(method = "readCustomDataFromTag", at = @At("HEAD"))
-	public void readCustomDataFromTag(CompoundTag tag, CallbackInfo info) {
+	@Inject(method = "readCustomDataFromNbt", at = @At("HEAD"))
+	public void readCustomDataFromNbt(NbtCompound tag, CallbackInfo info) {
 		if (tag.contains("DeathChestPlayer")) {
 			deathChestPlayerUUID = NbtHelper.toUuid(tag.get("DeathChestPlayer"));
 

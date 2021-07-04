@@ -24,10 +24,10 @@
 package com.therandomlabs.vanilladeathchest.deathchest;
 
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
-import com.therandomlabs.vanilladeathchest.util.ViewerCount;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -81,8 +81,8 @@ public final class DeathChestAutoRemover {
 		}
 
 		if (!VanillaDeathChest.config().misc.onlyRemoveClosedEmptyDeathChests ||
-				!(blockEntity instanceof ViewerCount) ||
-				((ViewerCount) blockEntity).getViewerCount() == 0) {
+				!(blockEntity instanceof ChestBlockEntity) ||
+				ChestBlockEntity.getPlayersLookingInChestCount(world, blockEntity.getPos()) == 0) {
 			world.setBlockState(pos, Blocks.AIR.getDefaultState());
 
 			if (isDoubleChest) {

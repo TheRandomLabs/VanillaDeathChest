@@ -28,20 +28,23 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
-import com.therandomlabs.vanilladeathchest.mixin.WorldAccessor;
+import com.therandomlabs.vanilladeathchest.mixin.ChestBlockEntityAccessor;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
@@ -58,18 +61,17 @@ public final class DeathChestsState extends PersistentState {
 			new PriorityQueue<>(Comparator.comparing(DeathChest::getCreationTime));
 
 	private DeathChestsState(String name, ServerWorld world) {
-		super(name);
+		super();
 		this.world = world;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 *
 	 */
-	@Override
-	public void fromTag(CompoundTag tag) {
+	public DeathChestsState readNbt(NbtCompound tag) {
 		deathChests.clear();
 		tag.getList("DeathChests", NbtType.COMPOUND).stream().
-				map(deathChestTag -> DeathChest.fromTag(world, (CompoundTag) deathChestTag)).
+				map(deathChestTag -> DeathChest.readNbt(world, (NbtCompound) deathChestTag)).
 				forEach(deathChest -> deathChests.put(deathChest.getIdentifier(), deathChest));
 
 		existingDeathChests.clear();
@@ -80,31 +82,33 @@ public final class DeathChestsState extends PersistentState {
 
 		queuedDeathChests.clear();
 		tag.getList("QueuedDeathChests", NbtType.COMPOUND).stream().
-				map(deathChestTag -> DeathChest.fromTag(world, (CompoundTag) deathChestTag)).
+				map(deathChestTag -> DeathChest.readNbt(world, (NbtCompound) deathChestTag)).
 				forEach(queuedDeathChests::add);
+
+		return this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		final ListTag deathChestsList = new ListTag();
+	public NbtCompound writeNbt(NbtCompound tag) {
+		final NbtList deathChestsList = new NbtList();
 		deathChests.values().stream().
-				map(deathChest -> deathChest.toTag(new CompoundTag())).
+				map(deathChest -> deathChest.writeNbt(new NbtCompound())).
 				forEach(deathChestsList::add);
 		tag.put("DeathChests", deathChestsList);
 
-		final ListTag existingDeathChestsList = new ListTag();
+		final NbtList existingDeathChestsList = new NbtList();
 		existingDeathChests.values().stream().
 				map(DeathChest::getIdentifier).
 				map(NbtHelper::fromUuid).
 				forEach(existingDeathChestsList::add);
 		tag.put("ExistingDeathChests", existingDeathChestsList);
 
-		final ListTag queuedDeathChestsList = new ListTag();
+		final NbtList queuedDeathChestsList = new NbtList();
 		queuedDeathChests.stream().
-				map(deathChest -> deathChest.toTag(new CompoundTag())).
+				map(deathChest -> deathChest.writeNbt(new NbtCompound())).
 				forEach(queuedDeathChestsList::add);
 		tag.put("QueuedDeathChests", queuedDeathChestsList);
 
@@ -198,7 +202,8 @@ public final class DeathChestsState extends PersistentState {
 	 */
 	public static DeathChestsState get(ServerWorld world) {
 		return world.getPersistentStateManager().getOrCreate(
-				() -> new DeathChestsState("deathchests", world), "deathchests"
+				(data) -> DeathChestsState.stateFromNbt(world, data),
+				() -> DeathChestsState.createState(world), "deathchests"
 		);
 	}
 
@@ -213,13 +218,60 @@ public final class DeathChestsState extends PersistentState {
 		//when a block entity is removed. The other one is just when a chunk is unloaded.
 		//We can differentiate between these by checking whether the block entity is in
 		//World#unloadedBlockEntities.
-		if (((WorldAccessor) world).getUnloadedBlockEntities().contains(blockEntity)) {
+
+		// Chunk removal in ClientWorld#unloadBlockEntities no longer relies
+		// on World#unloadedBlockEntities.
+		/*if (((WorldAccessor) world).getUnloadedBlockEntities().contains(blockEntity)) {
 			return;
-		}
+		}*/
+
+		// Using a heuristic for chunk unload: If the chest was destroyed (and not chunk unloaded)
+		// the chest inventory should be empty.
 
 		if (blockEntity instanceof DeathChestBlockEntity) {
 			final DeathChest deathChest = ((DeathChestBlockEntity) blockEntity).getDeathChest();
-			get(world).existingDeathChests.values().remove(deathChest);
+			final DeathChestsState state = get(world);
+			final boolean isEmpty;
+
+			if (blockEntity instanceof ChestBlockEntityAccessor) {
+				isEmpty = ((ChestBlockEntityAccessor) blockEntity).getInventory().
+						stream().
+						allMatch(ItemStack::isEmpty);
+			} else {
+				//not sure if this case can happen, but we keep the chest around
+				isEmpty = false;
+			}
+
+			if (deathChest != null) {
+				VanillaDeathChest.logger.atDebug().log(
+						"Unload requested for DeathChest at x:" + blockEntity.getPos().getX() +
+								",y:" + blockEntity.getPos().getY() + ",z:" +
+								blockEntity.getPos().getZ() + ",empty:" + isEmpty + ",chestCount:" +
+								state.existingDeathChests.size());
+			}
+
+			if (deathChest != null && isEmpty) {
+				state.existingDeathChests.values().remove(deathChest);
+				VanillaDeathChest.logger.atDebug().log(
+						"Removed DeathChest, " + state.existingDeathChests.size() + " remaining.");
+			}
 		}
+	}
+
+	/**
+	 *
+	 */
+	public static DeathChestsState createState(ServerWorld world) {
+		//Is name really unused?
+		DeathChestsState deathChestsState = new DeathChestsState("deathchests", world);
+		Objects.requireNonNull(deathChestsState);
+		return deathChestsState;
+	}
+
+	/**
+	 *
+	 */
+	public static DeathChestsState stateFromNbt(ServerWorld world, NbtCompound nbt) {
+		return createState(world).readNbt(nbt);
 	}
 }

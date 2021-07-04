@@ -47,7 +47,7 @@ public final class ServerPlayerInteractionManagerMixin {
 
 	@Inject(method = "tryBreakBlock", at = @At("HEAD"), cancellable = true)
 	private void tryBreakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> info) {
-		if (!world.getBlockState(pos).getBlock().hasBlockEntity()) {
+		if (!world.getBlockState(pos).hasBlockEntity()) {
 			return;
 		}
 

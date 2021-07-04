@@ -2,10 +2,10 @@
 	"required": true,
 	"minVersion": "0.8",
 	"package": "com.therandomlabs.vanilladeathchest.mixin",
-	"compatibilityLevel": "JAVA_8",
+	"compatibilityLevel": "JAVA_16",
 	"mixins": [
 		"BlockMixin",
-		"ChestBlockEntityMixin",
+		"ChestBlockEntityAccessor",
 		"ExplosionMixin",
 		"LivingEntityMixin",
 		"LockableContainerBlockEntityMixin",

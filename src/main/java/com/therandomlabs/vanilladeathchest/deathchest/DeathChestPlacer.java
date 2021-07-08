@@ -34,6 +34,8 @@ import java.util.regex.Pattern;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.config.DefenseEntities;
+import com.therandomlabs.vanilladeathchest.config.Spawning;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import com.therandomlabs.vanilladeathchest.util.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
@@ -54,7 +56,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
@@ -107,7 +109,7 @@ public final class DeathChestPlacer {
 	 */
 	@SuppressWarnings("NullAway")
 	public static boolean placeAndFillContainer(DeathChest deathChest) {
-		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
+		final Spawning config = VanillaDeathChest.getConfig().spawning;
 		final BlockPos pos = deathChest.getPos();
 		final List<ItemEntity> items = deathChest.getItems();
 		final boolean doubleChest = deathChest.isDoubleChest();
@@ -187,7 +189,7 @@ public final class DeathChestPlacer {
 	 * @param deathChest a death chest.
 	 */
 	public static void spawnDefenseEntities(DeathChest deathChest) {
-		final VDCConfig.DefenseEntities config = VanillaDeathChest.config().defenseEntities;
+		final DefenseEntities config = VanillaDeathChest.getConfig().defenseEntities;
 
 		if (config.entityType == null) {
 			return;
@@ -201,13 +203,13 @@ public final class DeathChestPlacer {
 
 		for (int i = 0; i < config.spawnCount; i++) {
 			//The following spawn logic has been taken from SummonCommand.
-			CompoundTag tag;
+			NbtCompound tag;
 
 			try {
 				tag = StringNbtReader.parse(config.nbtTag);
 			} catch (CommandSyntaxException ex) {
 				//This should not happen.
-				tag = new CompoundTag();
+				tag = new NbtCompound();
 			}
 
 			final boolean emptyTag = tag.isEmpty();
@@ -216,7 +218,7 @@ public final class DeathChestPlacer {
 			final Entity entity = EntityType.loadEntityWithPassengers(
 					tag, world, spawnedEntity -> {
 						spawnedEntity.refreshPositionAndAngles(
-								x, y, z, spawnedEntity.yaw, spawnedEntity.pitch
+								x, y, z, spawnedEntity.getYaw(), spawnedEntity.getPitch()
 						);
 						return spawnedEntity;
 					}
@@ -247,7 +249,7 @@ public final class DeathChestPlacer {
 
 		for (ItemEntity drop : allItems) {
 			if (!items.contains(drop)) {
-				if (drop.removed) {
+				if (drop.isRemoved()) {
 					world.spawnEntity(new ItemEntity(
 							world, drop.getX(), drop.getY(), drop.getZ(), drop.getStack().copy()
 					));
@@ -260,7 +262,7 @@ public final class DeathChestPlacer {
 
 	@Nullable
 	private static DeathChest place(List<ItemEntity> allItems, DeathChest deathChest) {
-		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
+		final Spawning config = VanillaDeathChest.getConfig().spawning;
 
 		final Pattern pattern = Pattern.compile(config.registryNameRegex);
 		deathChest.getItems().removeIf(
@@ -357,7 +359,7 @@ public final class DeathChestPlacer {
 	private static ContainerConsumptionResult consumeContainerInInventory(
 			List<ItemEntity> allItems, DeathChest deathChest, boolean doubleChest
 	) {
-		final VDCConfig.ContainerType type = VanillaDeathChest.config().spawning.containerType;
+		final VDCConfig.ContainerType type = VanillaDeathChest.getConfig().spawning.containerType;
 		final Set<ItemEntity> emptyItems = new HashSet<>();
 
 		int availableContainers = 0;
@@ -375,12 +377,12 @@ public final class DeathChestPlacer {
 					continue;
 				}
 
-				final CompoundTag tag = stack.getTag();
+				final NbtCompound tag = stack.getTag();
 
 				if (tag != null) {
 					final DefaultedList<ItemStack> inventory =
 							DefaultedList.ofSize(27, ItemStack.EMPTY);
-					Inventories.fromTag(tag.getCompound("BlockEntityTag"), inventory);
+					Inventories.readNbt(tag.getCompound("BlockEntityTag"), inventory);
 
 					//The shulker box must be empty.
 					if (inventory.stream().anyMatch(itemStack -> !itemStack.isEmpty())) {

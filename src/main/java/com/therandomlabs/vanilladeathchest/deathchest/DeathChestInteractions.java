@@ -25,6 +25,7 @@ package com.therandomlabs.vanilladeathchest.deathchest;
 
 import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.config.KeyItem;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EquipmentSlot;
@@ -68,7 +69,7 @@ public final class DeathChestInteractions {
 			return ActionResult.PASS;
 		}
 
-		if (!world.getBlockState(blockHitResult.getBlockPos()).getBlock().hasBlockEntity()) {
+		if (!world.getBlockState(blockHitResult.getBlockPos()).hasBlockEntity()) {
 			return ActionResult.PASS;
 		}
 
@@ -98,7 +99,7 @@ public final class DeathChestInteractions {
 			return false;
 		}
 
-		final VDCConfig.KeyItem config = VanillaDeathChest.config().keyItem;
+		final KeyItem config = VanillaDeathChest.getConfig().keyItem;
 
 		if (config.item == null) {
 			deathChest.setLocked(false);
@@ -113,7 +114,7 @@ public final class DeathChestInteractions {
 		final int amount = config.amountToConsume;
 
 		if (stack.getItem() == config.item) {
-			if (amount == 0 || player.abilities.creativeMode) {
+			if (amount == 0 || player.getAbilities().creativeMode) {
 				deathChest.setLocked(false);
 				return true;
 			}

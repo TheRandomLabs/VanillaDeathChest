@@ -2,28 +2,27 @@ import com.modrinth.minotaur.TaskModrinthUpload
 
 plugins {
 	id "java-library"
-	id "fabric-loom" version "0.5-SNAPSHOT"
+	id "fabric-loom" version "0.8-SNAPSHOT"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
-	id "com.modrinth.minotaur" version "1.1.0"
+	id "com.modrinth.minotaur" version "1.2.1"
+	id "org.cadixdev.licenser" version "0.6.1"
 }
 
 ext {
 	commonGradleBranch = "master"
-	minecraftVersion = "1.16.5"
-	yarnMappings = "1.16.5+build.1"
-	loaderVersion = "0.11.1"
-	fabricAPIVersion = "0.29.3+1.16"
-	modMenuVersion = "1.14.13+build.19"
-	clothConfigVersion = "4.8.3"
+	minecraftVersion = "1.17"
+	yarnMappings = "1.17+build.13"
+	loaderVersion = "0.11.3"
+	fabricAPIVersion = "0.36.0+1.17"
+	clothConfigVersion = "5.0.34"
+	modMenuVersion = "2.0.2"
 	autoConfigVersion = "3.3.1"
-	autoConfigTOMLVersion = "autoconfig-3.x.x-fabric-SNAPSHOT"
 }
-
-version = "2.0.6-fabric"
+version = "2.1.0-fabric"
 group = "com.therandomlabs.vanilladeathchest"
 archivesBaseName = "vanilladeathchest"
 
-apply from: "https://raw.githubusercontent.com/TheRandomLabs/Common-Gradle/${project.commonGradleBranch}/fabric.gradle"
+apply from: "https://raw.githubusercontent.com/jhbuchanan45/Common-Gradle/main/fabric.gradle"
 
 if (project.hasProperty("curseForgeAPIKey")) {
 	curseforge {
@@ -33,14 +32,8 @@ if (project.hasProperty("curseForgeAPIKey")) {
 			id = "393000"
 
 			addGameVersion "Fabric"
-			addGameVersion "Java 10"
-			addGameVersion "Java 9"
-			addGameVersion "Java 8"
-			addGameVersion "1.16.5"
-			addGameVersion "1.16.4"
-			addGameVersion "1.16.3"
-			addGameVersion "1.16.2"
-			addGameVersion "1.16.1"
+			addGameVersion "Java 16"
+			addGameVersion "1.17.0"
 
 			mainArtifact(remapJar) {
 				changelogType = "markdown"
@@ -83,11 +76,7 @@ if (project.hasProperty("modrinthToken")) {
 		changelog = new File("changelog.md").getText()
 		uploadFile = remapJar
 		releaseType = "alpha"
-		addGameVersion("1.16.5")
-		addGameVersion("1.16.4")
-		addGameVersion("1.16.3")
-		addGameVersion("1.16.2")
-		addGameVersion("1.16.1")
+		addGameVersion("1.17.0")
 		addLoader("fabric")
 		addFile(sourcesJar)
 		addFile(javadocJar)

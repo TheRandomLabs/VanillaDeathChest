@@ -45,7 +45,7 @@ public final class DeathChestAutoRemover {
 	 * @param world a {@link ServerWorld}.
 	 */
 	public static void removeEmpty(ServerWorld world) {
-		if (!VanillaDeathChest.config().misc.removeEmptyDeathChests) {
+		if (!VanillaDeathChest.getConfig().misc.removeEmptyDeathChests) {
 			return;
 		}
 
@@ -80,7 +80,7 @@ public final class DeathChestAutoRemover {
 			}
 		}
 
-		if (!VanillaDeathChest.config().misc.onlyRemoveClosedEmptyDeathChests ||
+		if (!VanillaDeathChest.getConfig().misc.onlyRemoveClosedEmptyDeathChests ||
 				!(blockEntity instanceof ViewerCount) ||
 				((ViewerCount) blockEntity).getViewerCount() == 0) {
 			world.setBlockState(pos, Blocks.AIR.getDefaultState());

@@ -50,7 +50,7 @@ public final class ShulkerBoxBlockMixin {
 			)
 	)
 	private boolean spawnEntity(World world, Entity entity) {
-		if (VanillaDeathChest.config().misc.dropDeathChests) {
+		if (VanillaDeathChest.getConfig().misc.dropDeathChests) {
 			return world.spawnEntity(entity);
 		}
 
@@ -63,7 +63,7 @@ public final class ShulkerBoxBlockMixin {
 		}
 
 		final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(27, ItemStack.EMPTY);
-		Inventories.fromTag(
+		Inventories.readNbt(
 				((ItemEntity) entity).getStack().getTag().getCompound("BlockEntityTag"), inventory
 		);
 

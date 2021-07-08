@@ -23,12 +23,15 @@
 
 package com.therandomlabs.vanilladeathchest.mixin;
 
+import java.util.function.Supplier;
+
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -38,6 +41,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(Block.class)
 public final class BlockMixin {
@@ -49,7 +53,7 @@ public final class BlockMixin {
 	private void onBreak(
 			World world, BlockPos pos, BlockState state, PlayerEntity player, CallbackInfo info
 	) {
-		if ((Object) this instanceof ShulkerBoxBlock || !state.getBlock().hasBlockEntity()) {
+		if ((Object) this instanceof ShulkerBoxBlock || !state.hasBlockEntity()) {
 			return;
 		}
 
@@ -62,18 +66,22 @@ public final class BlockMixin {
 	}
 
 	@Inject(
-			method = "dropStack",
+			method = "dropStack(Lnet/minecraft/world/World;Ljava/util/function/Supplier;" +
+					"Lnet/minecraft/item/ItemStack;)V",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/world/World;" +
 							"spawnEntity(Lnet/minecraft/entity/Entity;)Z"
 			),
-			cancellable = true
+			cancellable = true,
+			locals = LocalCapture.CAPTURE_FAILHARD
 	)
 	private static void dropStack(
-			World world, BlockPos pos, ItemStack stack, CallbackInfo callback
+			World world, Supplier<ItemEntity> itemEntitySupplier, ItemStack stack,
+			CallbackInfo callback, ItemEntity itemEntity
 	) {
-		if (pos.equals(brokenDeathChest) && !VanillaDeathChest.config().misc.dropDeathChests) {
+		if (itemEntity.getBlockPos().equals(brokenDeathChest) &&
+				!VanillaDeathChest.getConfig().misc.dropDeathChests) {
 			brokenDeathChest = null;
 			callback.cancel();
 		}

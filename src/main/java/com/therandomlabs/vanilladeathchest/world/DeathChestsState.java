@@ -35,13 +35,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
-import com.therandomlabs.vanilladeathchest.mixin.WorldAccessor;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
@@ -57,19 +56,17 @@ public final class DeathChestsState extends PersistentState {
 	private final Queue<DeathChest> queuedDeathChests =
 			new PriorityQueue<>(Comparator.comparing(DeathChest::getCreationTime));
 
-	private DeathChestsState(String name, ServerWorld world) {
-		super(name);
+	private DeathChestsState(ServerWorld world) {
 		this.world = world;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Populate a DeathChestState instance with data from nbt.
 	 */
-	@Override
-	public void fromTag(CompoundTag tag) {
+	public void fromNbt(NbtCompound tag) {
 		deathChests.clear();
 		tag.getList("DeathChests", NbtType.COMPOUND).stream().
-				map(deathChestTag -> DeathChest.fromTag(world, (CompoundTag) deathChestTag)).
+				map(deathChestTag -> DeathChest.fromTag(world, (NbtCompound) deathChestTag)).
 				forEach(deathChest -> deathChests.put(deathChest.getIdentifier(), deathChest));
 
 		existingDeathChests.clear();
@@ -80,7 +77,7 @@ public final class DeathChestsState extends PersistentState {
 
 		queuedDeathChests.clear();
 		tag.getList("QueuedDeathChests", NbtType.COMPOUND).stream().
-				map(deathChestTag -> DeathChest.fromTag(world, (CompoundTag) deathChestTag)).
+				map(deathChestTag -> DeathChest.fromTag(world, (NbtCompound) deathChestTag)).
 				forEach(queuedDeathChests::add);
 	}
 
@@ -88,23 +85,23 @@ public final class DeathChestsState extends PersistentState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		final ListTag deathChestsList = new ListTag();
+	public NbtCompound writeNbt(NbtCompound tag) {
+		final NbtList deathChestsList = new NbtList();
 		deathChests.values().stream().
-				map(deathChest -> deathChest.toTag(new CompoundTag())).
+				map(deathChest -> deathChest.toTag(new NbtCompound())).
 				forEach(deathChestsList::add);
 		tag.put("DeathChests", deathChestsList);
 
-		final ListTag existingDeathChestsList = new ListTag();
+		final NbtList existingDeathChestsList = new NbtList();
 		existingDeathChests.values().stream().
 				map(DeathChest::getIdentifier).
 				map(NbtHelper::fromUuid).
 				forEach(existingDeathChestsList::add);
 		tag.put("ExistingDeathChests", existingDeathChestsList);
 
-		final ListTag queuedDeathChestsList = new ListTag();
+		final NbtList queuedDeathChestsList = new NbtList();
 		queuedDeathChests.stream().
-				map(deathChest -> deathChest.toTag(new CompoundTag())).
+				map(deathChest -> deathChest.toTag(new NbtCompound())).
 				forEach(queuedDeathChestsList::add);
 		tag.put("QueuedDeathChests", queuedDeathChestsList);
 
@@ -197,8 +194,13 @@ public final class DeathChestsState extends PersistentState {
 	 * @return the {@link DeathChestsState} instance for the specified world.
 	 */
 	public static DeathChestsState get(ServerWorld world) {
-		return world.getPersistentStateManager().getOrCreate(
-				() -> new DeathChestsState("deathchests", world), "deathchests"
+		return world.getPersistentStateManager().getOrCreate((nbtCompound) -> {
+					DeathChestsState chestState = new DeathChestsState(world);
+					chestState.fromNbt(nbtCompound);
+					return chestState;
+					},
+				() -> new DeathChestsState(world),
+				"deathchests"
 		);
 	}
 
@@ -213,7 +215,7 @@ public final class DeathChestsState extends PersistentState {
 		//when a block entity is removed. The other one is just when a chunk is unloaded.
 		//We can differentiate between these by checking whether the block entity is in
 		//World#unloadedBlockEntities.
-		if (((WorldAccessor) world).getUnloadedBlockEntities().contains(blockEntity)) {
+		if (blockEntity.isRemoved()) {
 			return;
 		}
 

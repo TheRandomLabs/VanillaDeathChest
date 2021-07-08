@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.config.DefenseEntities;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestDefenseEntity;
 import com.therandomlabs.vanilladeathchest.util.DropsList;
@@ -41,7 +41,7 @@ import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -90,7 +90,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 			//We can't pass in null here because Campanion mixins into setStack and needs the
 			//player.
 			inventory = new PlayerInventory((PlayerEntity) (Object) this);
-			final PlayerInventory oldInventory = ((PlayerEntity) (Object) this).inventory;
+			final PlayerInventory oldInventory = ((PlayerEntity) (Object) this).getInventory();
 
 			for (int i = 0; i < oldInventory.size(); i++) {
 				inventory.setStack(i, oldInventory.getStack(i).copy());
@@ -109,11 +109,11 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 
 		if ((VanillaDeathChest.SPAWN_DEATH_CHESTS != null &&
 				!world.getGameRules().getBoolean(VanillaDeathChest.SPAWN_DEATH_CHESTS)) ||
-				!VanillaDeathChest.config().spawning.isDimensionEnabled(world)) {
+				!VanillaDeathChest.getConfig().spawning.isDimensionEnabled(world)) {
 			return;
 		}
 
-		drops.forEach(Entity::remove);
+		drops.forEach(drop -> drop.remove(Entity.RemovalReason.DISCARDED));
 		final DeathChestsState deathChestsState = DeathChestsState.get(world);
 		final BlockPos pos = entity.getBlockPos();
 		final DeathChest deathChest = new DeathChest(
@@ -155,7 +155,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 			angerable.setAngerTime(Integer.MAX_VALUE);
 		}
 
-		final VDCConfig.DefenseEntities config = VanillaDeathChest.config().defenseEntities;
+		final DefenseEntities config = VanillaDeathChest.getConfig().defenseEntities;
 
 		if (config.maxSquaredDistanceFromChest == 0.0) {
 			return;
@@ -180,14 +180,14 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 					squaredDistanceFromPlayer > config.maxSquaredDistanceFromPlayer) {
 				entity.refreshPositionAndAngles(
 						pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5,
-						entity.yaw, entity.pitch
+						entity.getYaw(), entity.getPitch()
 				);
 			}
 		}
 	}
 
-	@Inject(method = "writeCustomDataToTag", at = @At("HEAD"))
-	public void writeCustomDataToTag(CompoundTag tag, CallbackInfo info) {
+	@Inject(method = "writeCustomDataToNbt", at = @At("HEAD"))
+	public void writeCustomDataToNbt(NbtCompound tag, CallbackInfo info) {
 		if (deathChestPlayerUUID != null) {
 			if (deathChest != null) {
 				tag.put(
@@ -199,8 +199,8 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 		}
 	}
 
-	@Inject(method = "readCustomDataFromTag", at = @At("HEAD"))
-	public void readCustomDataFromTag(CompoundTag tag, CallbackInfo info) {
+	@Inject(method = "readCustomDataFromNbt", at = @At("HEAD"))
+	public void readCustomDataFromNbt(NbtCompound tag, CallbackInfo info) {
 		if (tag.contains("DeathChestPlayer")) {
 			deathChestPlayerUUID = NbtHelper.toUuid(tag.get("DeathChestPlayer"));
 
@@ -217,7 +217,8 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 
 	@Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
 	public void dropLoot(DamageSource source, boolean recentlyHit, CallbackInfo info) {
-		if (deathChestPlayerUUID != null && !VanillaDeathChest.config().defenseEntities.dropItems) {
+		if (deathChestPlayerUUID != null &&
+				!VanillaDeathChest.getConfig().defenseEntities.dropItems) {
 			info.cancel();
 		}
 	}
@@ -226,7 +227,8 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 	public void dropEquipment(
 			DamageSource source, int lootingModifier, boolean recentlyHit, CallbackInfo info
 	) {
-		if (deathChestPlayerUUID != null && !VanillaDeathChest.config().defenseEntities.dropItems) {
+		if (deathChestPlayerUUID != null &&
+				!VanillaDeathChest.getConfig().defenseEntities.dropItems) {
 			info.cancel();
 		}
 	}
@@ -234,7 +236,7 @@ public abstract class LivingEntityMixin implements DropsList, DeathChestDefenseE
 	@Inject(method = "dropXp", at = @At("HEAD"), cancellable = true)
 	public void dropXp(CallbackInfo info) {
 		if (deathChestPlayerUUID != null &&
-				!VanillaDeathChest.config().defenseEntities.dropExperience) {
+				!VanillaDeathChest.getConfig().defenseEntities.dropExperience) {
 			info.cancel();
 		}
 	}

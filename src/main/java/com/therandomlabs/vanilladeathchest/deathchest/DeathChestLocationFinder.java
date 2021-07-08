@@ -28,8 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.therandomlabs.vanilladeathchest.VDCConfig;
 import com.therandomlabs.vanilladeathchest.VanillaDeathChest;
+import com.therandomlabs.vanilladeathchest.config.Spawning;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -138,7 +138,7 @@ public final class DeathChestLocationFinder {
 		final PlayerEntity player = world.getPlayerByUuid(deathChest.getPlayerUUID());
 		final BlockPos pos = deathChest.getPos();
 
-		final VDCConfig.Spawning config = VanillaDeathChest.config().spawning;
+		final Spawning config = VanillaDeathChest.getConfig().spawning;
 
 		final BlockPos searchPos = new BlockPos(
 				pos.getX(), Math.min(256, Math.max(1, pos.getY())), pos.getZ()
@@ -190,7 +190,7 @@ public final class DeathChestLocationFinder {
 
 	private static boolean canPlace(World world, PlayerEntity player, BlockPos pos) {
 		if (!world.canPlayerModifyAt(player, pos) ||
-				(VanillaDeathChest.config().spawning.requirePlacementOnSolidBlocks &&
+				(VanillaDeathChest.getConfig().spawning.requirePlacementOnSolidBlocks &&
 						!world.isTopSolid(pos.down(), player))) {
 			return false;
 		}

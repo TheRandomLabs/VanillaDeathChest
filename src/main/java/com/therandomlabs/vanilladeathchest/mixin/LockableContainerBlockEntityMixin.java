@@ -26,10 +26,9 @@ package com.therandomlabs.vanilladeathchest.mixin;
 import com.therandomlabs.vanilladeathchest.deathchest.DeathChest;
 import com.therandomlabs.vanilladeathchest.util.DeathChestBlockEntity;
 import com.therandomlabs.vanilladeathchest.world.DeathChestsState;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -80,13 +79,13 @@ public final class LockableContainerBlockEntityMixin implements DeathChestBlockE
 		isDeathChest = true;
 	}
 
-	@Inject(method = "fromTag", at = @At("TAIL"))
-	private void fromTag(BlockState state, CompoundTag tag, CallbackInfo info) {
+	@Inject(method = "readNbt", at = @At("TAIL"))
+	private void fromTag(NbtCompound tag, CallbackInfo info) {
 		isDeathChest = tag.getBoolean("IsDeathChest");
 	}
 
-	@Inject(method = "toTag", at = @At("TAIL"))
-	private void toTag(CompoundTag tag, CallbackInfoReturnable<CompoundTag> info) {
+	@Inject(method = "writeNbt", at = @At("TAIL"))
+	private void toTag(NbtCompound tag, CallbackInfoReturnable<NbtCompound> info) {
 		if (isDeathChest) {
 			tag.putBoolean("IsDeathChest", true);
 		}

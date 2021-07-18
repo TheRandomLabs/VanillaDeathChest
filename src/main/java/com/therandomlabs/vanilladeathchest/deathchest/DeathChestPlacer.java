@@ -377,7 +377,7 @@ public final class DeathChestPlacer {
 					continue;
 				}
 
-				final NbtCompound tag = stack.getTag();
+				final NbtCompound tag = stack.getNbt();
 
 				if (tag != null) {
 					final DefaultedList<ItemStack> inventory =

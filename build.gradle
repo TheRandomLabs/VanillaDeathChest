@@ -10,10 +10,10 @@ plugins {
 
 ext {
 	commonGradleBranch = "master"
-	minecraftVersion = "1.17"
-	yarnMappings = "1.17+build.13"
-	loaderVersion = "0.11.3"
-	fabricAPIVersion = "0.36.0+1.17"
+	minecraftVersion = "1.17.1"
+	yarnMappings = "1.17.1+build.14"
+	loaderVersion = "0.11.6"
+	fabricAPIVersion = "0.37.0+1.17"
 	clothConfigVersion = "5.0.34"
 	modMenuVersion = "2.0.2"
 	autoConfigVersion = "3.3.1"

@@ -64,7 +64,7 @@ public final class ShulkerBoxBlockMixin {
 
 		final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(27, ItemStack.EMPTY);
 		Inventories.readNbt(
-				((ItemEntity) entity).getStack().getTag().getCompound("BlockEntityTag"), inventory
+				((ItemEntity) entity).getStack().getNbt().getCompound("BlockEntityTag"), inventory
 		);
 
 		boolean dropped = false;

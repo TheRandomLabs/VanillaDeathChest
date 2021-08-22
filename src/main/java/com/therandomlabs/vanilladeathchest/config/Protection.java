@@ -21,21 +21,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.therandomlabs.vanilladeathchest;
+package com.therandomlabs.vanilladeathchest.config;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
-import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
-/**
- * The Mod Menu entry point for VanillaDeathChest.
- */
-public final class VDCModMenuEntryPoint implements ModMenuApi {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ConfigScreenFactory<?> getModConfigScreenFactory() {
-		return parent -> AutoConfig.getConfigScreen(VDCConfig.class, parent).get();
-	}
+@Config(name = "protection")
+public final class Protection implements ConfigData {
+	@ConfigEntry.Gui.Tooltip
+	public boolean enable = true;
+
+	@ConfigEntry.BoundedDiscrete(min = 0, max = Integer.MAX_VALUE)
+	@ConfigEntry.Gui.Tooltip
+	public int bypassPermissionLevel = 3;
+
+	@ConfigEntry.Gui.Tooltip
+	public boolean bypassInCreativeMode = true;
+
+	@ConfigEntry.BoundedDiscrete(min = 0, max = Integer.MAX_VALUE)
+	@ConfigEntry.Gui.Tooltip
+	public int period = 120000;
 }

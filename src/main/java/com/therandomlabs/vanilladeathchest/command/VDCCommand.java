@@ -140,7 +140,7 @@ public final class VDCCommand {
 			Collection<ServerPlayerEntity> players
 	) throws CommandSyntaxException {
 		for (ServerPlayerEntity player : players) {
-			final PlayerInventory inventory = player.inventory;
+			final PlayerInventory inventory = player.getInventory();
 
 			for (int i = 0; i < inventory.size(); i++) {
 				inventory.setStack(i, deathChest.getInventory().getStack(i).copy());

@@ -21,17 +21,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.therandomlabs.vanilladeathchest.mixin;
+package com.therandomlabs.vanilladeathchest.config;
 
-import java.util.List;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+@Config(name = "misc")
+public final class Misc implements ConfigData {
+	@ConfigEntry.Gui.Tooltip
+	public boolean removeEmptyDeathChests = true;
 
-@Mixin(World.class)
-public interface WorldAccessor {
-	@Accessor
-	List<BlockEntity> getUnloadedBlockEntities();
+	@ConfigEntry.Gui.Tooltip
+	public boolean onlyRemoveClosedEmptyDeathChests;
+
+	@ConfigEntry.Gui.Tooltip
+	public boolean dropDeathChests;
+
+	@ConfigEntry.Gui.Tooltip
+	public String gameRuleName = "spawnDeathChests";
+
+	@ConfigEntry.Gui.Tooltip
+	public String configReloadCommand = "vdcconfigreload";
 }

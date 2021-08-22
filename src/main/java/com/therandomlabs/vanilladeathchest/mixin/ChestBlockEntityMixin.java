@@ -25,7 +25,7 @@ package com.therandomlabs.vanilladeathchest.mixin;
 
 import com.therandomlabs.vanilladeathchest.util.ViewerCount;
 import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.ChestStateManager;
+import net.minecraft.block.entity.ViewerCountManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +35,7 @@ public final class ChestBlockEntityMixin implements ViewerCount {
 	@SuppressWarnings("PMD.AvoidProtectedFieldInFinalClass")
 	@Final
 	@Shadow
-	private ChestStateManager stateManager;
+	private ViewerCountManager stateManager;
 
 	/**
 	 * {@inheritDoc}

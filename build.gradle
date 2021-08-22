@@ -2,7 +2,7 @@ import com.modrinth.minotaur.TaskModrinthUpload
 
 plugins {
 	id "java-library"
-	id "fabric-loom" version "0.9-SNAPSHOT"
+	id "fabric-loom" version "0.9.+"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "1.2.1"
 	id "org.cadixdev.licenser" version "0.6.1"
@@ -11,7 +11,7 @@ plugins {
 ext {
 	commonGradleBranch = "master"
 	minecraftVersion = "1.17.1"
-	yarnMappings = "1.17.1+build.14"
+	yarnMappings = "1.17.1+build.40"
 	loaderVersion = "0.11.6"
 	fabricAPIVersion = "0.37.0+1.17"
 	clothConfigVersion = "5.0.34"
